@@ -1,0 +1,61 @@
+{
+  "name": "task-manager-api",
+  "version": "1.0.0",
+  "description": "Manage Tasks Create Projects be Productive",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "ts-node src/",
+    "start": "npm run build && cross-env NODE_ENV=production node dist/index.js",
+    "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "tslint -p tsconfig.json",
+    "fix:lint": "tslint --fix -p tsconfig.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rkterungwa16/task-manager-api.git"
+  },
+  "keywords": [
+    "tasks manager",
+    "projects manager",
+    "productivity"
+  ],
+  "author": "Terungwa Kombol",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rkterungwa16/task-manager-api/issues"
+  },
+  "homepage": "https://github.com/rkterungwa16/task-manager-api#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.4.1",
+    "mongoose": "^5.8.3",
+    "typescript": "^3.7.4",
+    "uuid": "^3.3.3",
+    "validator": "^12.1.0",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/chai": "^4.2.7",
+    "@types/chai-as-promised": "^7.1.2",
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.2",
+    "@types/jsonwebtoken": "^8.3.5",
+    "@types/mocha": "^5.2.7",
+    "@types/mongoose": "^5.5.37",
+    "@types/uuid": "^3.4.6",
+    "@types/validator": "^12.0.1",
+    "@types/winston": "^2.4.4",
+    "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
+    "prettier": "^1.19.1",
+    "ts-node": "^8.5.4",
+    "tslint-config-prettier": "^1.18.0"
+  }
+}
