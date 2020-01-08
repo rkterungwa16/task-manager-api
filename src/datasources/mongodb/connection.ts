@@ -1,10 +1,11 @@
 import mongoose, { Connection } from "mongoose";
 
-import { databaseConfig } from '../../constants';
+import { databaseConfig } from "../../constants";
 import { createAppLogger } from "../../middlewares/logger";
 
-const databaseConnectionStartup = createAppLogger("Database connection startup")
-.log({
+const databaseConnectionStartup = createAppLogger(
+    "Database connection startup"
+).log({
     level: "info",
     message: "Mongodb connection started"
 });

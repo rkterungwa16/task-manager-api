@@ -1,11 +1,10 @@
 import cors from "cors";
 import express, { NextFunction, Response } from "express";
 import uuid from "uuid";
-import route from './routes';
+import route from "./routes";
 import { IRequest } from "./types";
 
-import { appLogInfoMiddleware } from "./middlewares";
-// import { apiErrorHandler } from "./middlewares";
+import { apiErrorHandler, appLogInfoMiddleware } from "./middlewares";
 
 export const init = () => {
     const app = express();
@@ -19,7 +18,7 @@ export const init = () => {
     });
 
     app.use(appLogInfoMiddleware);
-    app.use('/', route)
-    // app.use(apiErrorHandler);
+    app.use("/", route);
+    app.use(apiErrorHandler);
     return app;
 };
