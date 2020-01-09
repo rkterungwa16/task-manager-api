@@ -1,7 +1,7 @@
 import { NextFunction, Response } from "express";
 import { Document, Model } from "mongoose";
 
-import { createUser } from "../services";
+import { authenticateUser, createUser } from "../services";
 import * as password from "../services";
 import { IRequest } from "../types";
 import { UsersModelInterface } from "../types";
@@ -34,3 +34,21 @@ export const register = ((
         }
     };
 })(createUser, password.hashPassword, password.saltPassword);
+
+export const login = ((
+    loginUser: (credentials: UsersModelInterface) => Promise<string>
+) => {
+    return async (req: IRequest, res: Response, next: NextFunction) => {
+        try {
+            const token = await loginUser(req.body);
+            return res.status(201).send({
+                message: "user successfully logged in",
+                data: {
+                    token
+                }
+            });
+        } catch (err) {
+            next(err);
+        }
+    };
+})(authenticateUser);
