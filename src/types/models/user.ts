@@ -5,4 +5,6 @@ export interface UsersModelInterface extends Document {
     email: string;
     salt: string;
     password: string;
+    createdAt: string;
+    updatedAt: string;
 }

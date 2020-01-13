@@ -7,23 +7,28 @@ import { Schema } from "mongoose";
 
 class UsersSchema {
     static get schema() {
-        return new Schema({
-            name: {
-                type: String
+        return new Schema(
+            {
+                name: {
+                    type: String
+                },
+                email: {
+                    type: String,
+                    required: true
+                },
+                salt: {
+                    type: String,
+                    require: true
+                },
+                password: {
+                    type: String,
+                    required: true
+                }
             },
-            email: {
-                type: String,
-                required: true
-            },
-            salt: {
-                type: String,
-                require: true
-            },
-            password: {
-                type: String,
-                required: true
+            {
+                timestamps: true
             }
-        });
+        );
     }
 }
 
