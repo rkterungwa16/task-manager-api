@@ -2,7 +2,11 @@ import { NextFunction, Response } from "express";
 import { ObjectId } from "mongodb";
 import { Document } from "mongoose";
 
-import { createProject, viewOwnerProjects } from "../services";
+import {
+    createProject,
+    viewOwnerProjects,
+    viewSingleOwnerProject
+} from "../services";
 import { IRequest } from "../types";
 import { ProjectsModelInterface, UsersModelInterface } from "../types";
 
@@ -58,4 +62,28 @@ export const viewOwnerProjectsControllerDefinition = (
 
 export const viewOwnerProjectsController = viewOwnerProjectsControllerDefinition(
     viewOwnerProjects
+);
+
+export const viewSingleOwnerProjectControllerDefinition = (
+    viewProject: (owner: ObjectId, projectId: string) => Promise<Document>
+) => {
+    return async (req: IRequest, res: Response, next: NextFunction) => {
+        try {
+            const { id } = req.currentUser as UsersModelInterface;
+            const { projectId } = req.params;
+            const project = await viewProject(id, projectId);
+            return res.status(201).send({
+                message: "project successfully fetched",
+                data: {
+                    project
+                }
+            });
+        } catch (err) {
+            next(err);
+        }
+    };
+};
+
+export const viewSingleOwnerProjectController = viewSingleOwnerProjectControllerDefinition(
+    viewSingleOwnerProject
 );

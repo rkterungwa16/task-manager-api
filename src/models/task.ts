@@ -27,7 +27,7 @@ class TasksSchema {
                     type: ObjectId,
                     ref: "Projects"
                 },
-                due_date: {
+                dueDate: {
                     type: Date
                 }
             },

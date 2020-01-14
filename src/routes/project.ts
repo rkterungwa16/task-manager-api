@@ -2,7 +2,8 @@ import express from "express";
 
 import {
     createProjectController,
-    viewOwnerProjectsController
+    viewOwnerProjectsController,
+    viewSingleOwnerProjectController
 } from "../controller";
 import { authenticateMiddleware, validateProjectInputs } from "../middlewares";
 
@@ -16,5 +17,9 @@ router
         authenticateMiddleware,
         createProjectController
     );
+
+router
+    .route("/project/:projectId")
+    .get(authenticateMiddleware, viewSingleOwnerProjectController);
 
 export default router;

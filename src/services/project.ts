@@ -31,6 +31,22 @@ export const viewOwnerProjectsDefinition = (
 
 export const viewOwnerProjects = viewOwnerProjectsDefinition(Projects);
 
+export const viewSingleOwnerProjectDefinition = (
+    projects: Model<Document>
+): ((owner: ObjectId, projectId: string) => Promise<Document>) => {
+    // TODO: return error message for non existent project
+    return async (owner, projectId) => {
+        return (await projects.findOne({
+            _id: projectId,
+            owner
+        })) as Document;
+    };
+};
+
+export const viewSingleOwnerProject = viewSingleOwnerProjectDefinition(
+    Projects
+);
+
 // Create a users project and assign ownership
 // View a user's project [owner, collaborator]
 // View a user's projects [owner, colloborator]

@@ -10,11 +10,13 @@ export class CustomError extends Error {
     }
 }
 
-export const error = ((Error: CustomError) => {
+export const errorDefinition = (Error: CustomError) => {
     return (statusCode: number, message: string, name: string): CustomError => {
         Error.message = message;
         Error.statusCode = statusCode;
         Error.name = name;
         return Error;
     };
-})(new CustomError());
+};
+
+export const error = errorDefinition(new CustomError());
