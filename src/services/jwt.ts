@@ -1,5 +1,6 @@
 import { sign, verify } from "jsonwebtoken";
 import { jwtSecret } from "../constants";
+import { UsersModelInterface } from "../types";
 
 export interface JwtTokenContentInterface {
     email: string;
@@ -15,6 +16,6 @@ export const signJwt = async (email: string, id: string): Promise<string> => {
 
 export const verifyJwt = async (
     token: string
-): Promise<JwtTokenContentInterface> => {
-    return (await verify(token, jwtSecret)) as JwtTokenContentInterface;
+): Promise<UsersModelInterface> => {
+    return (await verify(token, jwtSecret)) as UsersModelInterface;
 };

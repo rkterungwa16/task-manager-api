@@ -38,7 +38,7 @@ class TasksSchema {
     }
 }
 
-export const Projects = mongooseConnection().model<TasksModelInterface>(
+export const Tasks = mongooseConnection().model<TasksModelInterface>(
     "Tasks",
     TasksSchema.schema
 );

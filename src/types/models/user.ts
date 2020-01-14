@@ -1,6 +1,8 @@
+import { ObjectId } from "mongodb";
 import { Document } from "mongoose";
 
 export interface UsersModelInterface extends Document {
+    id: ObjectId;
     name: string;
     email: string;
     salt: string;

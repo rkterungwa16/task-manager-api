@@ -1,12 +1,12 @@
 import { NextFunction, Response } from "express";
-import { Document, Model } from "mongoose";
+import { Document } from "mongoose";
 
 import { authenticateUser, createUser } from "../services";
 import * as password from "../services";
 import { IRequest } from "../types";
 import { UsersModelInterface } from "../types";
 
-export const register = ((
+export const registerControllerDefinition = (
     registerUser: (credentials: UsersModelInterface) => Promise<Document>,
     hashPassword: (password: string, salt: string) => Promise<string>,
     saltPassword: () => Promise<string>
@@ -33,9 +33,15 @@ export const register = ((
             next(err);
         }
     };
-})(createUser, password.hashPassword, password.saltPassword);
+};
 
-export const login = ((
+export const registerController = registerControllerDefinition(
+    createUser,
+    password.hashPassword,
+    password.saltPassword
+);
+
+export const loginControllerDefinition = (
     loginUser: (credentials: UsersModelInterface) => Promise<string>
 ) => {
     return async (req: IRequest, res: Response, next: NextFunction) => {
@@ -51,4 +57,6 @@ export const login = ((
             next(err);
         }
     };
-})(authenticateUser);
+};
+
+export const loginController = loginControllerDefinition(authenticateUser);

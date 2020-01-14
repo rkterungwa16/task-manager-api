@@ -1,14 +1,9 @@
-import { NextFunction, Request, Response } from "express";
-import {
-    CustomError,
-    error,
-    JwtTokenContentInterface,
-    verifyJwt
-} from "../services";
-import { IRequest } from "../types";
+import { NextFunction, Response } from "express";
+import { CustomError, error, verifyJwt } from "../services";
+import { IRequest, UsersModelInterface } from "../types";
 
-export const authenticate = (
-    verifyToken: (token: string) => Promise<JwtTokenContentInterface>,
+export const authenticateMiddlewareDefinition = (
+    verifyToken: (token: string) => Promise<UsersModelInterface>,
     authenticationError: (
         statusCode: number,
         message: string,
@@ -33,6 +28,7 @@ export const authenticate = (
             if (token.startsWith("Bearer ")) {
                 token = token.slice(7, token.length);
             }
+            // TODO: should throw error for expired token
             const user = await verifyToken(token);
             req.currentUser = user;
             next();
@@ -41,3 +37,8 @@ export const authenticate = (
         }
     };
 };
+
+export const authenticateMiddleware = authenticateMiddlewareDefinition(
+    verifyJwt,
+    error
+);

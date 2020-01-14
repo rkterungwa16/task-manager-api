@@ -144,8 +144,16 @@ const requiredRegistrationInputs = {
     }
 };
 
+const requiredProjectInputs = {
+    name: {
+        type: "text",
+        validateMethod: validateString
+    }
+};
+
 export const validateLoginInputs = validate(requiredLoginInputs, error);
 export const validateRegistrationInputs = validate(
     requiredRegistrationInputs,
     error
 );
+export const validateProjectInputs = validate(requiredProjectInputs, error);

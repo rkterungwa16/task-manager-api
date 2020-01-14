@@ -101,7 +101,7 @@ export const authenticateUser = ((
             );
         }
 
-        return await signToken(userExists.email, userExists.id);
+        return await signToken(userExists.email, userExists._id);
     };
 })({
     compareUserPassword: comparePassword,
