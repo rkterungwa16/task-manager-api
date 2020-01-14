@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { Document, Model } from "mongoose";
 
 import { Projects } from "../models";
@@ -7,14 +8,28 @@ export interface CreateProjectParameterInterface {
     project: Model<Document>;
 }
 
-export const createProject = ((
+export const createProjectDefinition = (
     createProjectsArgs: CreateProjectParameterInterface
 ): ((credentials: ProjectsModelInterface) => Promise<Document>) => {
     const { project } = createProjectsArgs;
     return async (credentials: ProjectsModelInterface) => {
         return await project.create(credentials);
     };
-})({ project: Projects });
+};
+
+export const createProject = createProjectDefinition({ project: Projects });
+
+export const viewOwnerProjectsDefinition = (
+    projects: Model<Document>
+): ((owner: ObjectId) => Promise<Document[]>) => {
+    return async owner => {
+        return await projects.find({
+            owner
+        });
+    };
+};
+
+export const viewOwnerProjects = viewOwnerProjectsDefinition(Projects);
 
 // Create a users project and assign ownership
 // View a user's project [owner, collaborator]
