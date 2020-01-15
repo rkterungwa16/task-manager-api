@@ -37,12 +37,13 @@ export const viewSingleOwnerProjectDefinition = (
 ): ((owner: ObjectId, projectId: string) => Promise<Document>) => {
     // TODO: return error message for non existent project
     return async (owner, projectId) => {
-        return (await projects.findOne({
-            _id: projectId,
-            owner
-        })
-        .populate('owner', '-password -salt')
-        .exec()) as Document;
+        return (await projects
+            .findOne({
+                _id: projectId,
+                owner
+            })
+            .populate("owner", "-password -salt")
+            .exec()) as Document;
     };
 };
 
