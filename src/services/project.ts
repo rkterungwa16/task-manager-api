@@ -2,6 +2,7 @@ import { ObjectId } from "mongodb";
 import { Document, Model } from "mongoose";
 
 import { Projects } from "../models";
+import { listOfUserAsOwnerAndColloaboratorProjects } from "../query";
 import { ProjectsModelInterface } from "../types";
 
 export interface CreateProjectParameterInterface {
@@ -23,9 +24,9 @@ export const viewOwnerProjectsDefinition = (
     projects: Model<Document>
 ): ((owner: ObjectId) => Promise<Document[]>) => {
     return async owner => {
-        return await projects.find({
-            owner
-        });
+        return await projects.aggregate(
+            listOfUserAsOwnerAndColloaboratorProjects(owner)
+        );
     };
 };
 
@@ -52,3 +53,4 @@ export const viewSingleOwnerProject = viewSingleOwnerProjectDefinition(
 // View a user's projects [owner, colloborator]
 // Delete a user's project [owner]
 // Edit a user's project [owner]
+// View projects that he is a member of
