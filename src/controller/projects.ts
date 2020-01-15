@@ -48,7 +48,7 @@ export const viewOwnerProjectsControllerDefinition = (
         try {
             const { id } = req.currentUser as UsersModelInterface;
             const projects = await viewProjects(id);
-            return res.status(201).send({
+            return res.status(200).send({
                 message: "projects successfully fetched",
                 data: {
                     projects
@@ -72,7 +72,7 @@ export const viewSingleOwnerProjectControllerDefinition = (
             const { id } = req.currentUser as UsersModelInterface;
             const { projectId } = req.params;
             const project = await viewProject(id, projectId);
-            return res.status(201).send({
+            return res.status(200).send({
                 message: "project successfully fetched",
                 data: {
                     project

@@ -40,7 +40,9 @@ export const viewSingleOwnerProjectDefinition = (
         return (await projects.findOne({
             _id: projectId,
             owner
-        })) as Document;
+        })
+        .populate('owner', '-password -salt')
+        .exec()) as Document;
     };
 };
 
