@@ -157,3 +157,16 @@ export const validateRegistrationInputs = validate(
     error
 );
 export const validateProjectInputs = validate(requiredProjectInputs, error);
+
+const requiredAddCollaboratorInputs = {
+    projectId: {
+        type: "text",
+        validateMethod: validateString
+    },
+    collaboratorEmail: {
+        type: "email",
+        validateMethod: validateEmail
+    }
+}
+
+export const validateAddCollaboratorInputs = validate(requiredAddCollaboratorInputs, error);

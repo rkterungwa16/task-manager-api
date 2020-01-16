@@ -41,6 +41,20 @@ export const listOfUserAsOwnerAndColloaboratorProjects = (id: ObjectId) => {
                 "owner.password": 0,
                 "owner.salt": 0
             }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "collaborators",
+                foreignField: "_id",
+                as: "collaborators"
+            }
+        },
+        {
+            $project: {
+                "collaborators.password": 0,
+                "collaborators.salt": 0
+            }
         }
     ];
 };

@@ -18,11 +18,13 @@ class UsersSchema {
                 },
                 salt: {
                     type: String,
-                    require: true
                 },
                 password: {
+                    type: String
+                },
+                collaborationInviteStatus: {
                     type: String,
-                    required: true
+                    enum: ["pending", "declined", "accepted"]
                 }
             },
             {

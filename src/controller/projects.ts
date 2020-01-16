@@ -3,9 +3,10 @@ import { ObjectId } from "mongodb";
 import { Document } from "mongoose";
 
 import {
+    addUserAsCollaborator,
     createProject,
     viewOwnerProjects,
-    viewSingleOwnerProject
+    viewSingleOwnerProject,
 } from "../services";
 import { IRequest } from "../types";
 import { ProjectsModelInterface, UsersModelInterface } from "../types";
@@ -86,4 +87,39 @@ export const viewSingleOwnerProjectControllerDefinition = (
 
 export const viewSingleOwnerProjectController = viewSingleOwnerProjectControllerDefinition(
     viewSingleOwnerProject
+);
+
+export interface AddUserControllerParamDefinition {
+    owner: ObjectId;
+    projectId: ObjectId;
+    collaboratorEmail: string;
+}
+export const addUserAsCollaboratorControllerDefinition = (
+    addUser: (
+        addUserControllerArgs: AddUserControllerParamDefinition
+    ) => Promise<Document>
+) => {
+    return async (req: IRequest, res: Response, next: NextFunction) => {
+        try {
+            const { id } = req.currentUser as UsersModelInterface;
+            const { projectId, collaboratorEmail } = req.body;
+            const project = await addUser({
+                owner: id,
+                projectId,
+                collaboratorEmail
+            });
+            return res.status(200).send({
+                message: "user successfull added to project as collaborator",
+                data: {
+                    project
+                }
+            });
+        } catch (err) {
+            next(err);
+        }
+    };
+}
+
+export const addUserAsCollaboratorController = addUserAsCollaboratorControllerDefinition(
+    addUserAsCollaborator
 );
