@@ -23,15 +23,13 @@ export const signJwt = async (
 export const verifyJwtDefinition = (
     jwtError: (statusCode: number, message: string, name: string) => CustomError
 ) => {
-    return async (
-        token: string
-    ): Promise<UsersModelInterface> => {
+    return async (token: string): Promise<UsersModelInterface> => {
         try {
             return (await verify(token, jwtSecret)) as UsersModelInterface;
         } catch (err) {
-            throw jwtError(400, "Invalid token", "Jwt")
+            throw jwtError(400, "Invalid token", "Jwt");
         }
-    }
+    };
 };
 
 export const verifyJwt = verifyJwtDefinition(error);

@@ -1,9 +1,5 @@
 import mailjet from "node-mailjet";
-import {
-    emailApiKey,
-    emailApiSecret,
-    emailApiVersion
-} from "../constants";
+import { emailApiKey, emailApiSecret, emailApiVersion } from "../constants";
 
 import { CustomError, error } from "./";
 
@@ -36,12 +32,7 @@ export const sendMailDefinition = (
         messageHtmlContent,
         messageSubject
     }) => {
-        const {
-            apiKey,
-            apiSecret,
-            version,
-            sendEmailError
-        } = sendEmailArgs;
+        const { apiKey, apiSecret, version, sendEmailError } = sendEmailArgs;
         try {
             const mailRequest = await mailjet
                 .connect(apiKey, apiSecret)
@@ -66,14 +57,10 @@ export const sendMailDefinition = (
                 });
             return mailRequest;
         } catch (err) {
-            throw sendEmailError(
-                err.statusCode,
-                err.Message,
-                "Send Email"
-            );
+            throw sendEmailError(err.statusCode, err.Message, "Send Email");
         }
-    }
-}
+    };
+};
 
 export const sendMail = sendMailDefinition({
     apiSecret: emailApiSecret,

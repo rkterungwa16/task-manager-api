@@ -17,7 +17,7 @@ class UsersSchema {
                     required: true
                 },
                 salt: {
-                    type: String,
+                    type: String
                 },
                 password: {
                     type: String

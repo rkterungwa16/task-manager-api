@@ -33,6 +33,6 @@ router
         validateAddCollaboratorInputs,
         authenticateMiddleware,
         addUserAsCollaboratorController
-    )
+    );
 
 export default router;

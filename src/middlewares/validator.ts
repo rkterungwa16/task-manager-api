@@ -167,6 +167,9 @@ const requiredAddCollaboratorInputs = {
         type: "email",
         validateMethod: validateEmail
     }
-}
+};
 
-export const validateAddCollaboratorInputs = validate(requiredAddCollaboratorInputs, error);
+export const validateAddCollaboratorInputs = validate(
+    requiredAddCollaboratorInputs,
+    error
+);

@@ -6,7 +6,7 @@ import {
     addUserAsCollaborator,
     createProject,
     viewOwnerProjects,
-    viewSingleOwnerProject,
+    viewSingleOwnerProject
 } from "../services";
 import { IRequest } from "../types";
 import { ProjectsModelInterface, UsersModelInterface } from "../types";
@@ -118,7 +118,7 @@ export const addUserAsCollaboratorControllerDefinition = (
             next(err);
         }
     };
-}
+};
 
 export const addUserAsCollaboratorController = addUserAsCollaboratorControllerDefinition(
     addUserAsCollaborator

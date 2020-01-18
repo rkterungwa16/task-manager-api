@@ -1,11 +1,11 @@
 import { Document, Model } from "mongoose";
 
-import { CustomError, error } from ".";
-import { Users } from "../models";
-import { UsersModelInterface } from "../types";
+import { CustomError, error } from "..";
+import { Users } from "../../models";
+import { UsersModelInterface } from "../../types";
 
-import { signJwt } from "./jwt";
-import { comparePassword } from "./password";
+import { signJwt } from "../jwt";
+import { comparePassword } from "../password";
 
 export interface CreateUserParameterInterface {
     user: Model<Document>;
