@@ -11,7 +11,8 @@ export const hashPassword = async (
 };
 
 export const saltPassword = async (): Promise<string> => {
-    return await genSalt(rounds);
+    const salt = await genSalt(rounds);
+    return salt;
 };
 
 export const comparePassword = (

@@ -1,11 +1,15 @@
 import { Document, Model } from "mongoose";
 
-import { CustomError, error } from "..";
-import { Users } from "../../models";
-import { UsersModelInterface } from "../../types";
+import { CustomError, error, } from "../..";
+import { Users } from "../../../models";
+import { UsersModelInterface } from "../../../types";
+import {
+    hashPassword,
+    saltPassword
+} from "../../password";
 
-import { signJwt } from "../jwt";
-import { comparePassword } from "../password";
+import { signJwt } from "../../jwt";
+import { comparePassword } from "../../password";
 
 export interface CreateUserParameterInterface {
     user: Model<Document>;
@@ -15,6 +19,8 @@ export interface CreateUserParameterInterface {
         name: string
     ) => CustomError;
     findUserByEmail: (email: string) => Promise<boolean | Document>;
+    hashPassword: (password: string, salt: string) => Promise<string>;
+    saltPassword: () => Promise<string>
 }
 
 // TODO: split into two for testing purpose 1: findUserByEmailDefinition 2: findUserByEmail
@@ -30,7 +36,7 @@ export const findUserByEmail = ((
     };
 })(Users);
 
-export const createUser = ((
+export const createUserDefinition = (
     createUserArgs: CreateUserParameterInterface
 ): ((credentials: UsersModelInterface) => Promise<Document>) => {
     return async (credentials: UsersModelInterface) => {
@@ -38,7 +44,13 @@ export const createUser = ((
             credentials.email
         );
         if (!userExists) {
-            return await createUserArgs.user.create(credentials);
+            const salt = await createUserArgs.saltPassword();
+            const hashedPassword = await createUserArgs.hashPassword(credentials.password, salt);
+            return await createUserArgs.user.create({
+                salt,
+                password: hashedPassword,
+                ...credentials
+            });
         }
         throw createUserArgs.createUserError(
             400,
@@ -46,7 +58,15 @@ export const createUser = ((
             "User Registration"
         );
     };
-})({ user: Users, createUserError: error, findUserByEmail });
+};
+
+export const createUser = createUserDefinition({
+    user: Users,
+    createUserError: error,
+    findUserByEmail,
+    hashPassword,
+    saltPassword
+})
 
 export interface AuthenticationCredentialsInterface {
     email: string;
@@ -70,7 +90,7 @@ export interface AuthenticationParameterInterface {
     ) => Promise<string>;
 }
 
-export const authenticateUser = ((
+export const authenticateUserDefinition = (
     authenticationArgs: AuthenticationParameterInterface
 ) => {
     return async (credentials: AuthenticationCredentialsInterface) => {
@@ -110,7 +130,9 @@ export const authenticateUser = ((
             id: userExists._id
         }, "24h");
     };
-})({
+}
+
+export const authenticateUser = authenticateUserDefinition({
     compareUserPassword: comparePassword,
     signToken: signJwt,
     authenticateUserError: error,

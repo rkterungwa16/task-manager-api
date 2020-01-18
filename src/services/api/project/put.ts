@@ -13,14 +13,18 @@ export interface UserAsCollaboratorParameterInterface {
     collaboratorEmail: string;
 }
 
-export interface AddUserAsCollaboratorParameterInterface {
+export interface CollaboratorParameterInterface {
     project: Model<Document>;
-    user: Model<Document>;
-    addUserAsCollaboratorError: (
+    userAsCollaboratorError: (
         statusCode: number,
         message: string,
         name: string
     ) => CustomError;
+}
+
+export interface AddUserAsCollaboratorParameterInterface extends
+    CollaboratorParameterInterface {
+    user: Model<Document>;
     signToken: (
         tokenDetail: any,
         expiryDuration: string | number
@@ -58,7 +62,7 @@ export const addUserAsCollaboratorDefinition = (
         const {
             project,
             user,
-            addUserAsCollaboratorError,
+            userAsCollaboratorError: addUserAsCollaboratorError,
             signToken,
             sendEmail,
             getHtmlContent
@@ -150,7 +154,7 @@ export const addUserAsCollaboratorDefinition = (
 export const addUserAsCollaborator = addUserAsCollaboratorDefinition({
     project: Projects,
     user: Users,
-    addUserAsCollaboratorError: error,
+    userAsCollaboratorError: error,
     sendEmail: sendMail,
     signToken: signJwt,
     getHtmlContent: emailMessageHtmlContent
