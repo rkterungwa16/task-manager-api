@@ -10,11 +10,10 @@ export interface JwtTokenContentInterface {
 }
 
 export const signJwt = async (
-    email: string,
-    id: string | ObjectId,
+    tokenDetails: any,
     expiryDuration: string | number
 ): Promise<string> => {
-    const token = await sign({ email, id }, jwtSecret as string, {
+    const token = await sign(tokenDetails, jwtSecret as string, {
         expiresIn: expiryDuration
     });
     return token;

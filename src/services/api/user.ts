@@ -65,8 +65,7 @@ export interface AuthenticationParameterInterface {
         storedPassword: string
     ) => Promise<boolean>;
     signToken: (
-        email: string,
-        id: string,
+        tokenDetails: any,
         expiryDuration: string | number
     ) => Promise<string>;
 }
@@ -105,7 +104,11 @@ export const authenticateUser = ((
             );
         }
 
-        return await signToken(userExists.email, userExists._id, "24h");
+        return await signToken({
+            name: userExists.name,
+            email: userExists.email,
+            id: userExists._id
+        }, "24h");
     };
 })({
     compareUserPassword: comparePassword,

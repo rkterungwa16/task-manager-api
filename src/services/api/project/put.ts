@@ -22,8 +22,7 @@ export interface AddUserAsCollaboratorParameterInterface {
         name: string
     ) => CustomError;
     signToken: (
-        email: string,
-        id: string | ObjectId,
+        tokenDetail: any,
         expiryDuration: string | number
     ) => Promise<string>;
     sendEmail: (emailDetails: EmailDetailsInterface) => Promise<any>;
@@ -98,8 +97,11 @@ export const addUserAsCollaboratorDefinition = (
             })) as UsersModelInterface;
 
             const token = await signToken(
-                collaboratorEmail,
-                collaborator.id,
+                {
+                    email: collaboratorEmail,
+                    id: collaborator.id,
+                    name: collaborator.name
+                },
                 "1h"
             );
             const messageHtmlContent = getHtmlContent({
@@ -109,7 +111,7 @@ export const addUserAsCollaboratorDefinition = (
             });
 
             // TODO: Option to decline invite.
-
+            // Experiment with event emitters for sending emails (Good or Bad idea?)
             const messageSubject = "Task Manager Project Collaboration invite";
             await sendEmail({
                 senderEmail: ownerDetail.email,
