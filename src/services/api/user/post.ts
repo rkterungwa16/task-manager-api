@@ -47,9 +47,9 @@ export const createUserDefinition = (
             const salt = await createUserArgs.saltPassword();
             const hashedPassword = await createUserArgs.hashPassword(credentials.password, salt);
             return await createUserArgs.user.create({
+                ...credentials,
                 salt,
                 password: hashedPassword,
-                ...credentials
             });
         }
         throw createUserArgs.createUserError(
