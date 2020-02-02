@@ -25,6 +25,9 @@ class UsersSchema {
                 collaborationInviteStatus: {
                     type: String,
                     enum: ["pending", "declined", "accepted"]
+                },
+                resetPasswordToken: {
+                    type: String
                 }
             },
             {

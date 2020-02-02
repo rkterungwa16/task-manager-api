@@ -10,4 +10,5 @@ export interface UsersModelInterface extends Document {
     createdAt: string;
     updatedAt: string;
     collaborationInviteStatus: "pending" | "declined" | "accepted";
+    resetPasswordToken: string;
 }
