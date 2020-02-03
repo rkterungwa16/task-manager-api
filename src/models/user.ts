@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { connect } from "../datasources";
 import { UsersModelInterface } from "../types";
 
@@ -28,7 +29,11 @@ class UsersSchema {
                 },
                 resetPasswordToken: {
                     type: String
-                }
+                },
+                favoriteProjects: {
+                    type: [ObjectId],
+                    ref: "Projects"
+                },
             },
             {
                 timestamps: true

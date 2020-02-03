@@ -1,7 +1,13 @@
 import { NextFunction, Response } from "express";
+import { ObjectId } from "mongodb";
 import { Document } from "mongoose";
 
-import { authenticateUser, createUser } from "../services";
+import {
+    authenticateUser,
+    createUser,
+    editUser,
+    UserEditFieldsInterface
+} from "../services";
 import { IRequest } from "../types";
 import { UsersModelInterface } from "../types";
 
@@ -52,3 +58,32 @@ export const loginControllerDefinition = (
 };
 
 export const loginController = loginControllerDefinition(authenticateUser);
+
+export const editUserControllerDefinition = (
+    userEditor: (
+        editUserControllerArgs: UserEditFieldsInterface
+    ) => Promise<Document>
+) => {
+    return async (req: IRequest, res: Response, next: NextFunction) => {
+        try {
+            const { id } = req.currentUser as UsersModelInterface;
+            const user = await userEditor({
+                ...req.body,
+                userId: id
+            });
+            return res.status(200).send({
+                message: "user successfull edited",
+                data: {
+                    user
+                }
+            });
+        } catch (err) {
+            next(err);
+        }
+    };
+};
+
+export const editUserController = editUserControllerDefinition(
+    editUser
+);
+

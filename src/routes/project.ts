@@ -18,8 +18,8 @@ router
     .route("/projects")
     .get(authenticateMiddleware, viewOwnerProjectsController)
     .post(
-        validateProjectInputs,
         authenticateMiddleware,
+        validateProjectInputs,
         createProjectController
     );
 
@@ -30,8 +30,8 @@ router
 router
     .route("/project/collaborator")
     .put(
-        validateAddCollaboratorInputs,
         authenticateMiddleware,
+        validateAddCollaboratorInputs,
         addUserAsCollaboratorController
     );
 

@@ -17,49 +17,39 @@ export interface RequiredPropertiesInterface {
 }
 
 export const validate = (
-    requiredProperties: RequiredPropertiesInterface,
     validationError: (
         statusCode: number,
         message: string,
         name: string
-    ) => CustomError
+    ) => CustomError,
+    requiredProperties?: RequiredPropertiesInterface
 ) => {
     return (req: Request, res: Response, next: NextFunction) => {
         const requestBody = req.body as { [x: string]: any };
-        const propertiesToValidate = requiredProperties;
-        const listOfRequiredProperties = Object.keys(propertiesToValidate);
-        const listOfRequestBodyProperties = Object.keys(requestBody);
-        for (const prop of listOfRequiredProperties) {
-            if (!listOfRequestBodyProperties.includes(prop)) {
-                throw validationError(
-                    400,
-                    `${prop} is missing`,
-                    "Input Validation Error"
+        if (!Object.entries(requestBody).length) {
+            throw validationError(
+                400,
+                "inputs must not be empty",
+                "Input Validation Error"
+            )
+        }
+        if (requiredProperties) {
+            const listOfRequiredProperties = Object.keys(requiredProperties);
+            for (const prop of listOfRequiredProperties) {
+                if (!requestBody[prop]) {
+                    throw validationError(
+                        400,
+                        `${prop} must not be empty`,
+                        "Input Validation Error"
+                    );
+                }
+                requiredProperties[prop].validateMethod(
+                    requestBody[prop],
+                    validationError
                 );
             }
-
-            if (!requestBody[prop]) {
-                throw validationError(
-                    400,
-                    `${prop} must not be empty`,
-                    "Input Validation Error"
-                );
-            }
-            requiredProperties[prop].validateMethod(
-                requestBody[prop],
-                validationError
-            );
         }
 
-        const requestBodyHasAllRequiredProps = listOfRequiredProperties.every(
-            prop => {
-                return listOfRequestBodyProperties.includes(prop);
-            }
-        );
-
-        if (!requestBodyHasAllRequiredProps) {
-            throw new Error("a required property is missing");
-        }
         next();
     };
 };
@@ -151,12 +141,12 @@ const requiredProjectInputs = {
     }
 };
 
-export const validateLoginInputs = validate(requiredLoginInputs, error);
+export const validateLoginInputs = validate(error, requiredLoginInputs);
 export const validateRegistrationInputs = validate(
+    error,
     requiredRegistrationInputs,
-    error
 );
-export const validateProjectInputs = validate(requiredProjectInputs, error);
+export const validateProjectInputs = validate(error, requiredProjectInputs);
 
 const requiredAddCollaboratorInputs = {
     projectId: {
@@ -170,6 +160,8 @@ const requiredAddCollaboratorInputs = {
 };
 
 export const validateAddCollaboratorInputs = validate(
-    requiredAddCollaboratorInputs,
-    error
+    error,
+    requiredAddCollaboratorInputs
 );
+
+export const validateUserEditInputs = validate(error);
