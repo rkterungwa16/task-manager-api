@@ -10,9 +10,11 @@ const databaseConnectionStartup = createAppLogger(
     message: "Mongodb connection started"
 });
 
+const env = process.env.NODE_ENV || "development";
+
 export const connect = (): Connection => {
     mongoose.connect(
-        databaseConfig.databaseUri || "mongodb://localhost:27017/task-manager",
+        databaseConfig[env].databaseUri || "mongodb://localhost:27017/task-manager",
         { useNewUrlParser: true }
     );
 

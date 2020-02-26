@@ -24,7 +24,7 @@ export interface CreateUserParameterInterface {
 }
 
 // TODO: split into two for testing purpose 1: findUserByEmailDefinition 2: findUserByEmail
-export const findUserByEmail = ((
+export const findUserByEmailDefinition = (
     user: Model<Document>
 ): ((email: string) => Promise<boolean | UsersModelInterface>) => {
     return async (email: string) => {
@@ -34,7 +34,7 @@ export const findUserByEmail = ((
         }
         return userExists as UsersModelInterface;
     };
-})(Users);
+};
 
 export const createUserDefinition = (
     createUserArgs: CreateUserParameterInterface
@@ -59,6 +59,8 @@ export const createUserDefinition = (
         );
     };
 };
+
+export const findUserByEmail = findUserByEmailDefinition(Users);
 
 export const createUser = createUserDefinition({
     user: Users,

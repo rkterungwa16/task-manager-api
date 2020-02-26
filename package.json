@@ -4,8 +4,9 @@
   "description": "Manage Tasks Create Projects be Productive",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start:dev": "ts-node src/",
+    "test": "cross-env NODE_ENV=test nyc --reporter=html --reporter=text mocha -r ts-node/register --recursive tests/**/*.test.ts --exit",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "start:dev": "cross-env NODE_ENV=development ts-node src/",
     "start": "npm run build && cross-env NODE_ENV=production node dist/index.js",
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
@@ -30,6 +31,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
@@ -60,7 +62,9 @@
     "@types/winston": "^2.4.4",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
+    "nyc": "^15.0.0",
     "prettier": "^1.19.1",
+    "supertest": "^4.0.2",
     "ts-node": "^8.5.4",
     "tslint-config-prettier": "^1.18.0"
   }

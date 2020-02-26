@@ -33,6 +33,7 @@ export const validate = (
                 "Input Validation Error"
             )
         }
+        // flexible fields. If it contains email or password validate properly
         if (requiredProperties) {
             const listOfRequiredProperties = Object.keys(requiredProperties);
             for (const prop of listOfRequiredProperties) {
