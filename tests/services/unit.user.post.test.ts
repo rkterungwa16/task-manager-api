@@ -6,7 +6,6 @@ chai.use(chaiAsPromised);
 import {
     authenticateUser,
     createUser,
-    error,
     findUserByEmail
 } from "../../src/services";
 import { UsersModelInterface } from "../../src/types";
@@ -50,6 +49,41 @@ describe("User Service: ", function () {
                 });
             };
             expect(registeredUser).to.throw();
+        });
+    });
+
+    describe("Authenticate a registered user", function () {
+        it("should successfully authenticate a registered user", async function () {
+            await createUser({
+                email: "john@doe.com",
+                name: "John Doe",
+                password: "123456"
+            });
+            const authenticatedUser = await authenticateUser({
+                email: "john@doe.com",
+                password: "123456"
+            }) as string;
+            expect(typeof authenticatedUser).to.equal("string");
+        });
+
+        it("should throw an error for user that does not exist", function () {
+            function authenticatedUser() {
+                throw authenticateUser({
+                    email: "john@doe.com",
+                    password: "12345",
+                });
+            };
+            expect(authenticatedUser).to.throw();
+        });
+
+        it("should throw an error for a wrong password", function () {
+            function authenticatedUser() {
+                throw authenticateUser({
+                    email: "kombol@kombol.com",
+                    password: "abc123",
+                });
+            };
+            expect(authenticatedUser).to.throw();
         });
     });
 });
