@@ -2,7 +2,11 @@ import { Document, Model } from "mongoose";
 
 import { CustomError, error, } from "../..";
 import { Users } from "../../../models";
-import { UsersModelInterface } from "../../../types";
+import {
+    AuthenticatedUserCredentialInterface,
+    CreatedUserCredentialInterface,
+    UsersModelInterface
+} from "../../../types";
 import {
     hashPassword,
     saltPassword
@@ -38,14 +42,14 @@ export const findUserByEmailDefinition = (
 
 export const createUserDefinition = (
     createUserArgs: CreateUserParameterInterface
-): ((credentials: UsersModelInterface) => Promise<Document>) => {
-    return async (credentials: UsersModelInterface) => {
+): ((credentials: CreatedUserCredentialInterface) => Promise<Document>) => {
+    return async (credentials: CreatedUserCredentialInterface) => {
         const userExists = await createUserArgs.findUserByEmail(
-            credentials.email
+            credentials.email as string
         );
         if (!userExists) {
             const salt = await createUserArgs.saltPassword();
-            const hashedPassword = await createUserArgs.hashPassword(credentials.password, salt);
+            const hashedPassword = await createUserArgs.hashPassword(credentials.password as string, salt);
             return await createUserArgs.user.create({
                 ...credentials,
                 salt,
@@ -70,11 +74,6 @@ export const createUser = createUserDefinition({
     saltPassword
 })
 
-export interface AuthenticationCredentialsInterface {
-    email: string;
-    password: string;
-}
-
 export interface AuthenticationParameterInterface {
     authenticateUserError: (
         statusCode: number,
@@ -95,7 +94,7 @@ export interface AuthenticationParameterInterface {
 export const authenticateUserDefinition = (
     authenticationArgs: AuthenticationParameterInterface
 ) => {
-    return async (credentials: AuthenticationCredentialsInterface) => {
+    return async (credentials: AuthenticatedUserCredentialInterface) => {
         const {
             findUser,
             authenticateUserError,
@@ -115,7 +114,7 @@ export const authenticateUserDefinition = (
 
         const passwordMatched = await compareUserPassword(
             credentials.password,
-            userExists.password
+            userExists.password as string
         );
 
         if (!passwordMatched) {

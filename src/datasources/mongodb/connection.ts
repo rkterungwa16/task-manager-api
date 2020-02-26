@@ -13,8 +13,8 @@ const databaseConnectionStartup = createAppLogger(
     message: "Mongodb connection started"
 });
 
-const env = process.env.NODE_ENV || "development";
 export const connect = (): Connection => {
+    const env = process.env.NODE_ENV as string;
     mongoose.connect(
         databaseConfig[env].databaseUri,
         {

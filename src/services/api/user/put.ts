@@ -59,7 +59,10 @@ export const editUserDefinition = (
                     collaborationInviteStatus: credentials.collaborationInviteStatus
                 }),
                 ...(credentials.favoriteProject && {
-                    favoriteProjects: modifyFavorites(userDetails.favoriteProjects, credentials.favoriteProject)
+                    favoriteProjects: modifyFavorites(
+                        userDetails.favoriteProjects as ObjectId[] ,
+                        credentials.favoriteProject
+                    )
                 })
             };
 

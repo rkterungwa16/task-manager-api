@@ -1,4 +1,4 @@
-import { ObjectId } from "mongodb";
+import { ObjectId, ObjectID } from "mongodb";
 import { Document, Model } from "mongoose";
 
 import { CustomError, EmailDetailsInterface, error, signJwt } from "../..";
@@ -118,7 +118,7 @@ export const addUserAsCollaboratorDefinition = (
             // Experiment with event emitters for sending emails (Good or Bad idea?)
             const messageSubject = "Task Manager Project Collaboration invite";
             await sendEmail({
-                senderEmail: ownerDetail.email,
+                senderEmail: ownerDetail.email as string,
                 recieverEmail: collaboratorEmail,
                 recieverName: "",
                 messageHtmlContent,
@@ -129,7 +129,7 @@ export const addUserAsCollaboratorDefinition = (
         // Must not add self ass collaborator.
         // Check if user is already a collaborator
         let collaborators = ownerProject.collaborators as ObjectId[];
-        const isCollaborator = collaborators.includes(collaborator.id);
+        const isCollaborator = collaborators.includes(collaborator.id as ObjectID);
         if (isCollaborator) {
             throw addUserAsCollaboratorError(
                 400,
@@ -138,7 +138,7 @@ export const addUserAsCollaboratorDefinition = (
             );
         }
 
-        collaborators = [...collaborators, collaborator.id];
+        collaborators = [...collaborators, collaborator.id] as ObjectId[];
         return (await project
             .findByIdAndUpdate(
                 projectId,
