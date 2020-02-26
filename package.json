@@ -67,5 +67,16 @@
     "supertest": "^4.0.2",
     "ts-node": "^8.5.4",
     "tslint-config-prettier": "^1.18.0"
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "exclude": [
+      "dist",
+      "tests",
+      "coverage"
+    ],
+    "all": true
   }
 }

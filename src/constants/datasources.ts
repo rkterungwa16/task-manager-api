@@ -1,3 +1,5 @@
+import * as dotenv from "dotenv";
+dotenv.config();
 export interface DatabaseConfigInterface {
     [x: string]: {
         databaseUri: string;
@@ -12,6 +14,7 @@ export interface DatabaseConfigInterface {
         databaseUri: string;
     };
 }
+
 export const databaseConfig: DatabaseConfigInterface = {
     production: {
         databaseUri: process.env.PROD_DATABASE_URI as string
