@@ -48,7 +48,7 @@ export const viewOwnerProjectsControllerDefinition = (
     return async (req: IRequest, res: Response, next: NextFunction) => {
         try {
             const { id } = req.currentUser as UsersModelInterface;
-            const projects = await viewProjects(id);
+            const projects = await viewProjects(id as ObjectId);
             return res.status(200).send({
                 message: "projects successfully fetched",
                 data: {
@@ -72,7 +72,7 @@ export const viewSingleOwnerProjectControllerDefinition = (
         try {
             const { id } = req.currentUser as UsersModelInterface;
             const { projectId } = req.params;
-            const project = await viewProject(id, projectId);
+            const project = await viewProject(id as ObjectId, projectId);
             return res.status(200).send({
                 message: "project successfully fetched",
                 data: {
@@ -104,7 +104,7 @@ export const addUserAsCollaboratorControllerDefinition = (
             const { id } = req.currentUser as UsersModelInterface;
             const { projectId, collaboratorEmail } = req.body;
             const project = await addUser({
-                owner: id,
+                owner: id as ObjectId,
                 projectId,
                 collaboratorEmail
             });

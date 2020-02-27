@@ -6,13 +6,17 @@ import {
     authenticateUser,
     createUser,
     editUser,
-    UserEditFieldsInterface
+    UserEditFieldsInterface,
 } from "../services";
 import { IRequest } from "../types";
-import { UsersModelInterface } from "../types";
+import {
+    AuthenticatedUserCredentialInterface,
+    CreatedUserCredentialInterface,
+    UsersModelInterface
+} from "../types";
 
 export const registerControllerDefinition = (
-    registerUser: (credentials: UsersModelInterface) => Promise<Document>
+    registerUser: (credentials: CreatedUserCredentialInterface) => Promise<Document>
 ) => {
     return async (req: IRequest, res: Response, next: NextFunction) => {
         try {
@@ -20,7 +24,7 @@ export const registerControllerDefinition = (
                 password: req.body.password as string,
                 email: req.body.email as string,
                 name: req.body.name as string
-            } as UsersModelInterface;
+            } as CreatedUserCredentialInterface;
             const createdUser = await registerUser(userInfo);
             const createdUserModified = createdUser.toObject();
             delete createdUserModified.password;
@@ -40,7 +44,7 @@ export const registerController = registerControllerDefinition(
 );
 
 export const loginControllerDefinition = (
-    loginUser: (credentials: UsersModelInterface) => Promise<string>
+    loginUser: (credentials: AuthenticatedUserCredentialInterface) => Promise<string>
 ) => {
     return async (req: IRequest, res: Response, next: NextFunction) => {
         try {

@@ -12,10 +12,10 @@ import { UsersModelInterface } from "../../src/types";
 import { populate, reset } from "../db";
 
 describe("User Service: ", function () {
-    beforeEach(async function() {
+    beforeEach(async function () {
         await populate();
     });
-    afterEach(async function() {
+    afterEach(async function () {
         await reset();
     });
     describe("Find User By Email", function () {
