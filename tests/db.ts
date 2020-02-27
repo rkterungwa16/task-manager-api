@@ -1,4 +1,3 @@
-import { Done } from "mocha";
 import { Users } from "../src/models";
 import user from "./fixtures/user.json";
 

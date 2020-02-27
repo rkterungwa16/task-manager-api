@@ -1,5 +1,4 @@
 import { sign, verify } from "jsonwebtoken";
-import { ObjectId } from "mongodb";
 import { jwtSecret } from "../constants";
 import { UsersModelInterface } from "../types";
 import { CustomError, error } from "./";
