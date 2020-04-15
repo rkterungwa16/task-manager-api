@@ -1,14 +1,13 @@
 import express from "express";
 
 import {
-    addUserAsCollaboratorController,
+    addCollaboratorsController,
     createProjectController,
     viewOwnerProjectsController,
     viewSingleOwnerProjectController
 } from "../controller";
 import {
     authenticateMiddleware,
-    validateAddCollaboratorInputs,
     validateProjectInputs
 } from "../middlewares";
 
@@ -24,15 +23,14 @@ router
     );
 
 router
-    .route("/project/:projectId")
+    .route("/projects/:projectId")
     .get(authenticateMiddleware, viewSingleOwnerProjectController);
 
 router
-    .route("/project/collaborator")
+    .route("/projects/:projectId/collaborators/add")
     .put(
         authenticateMiddleware,
-        validateAddCollaboratorInputs,
-        addUserAsCollaboratorController
+        addCollaboratorsController
     );
 
 export default router;

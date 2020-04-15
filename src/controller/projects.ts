@@ -3,8 +3,8 @@ import { ObjectId } from "mongodb";
 import { Document } from "mongoose";
 
 import {
-    addUserAsCollaborator,
     createProject,
+    updateProject,
     viewOwnerProjects,
     viewSingleOwnerProject
 } from "../services";
@@ -89,37 +89,33 @@ export const viewSingleOwnerProjectController = viewSingleOwnerProjectController
     viewSingleOwnerProject
 );
 
-export interface AddUserControllerParamDefinition {
+export interface AddCollaboratorsArgsInterface {
     owner: ObjectId;
     projectId: ObjectId;
     collaboratorEmail: string;
 }
-export const addUserAsCollaboratorControllerDefinition = (
-    addUser: (
-        addUserControllerArgs: AddUserControllerParamDefinition
-    ) => Promise<Document>
+export const addCollaboratorsController = async (
+    req: IRequest,
+    res: Response,
+    next: NextFunction
 ) => {
-    return async (req: IRequest, res: Response, next: NextFunction) => {
-        try {
-            const { id } = req.currentUser as UsersModelInterface;
-            const { projectId, collaboratorEmail } = req.body;
-            const project = await addUser({
-                owner: id as ObjectId,
-                projectId,
-                collaboratorEmail
-            });
-            return res.status(200).send({
-                message: "user successfull added to project as collaborator",
-                data: {
-                    project
-                }
-            });
-        } catch (err) {
-            next(err);
-        }
-    };
+    try {
+        const { id } = req.currentUser as UsersModelInterface;
+        const { projectId } = req.params;
+        const project = updateProject(
+            req.body as any,
+            projectId,
+            id as ObjectId,
+            "addCollaborators",
+            "collaborators"
+        );
+        return res.status(200).send({
+            message: "user successfull added to project as collaborator",
+            data: {
+                project
+            }
+        });
+    } catch (err) {
+        next(err);
+    }
 };
-
-export const addUserAsCollaboratorController = addUserAsCollaboratorControllerDefinition(
-    addUserAsCollaborator
-);

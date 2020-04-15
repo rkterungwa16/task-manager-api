@@ -10,9 +10,12 @@ class ProjectsSchema {
     static get schema() {
         return new Schema(
             {
-                name: {
+                title: {
                     type: String,
                     required: true
+                },
+                description: {
+                    type: String
                 },
                 owner: {
                     type: ObjectID,
@@ -25,6 +28,23 @@ class ProjectsSchema {
                 collaborators: {
                     type: [ObjectId],
                     ref: "Users"
+                },
+                visibility: {
+                    type: String,
+                    enum: [ "PRIVATE", "PUBLIC"],
+                    default: "PUBLIC"
+                },
+                deleted: {
+                    type: Boolean,
+                    default: false
+                },
+                archived: {
+                    type: Boolean,
+                    default: false
+                },
+                favourite: {
+                    type: Boolean,
+                    default: false
                 }
             },
             {

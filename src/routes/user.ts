@@ -9,7 +9,6 @@ import {
     authenticateMiddleware,
     validateLoginInputs,
     validateRegistrationInputs,
-    validateUserEditInputs
 } from "../middlewares";
 
 const router = express.Router();
@@ -20,7 +19,6 @@ router
     .route("/users")
     .put(
         authenticateMiddleware,
-        validateUserEditInputs,
         editUserController
     );
 
