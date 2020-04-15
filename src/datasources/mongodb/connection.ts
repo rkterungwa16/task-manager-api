@@ -15,13 +15,10 @@ const databaseConnectionStartup = createAppLogger(
 
 export const connect = (): Connection => {
     const env = process.env.NODE_ENV as string;
-    mongoose.connect(
-        databaseConfig[env].databaseUri,
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        }
-    );
+    mongoose.connect(databaseConfig[env].databaseUri, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    });
 
     return mongoose.connection.once("open", () => {
         databaseConnectionStartup.log({

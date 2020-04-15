@@ -19,5 +19,5 @@ const requiredRegistrationInputs = {
 
 export const validateRegistrationInputs = validate(
     error,
-    requiredRegistrationInputs,
+    requiredRegistrationInputs
 );

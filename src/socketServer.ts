@@ -5,4 +5,4 @@ export const initSocketServer = (server: any) => {
         httpServer: server.listen(8000),
         autoAcceptConnections: false
     });
-}
+};

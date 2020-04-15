@@ -39,9 +39,8 @@ export interface UpdateProjectUtilsInterface {
         collaboratorsEmails: string[],
         user: Model<Document>,
         userCollaborators: UsersModelInterface[]
-    ) => Promise<boolean | UsersModelInterface[]>
+    ) => Promise<boolean | UsersModelInterface[]>;
 }
-
 
 export const projectDbUpdate = async (
     projectUpdateDetails: ProjectDbUpdateInterface
@@ -64,35 +63,28 @@ export const projectDbUpdate = async (
             .populate("collaborators", "-password -salt")
             .exec()) as ProjectsModelInterface;
     } catch (err) {
-        throw error(
-            500,
-            "Could not update project",
-            "Project"
-        );
+        throw error(500, "Could not update project", "Project");
     }
-}
+};
 
 export const projectExists = async (
     owner: ObjectId,
     projectId: string,
     project: Model<Document>
 ): Promise<ProjectsModelInterface> => {
-    const userProject = (await project.findOne({
-        owner,
-        _id: projectId
-    })
+    const userProject = (await project
+        .findOne({
+            owner,
+            _id: projectId
+        })
         .populate("owner", "-password -salt")
         .populate("collaborators", "-password -salt")
         .exec()) as ProjectsModelInterface;
     if (!userProject) {
-        throw error(
-            400,
-            "Project does not exist",
-            "Add user To Project"
-        );
+        throw error(400, "Project does not exist", "Add user To Project");
     }
     return userProject;
-}
+};
 
 export const hasValidProjectProperties = (
     projectReqProps: string[],
@@ -100,13 +92,9 @@ export const hasValidProjectProperties = (
 ): boolean => {
     for (const prop of projectReqProps) {
         if (!projectProps.includes(prop)) {
-            throw error(
-                422,
-                "Use valid project properties",
-                "Project"
-            );
+            throw error(422, "Use valid project properties", "Project");
         }
     }
 
     return true;
-}
+};

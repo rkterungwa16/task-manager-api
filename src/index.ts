@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
 import { createAppLogger } from "./middlewares";
 import { init } from "./server";
-import { socketSetup } from "./services/socket"
+import { socketSetup } from "./services/socket";
 import { initSocketServer } from "./socketServer";
 
 dotenv.config();

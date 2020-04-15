@@ -1,12 +1,9 @@
 import { ObjectId } from "mongodb";
 import { Document, Model } from "mongoose";
-import { CustomError, error, } from "../..";
+import { CustomError, error } from "../..";
 import { Users } from "../../../models";
 import { UsersModelInterface } from "../../../types";
-import {
-    hashPassword,
-    saltPassword
-} from "../../password";
+import { hashPassword, saltPassword } from "../../password";
 
 export interface UserEditFieldsInterface {
     userId: ObjectId;
@@ -30,24 +27,28 @@ export interface EditUserParameterInterface {
         project: ObjectId
     ) => ObjectId[];
     hashPassword: (password: string, salt: string) => Promise<string>;
-    saltPassword: () => Promise<string>
+    saltPassword: () => Promise<string>;
 }
 
 export const editUserDefinition = (
     editUserArgs: EditUserParameterInterface
 ): ((credentials: UserEditFieldsInterface) => Promise<Document>) => {
     return async (credentials: UserEditFieldsInterface) => {
-
         try {
             const salt = await editUserArgs.saltPassword();
             const { userId } = credentials;
-            const userDetails = await editUserArgs.user.findById(userId) as UsersModelInterface;
+            const userDetails = (await editUserArgs.user.findById(
+                userId
+            )) as UsersModelInterface;
             delete credentials.userId;
             const updateDetails = {
                 ...(credentials.name && { name: credentials.name }),
                 ...(credentials.email && { email: credentials.email }),
                 ...(credentials.password && {
-                    password: await editUserArgs.hashPassword(credentials.password, salt)
+                    password: await editUserArgs.hashPassword(
+                        credentials.password,
+                        salt
+                    )
                 }),
                 ...(credentials.password && {
                     salt
@@ -56,22 +57,19 @@ export const editUserDefinition = (
                     resetPasswordToken: credentials.resetPasswordToken
                 }),
                 ...(credentials.collaborationInviteStatus && {
-                    collaborationInviteStatus: credentials.collaborationInviteStatus
+                    collaborationInviteStatus:
+                        credentials.collaborationInviteStatus
                 }),
                 ...(credentials.favoriteProject && {
                     favoriteProjects: modifyFavorites(
-                        userDetails.favoriteProjects as ObjectId[] ,
+                        userDetails.favoriteProjects as ObjectId[],
                         credentials.favoriteProject
                     )
                 })
             };
 
             let user = (await editUserArgs.user
-                .findByIdAndUpdate(
-                    userId,
-                    {  ...updateDetails },
-                    { new: true }
-                )
+                .findByIdAndUpdate(userId, { ...updateDetails }, { new: true })
                 .populate("favoriteProjects", "-password -salt")
                 .exec()) as UsersModelInterface;
             user = user.toObject();
@@ -86,7 +84,7 @@ export const editUserDefinition = (
             );
         }
     };
-}
+};
 
 export const modifyFavorites = (
     projects: ObjectId[],
@@ -94,10 +92,10 @@ export const modifyFavorites = (
 ): ObjectId[] => {
     const isFavorite = projects.includes(project);
     if (isFavorite) {
-        return projects.filter((id) => id !== project);
+        return projects.filter(id => id !== project);
     }
     return [...projects, project];
-}
+};
 
 export const editUser = editUserDefinition({
     user: Users,

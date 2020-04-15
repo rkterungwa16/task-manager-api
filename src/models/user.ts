@@ -33,7 +33,7 @@ class UsersSchema {
                 favoriteProjects: {
                     type: [ObjectId],
                     ref: "Projects"
-                },
+                }
             },
             {
                 timestamps: true

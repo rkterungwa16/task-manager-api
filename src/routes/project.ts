@@ -6,10 +6,7 @@ import {
     viewOwnerProjectsController,
     viewSingleOwnerProjectController
 } from "../controller";
-import {
-    authenticateMiddleware,
-    validateProjectInputs
-} from "../middlewares";
+import { authenticateMiddleware, validateProjectInputs } from "../middlewares";
 
 const router = express.Router();
 
@@ -28,9 +25,6 @@ router
 
 router
     .route("/projects/:projectId/collaborators/add")
-    .put(
-        authenticateMiddleware,
-        addCollaboratorsController
-    );
+    .put(authenticateMiddleware, addCollaboratorsController);
 
 export default router;

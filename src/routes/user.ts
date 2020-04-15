@@ -8,18 +8,13 @@ import {
 import {
     authenticateMiddleware,
     validateLoginInputs,
-    validateRegistrationInputs,
+    validateRegistrationInputs
 } from "../middlewares";
 
 const router = express.Router();
 
 router.post("/register", validateRegistrationInputs, registerController);
 router.post("/login", validateLoginInputs, loginController);
-router
-    .route("/users")
-    .put(
-        authenticateMiddleware,
-        editUserController
-    );
+router.route("/users").put(authenticateMiddleware, editUserController);
 
 export default router;

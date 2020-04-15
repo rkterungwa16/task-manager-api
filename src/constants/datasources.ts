@@ -3,7 +3,7 @@ dotenv.config();
 export interface DatabaseConfigInterface {
     [x: string]: {
         databaseUri: string;
-    }
+    };
     production: {
         databaseUri: string;
     };

@@ -1,16 +1,13 @@
 import { Document, Model } from "mongoose";
 
-import { CustomError, error, } from "../..";
+import { CustomError, error } from "../..";
 import { Users } from "../../../models";
 import {
     AuthenticatedUserCredentialInterface,
     CreatedUserCredentialInterface,
     UsersModelInterface
 } from "../../../types";
-import {
-    hashPassword,
-    saltPassword
-} from "../../password";
+import { hashPassword, saltPassword } from "../../password";
 
 import { signJwt } from "../../jwt";
 import { comparePassword } from "../../password";
@@ -24,7 +21,7 @@ export interface CreateUserParameterInterface {
     ) => CustomError;
     findUserByEmail: (email: string) => Promise<boolean | Document>;
     hashPassword: (password: string, salt: string) => Promise<string>;
-    saltPassword: () => Promise<string>
+    saltPassword: () => Promise<string>;
 }
 
 // TODO: split into two for testing purpose 1: findUserByEmailDefinition 2: findUserByEmail
@@ -49,11 +46,14 @@ export const createUserDefinition = (
         );
         if (!userExists) {
             const salt = await createUserArgs.saltPassword();
-            const hashedPassword = await createUserArgs.hashPassword(credentials.password as string, salt);
+            const hashedPassword = await createUserArgs.hashPassword(
+                credentials.password as string,
+                salt
+            );
             return await createUserArgs.user.create({
                 ...credentials,
                 salt,
-                password: hashedPassword,
+                password: hashedPassword
             });
         }
         throw createUserArgs.createUserError(
@@ -72,7 +72,7 @@ export const createUser = createUserDefinition({
     findUserByEmail,
     hashPassword,
     saltPassword
-})
+});
 
 export interface AuthenticationParameterInterface {
     authenticateUserError: (
@@ -125,13 +125,16 @@ export const authenticateUserDefinition = (
             );
         }
 
-        return await signToken({
-            name: userExists.name,
-            email: userExists.email,
-            id: userExists._id
-        }, "24h");
+        return await signToken(
+            {
+                name: userExists.name,
+                email: userExists.email,
+                id: userExists._id
+            },
+            "24h"
+        );
     };
-}
+};
 
 export const authenticateUser = authenticateUserDefinition({
     compareUserPassword: comparePassword,

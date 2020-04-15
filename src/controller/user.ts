@@ -6,7 +6,7 @@ import {
     authenticateUser,
     createUser,
     editUser,
-    UserEditFieldsInterface,
+    UserEditFieldsInterface
 } from "../services";
 import { IRequest } from "../types";
 import {
@@ -16,7 +16,9 @@ import {
 } from "../types";
 
 export const registerControllerDefinition = (
-    registerUser: (credentials: CreatedUserCredentialInterface) => Promise<Document>
+    registerUser: (
+        credentials: CreatedUserCredentialInterface
+    ) => Promise<Document>
 ) => {
     return async (req: IRequest, res: Response, next: NextFunction) => {
         try {
@@ -39,12 +41,12 @@ export const registerControllerDefinition = (
     };
 };
 
-export const registerController = registerControllerDefinition(
-    createUser
-);
+export const registerController = registerControllerDefinition(createUser);
 
 export const loginControllerDefinition = (
-    loginUser: (credentials: AuthenticatedUserCredentialInterface) => Promise<string>
+    loginUser: (
+        credentials: AuthenticatedUserCredentialInterface
+    ) => Promise<string>
 ) => {
     return async (req: IRequest, res: Response, next: NextFunction) => {
         try {
@@ -87,7 +89,4 @@ export const editUserControllerDefinition = (
     };
 };
 
-export const editUserController = editUserControllerDefinition(
-    editUser
-);
-
+export const editUserController = editUserControllerDefinition(editUser);

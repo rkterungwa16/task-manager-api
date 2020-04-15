@@ -31,7 +31,7 @@ class ProjectsSchema {
                 },
                 visibility: {
                     type: String,
-                    enum: [ "PRIVATE", "PUBLIC"],
+                    enum: ["PRIVATE", "PUBLIC"],
                     default: "PUBLIC"
                 },
                 deleted: {

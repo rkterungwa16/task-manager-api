@@ -30,7 +30,7 @@ export const validate = (
                 400,
                 "inputs must not be empty",
                 "Input Validation Error"
-            )
+            );
         }
         // flexible fields. If it contains email or password validate properly
         if (requiredProperties) {

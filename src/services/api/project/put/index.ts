@@ -6,7 +6,7 @@ import { projectProperties, Visibility } from "../../../../constants";
 import { Projects, Users } from "../../../../models";
 import { ProjectsModelInterface, UsersModelInterface } from "../../../../types";
 import { addCollaborators } from "./collaborators";
-import { hasValidProjectProperties, projectExists,  } from "./helpers";
+import { hasValidProjectProperties, projectExists } from "./helpers";
 
 export interface UserAsCollaboratorParameterInterface {
     owner: string | ObjectId;
@@ -23,7 +23,6 @@ export interface CollaboratorParameterInterface {
     ) => CustomError;
 }
 
-
 export interface UpdateRequestObject {
     title?: string;
     description?: string;
@@ -38,7 +37,9 @@ export interface UpdateRequestObject {
 }
 
 interface UpdateInterface {
-    [x: string]: (action: string) => (
+    [x: string]: (
+        action: string
+    ) => (
         projectProp: any,
         projectId: string,
         owner: ObjectId,
@@ -51,22 +52,19 @@ interface UpdateActionsInterface {
         projectId: string,
         owner: ObjectId,
         ownerProject: ProjectsModelInterface
-    ) => Promise<any>
+    ) => Promise<any>;
 }
 
 const update = {
-    collaborator (action: string) {
+    collaborator(action: string) {
         const actions = {
-            addCollaborators,
+            addCollaborators
         } as UpdateActionsInterface;
-        return actions[action]
-    },
+        return actions[action];
+    }
     // favourites: "",
     // tasks: "",
 } as UpdateInterface;
-
-
-
 
 export interface UpdateProjectUtilsInterface {
     project: Model<Document>;
@@ -90,7 +88,7 @@ export const updateProject = ((
         projectExists: exists,
         hasValidProperties,
         project,
-        user,
+        user
     } = updateProjectUtils;
     return async (
         projectRequestDetails: UpdateRequestObject,
@@ -102,10 +100,11 @@ export const updateProject = ((
         const requestProperties = Object.keys(projectRequestDetails);
         hasValidProperties(requestProperties, projectProperties);
         const ownerDetail = (await user.findById(owner)) as UsersModelInterface;
-        const ownerProject = await exists(
+        const ownerProject = (await exists(
             ownerDetail.id as ObjectId,
-            projectId, project
-        ) as ProjectsModelInterface;
+            projectId,
+            project
+        )) as ProjectsModelInterface;
 
         const updatedProject = update[projectUpdateProp](projectUpdateAction);
         return await updatedProject(
@@ -114,10 +113,10 @@ export const updateProject = ((
             ownerDetail.id as ObjectId,
             ownerProject
         );
-    }
+    };
 })({
     project: Projects,
     user: Users,
     projectExists,
-    hasValidProperties: hasValidProjectProperties,
-})
+    hasValidProperties: hasValidProjectProperties
+});
