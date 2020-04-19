@@ -67,3 +67,32 @@ export const editDescriptionController = async (
         next(err);
     }
 };
+
+export interface EditTitleArgsInterface extends EditProjectArgsInterface {
+    title: string;
+}
+export const editTitleController = async (
+    req: IRequest,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { id } = req.currentUser as UsersModelInterface;
+        const { projectId } = req.params;
+        const project = updateProject(
+            req.body as any,
+            projectId,
+            id as ObjectId,
+            "editTitle",
+            "title"
+        );
+        return res.status(200).send({
+            message: "user successfully edited project title",
+            data: {
+                project
+            }
+        });
+    } catch (err) {
+        next(err);
+    }
+};

@@ -5,8 +5,11 @@ import { CustomError } from "../../..";
 import { projectProperties, Visibility } from "../../../../constants";
 import { Projects, Users } from "../../../../models";
 import { ProjectsModelInterface, UsersModelInterface } from "../../../../types";
-import { addCollaborators } from "./collaborators";
-import { editDescription } from "./description";
+import {
+    addCollaborators,
+    editDescription,
+    editTitle
+} from "./actions";
 import { hasValidProjectProperties, projectExists } from "./helpers";
 
 export interface UserAsCollaboratorParameterInterface {
@@ -56,17 +59,20 @@ interface UpdateActionsInterface {
     ) => Promise<any>;
 }
 
+const actions = {
+    addCollaborators,
+    editDescription,
+    editTitle
+} as UpdateActionsInterface;
+
 const update = {
     collaborator(action: string) {
-        const actions = {
-            addCollaborators
-        } as UpdateActionsInterface;
         return actions[action];
     },
     description(action: string) {
-        const actions = {
-            editDescription
-        } as UpdateActionsInterface;
+        return actions[action];
+    },
+    title(action: string) {
         return actions[action];
     }
     // favourites: "",

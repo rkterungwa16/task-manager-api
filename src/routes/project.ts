@@ -3,6 +3,8 @@ import express from "express";
 import {
     addCollaboratorsController,
     createProjectController,
+    editDescriptionController,
+    editTitleController,
     viewOwnerProjectsController,
     viewSingleOwnerProjectController
 } from "../controller";
@@ -26,5 +28,13 @@ router
 router
     .route("/projects/:projectId/collaborators/add")
     .put(authenticateMiddleware, addCollaboratorsController);
+
+router
+    .route("/projects/:projectId/description")
+    .put(authenticateMiddleware, editDescriptionController);
+
+router
+    .route("/projects/:projectId/title")
+    .put(authenticateMiddleware, editTitleController);
 
 export default router;

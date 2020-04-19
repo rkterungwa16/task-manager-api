@@ -13,10 +13,10 @@ export const createProjectControllerDefinition = (
 ) => {
     return async (req: IRequest, res: Response, next: NextFunction) => {
         try {
-            const { name, description, color } = req.body;
+            const { title, description, color } = req.body;
             const { id } = req.currentUser as UsersModelInterface;
             const project = await createUserProject({
-                name,
+                title,
                 description,
                 color,
                 owner: id

@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import { Document } from "mongoose";
 
 export interface ProjectsModelInterface extends Document {
-    name: string;
+    title: string;
     description?: string;
     color?: string;
     owner: ObjectId;

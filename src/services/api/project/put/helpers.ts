@@ -1,45 +1,16 @@
-import { ObjectId, ObjectID } from "mongodb";
+import { ObjectId } from "mongodb";
 import { Document, Model } from "mongoose";
 
-import { error } from "../../..";
-import { baseUrl, projectProperties, Visibility } from "../../../../constants";
-import { Projects, Users } from "../../../../models";
+import { baseUrl } from "../../../../constants";
 import { ProjectsModelInterface, UsersModelInterface } from "../../../../types";
+
+import { error, signJwt } from "../../..";
+import { sendMail } from "../../../email";
 
 export interface ProjectDbUpdateInterface {
     projectId: string;
     projectUpdateValues: ProjectsModelInterface;
     project: Model<Document>;
-}
-
-export interface UpdateProjectUtilsInterface {
-    project: Model<Document>;
-    user: Model<Document>;
-    hasValidProperties: (
-        projectReqProps: string[],
-        projectProps: string[]
-    ) => boolean;
-
-    projectDbUpdate: (
-        projectUpdateDetails: ProjectDbUpdateInterface
-    ) => Promise<ProjectsModelInterface>;
-
-    projectExists: (
-        owner: UsersModelInterface,
-        projectId: string,
-        project: Model<Document>
-    ) => Promise<ProjectsModelInterface>;
-
-    sendEmails: (
-        ownerDetails: UsersModelInterface,
-        collaboratorsEmail: string[]
-    ) => Promise<boolean>;
-
-    createNonExistingUsers: (
-        collaboratorsEmails: string[],
-        user: Model<Document>,
-        userCollaborators: UsersModelInterface[]
-    ) => Promise<boolean | UsersModelInterface[]>;
 }
 
 export const projectDbUpdate = async (
@@ -104,4 +75,117 @@ export const hasValidProjectProperties = (
     }
 
     return true;
+};
+
+// ==================================================================================
+// COLLABORATOR HELPERS
+// ==================================================================================
+export interface MessageHtmlContentParameterInterface {
+    name: string;
+    linkBaseUrl: string;
+    token: string;
+}
+
+const emailMessageHtmlContent = (
+    htmlDetails: MessageHtmlContentParameterInterface
+): string => {
+    const { name, linkBaseUrl, token } = htmlDetails;
+    return `
+    <h3>${name} just added you to ${name} project in Task Manager</h3>
+    Click on this link to login with your password and continue.
+    <a href='${linkBaseUrl}collaborator-invite/${token}'>Login</a>
+    `;
+};
+
+export const sendCollaboratorsInviteEmails = async (
+    ownerDetails: UsersModelInterface,
+    collaboratorsEmail: string[]
+): Promise<boolean> => {
+    let emailSent = [] as Array<Promise<any>>;
+
+    for (const email of collaboratorsEmail) {
+        const token = await signJwt({ email }, "1h");
+        const messageHtmlContent = emailMessageHtmlContent({
+            name: ownerDetails.name as string,
+            linkBaseUrl: baseUrl,
+            token
+        });
+        const messageSubject = "Task Manager Project Collaboration invite";
+
+        emailSent = emailSent.concat([
+            sendMail({
+                senderEmail: ownerDetails.email as string,
+                recieverEmail: email,
+                recieverName: "",
+                messageHtmlContent,
+                messageSubject
+            })
+        ]);
+    }
+    await Promise.all(emailSent);
+    return true;
+};
+
+export const createNonExistingUsers = async (
+    collaboratorsEmails: string[],
+    user: Model<Document>,
+    registeredCollaborators: UsersModelInterface[] = []
+): Promise<boolean | UsersModelInterface[]> => {
+    try {
+        let nonRegisteredCollaborators;
+        if (registeredCollaborators.length) {
+            nonRegisteredCollaborators = collaboratorsEmails.filter(
+                collaborator => {
+                    const collaboratorIsRegistered = registeredCollaborators.find(
+                        userCollaborator => {
+                            const email = userCollaborator.email as string;
+                            return email === collaborator;
+                        }
+                    );
+                    return !collaboratorIsRegistered;
+                }
+            ) as any[];
+
+            nonRegisteredCollaborators = nonRegisteredCollaborators.map(
+                email => {
+                    return {
+                        email,
+                        collaborationInviteStatus: "pending"
+                    };
+                }
+            ) as Array<{
+                email: string;
+                collaborationInviteStatus: string;
+            }>;
+
+            return await user.create(nonRegisteredCollaborators);
+        }
+
+        if (!registeredCollaborators.length) {
+            nonRegisteredCollaborators = collaboratorsEmails.map(email => {
+                return {
+                    email,
+                    collaborationInviteStatus: "pending"
+                };
+            }) as Array<{
+                email: string;
+                collaborationInviteStatus: string;
+            }>;
+
+            return await user.create(nonRegisteredCollaborators);
+        }
+
+        return false;
+    } catch (err) {
+        throw error(500, "Could not create users", "Project");
+    }
+};
+
+export const confirmExistingCollaborators = (
+    projectCollaboratorIds: ObjectId[],
+    invitedCollaboratorIds: ObjectId[]
+): boolean => {
+    return invitedCollaboratorIds.every(invitedCollaborator => {
+        return projectCollaboratorIds.includes(invitedCollaborator);
+    });
 };
