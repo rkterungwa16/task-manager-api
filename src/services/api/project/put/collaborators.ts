@@ -1,12 +1,12 @@
-import { ObjectId, ObjectID } from "mongodb";
+import { ObjectId } from "mongodb";
 import { Document, Model } from "mongoose";
 
-import { CustomError, EmailDetailsInterface, error, signJwt } from "../../..";
-import { baseUrl, projectProperties, Visibility } from "../../../../constants";
+import { error, signJwt } from "../../..";
+import { baseUrl } from "../../../../constants";
 import { Projects, Users } from "../../../../models";
 import { ProjectsModelInterface, UsersModelInterface } from "../../../../types";
 import { sendMail } from "../../../email";
-import { projectDbUpdate, ProjectDbUpdateInterface } from "./helpers";
+import { projectDbUpdate } from "./helpers";
 
 export interface MessageHtmlContentParameterInterface {
     name: string;
@@ -121,8 +121,8 @@ const confirmExistingCollaborators = (
 export const addCollaborators = async (
     collaboratorEmails: string[],
     projectId: string,
-    owner: ObjectId,
-    ownerProject: ProjectsModelInterface
+    ownerProject: ProjectsModelInterface,
+    owner: ObjectId
 ): Promise<any> => {
     let updatedProject;
     // TODO: check number of collaborator emails should not exceed 5;
@@ -184,7 +184,7 @@ export const addCollaborators = async (
         if (hasExistingCollaborators) {
             throw error(
                 422,
-                "Some users already collaborators",
+                "Some users are already collaborators",
                 "Project update"
             );
         }
@@ -197,26 +197,28 @@ export const addCollaborators = async (
             collaborators: collaboratorsIds
         } as ProjectsModelInterface;
 
-        updatedProject = await projectDbUpdate({
-            project: Projects,
-            projectId,
-            projectUpdateValues: ownerProject
-        });
-        sendCollaboratorsInviteEmails(
-            ownerDetail,
-            collaboratorEmails as string[]
-        );
-        return updatedProject;
+        // updatedProject = await projectDbUpdate({
+        //     project: Projects,
+        //     projectId,
+        //     projectUpdateValues: ownerProject
+        // });
+        // sendCollaboratorsInviteEmails(
+        //     ownerDetail,
+        //     collaboratorEmails as string[]
+        // );
+        // return updatedProject;
     }
 
-    registeredCollaboratorsIds = [
-        ...(ownerProject.collaborators as ObjectId[]),
-        ...registeredCollaboratorsIds
-    ];
-    ownerProject = {
-        ...ownerProject,
-        collaborators: registeredCollaboratorsIds
-    } as ProjectsModelInterface;
+    if (!newlyCreatedUsers) {
+        registeredCollaboratorsIds = [
+            ...(ownerProject.collaborators as ObjectId[]),
+            ...registeredCollaboratorsIds
+        ];
+        ownerProject = {
+            ...ownerProject,
+            collaborators: registeredCollaboratorsIds
+        } as ProjectsModelInterface;
+    }
 
     updatedProject = await projectDbUpdate({
         project: Projects,

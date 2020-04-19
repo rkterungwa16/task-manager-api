@@ -42,16 +42,16 @@ interface UpdateInterface {
     ) => (
         projectProp: any,
         projectId: string,
-        owner: ObjectId,
-        ownerProject: ProjectsModelInterface
+        ownerProject: ProjectsModelInterface,
+        owner?: ObjectId
     ) => Promise<any>;
 }
 interface UpdateActionsInterface {
     [x: string]: (
         collaboratorEmails: string[],
         projectId: string,
-        owner: ObjectId,
-        ownerProject: ProjectsModelInterface
+        ownerProject: ProjectsModelInterface,
+        owner?: ObjectId
     ) => Promise<any>;
 }
 
@@ -71,7 +71,8 @@ export interface UpdateProjectUtilsInterface {
     user: Model<Document>;
     hasValidProperties: (
         projectReqProps: string[],
-        projectProps: string[]
+        projectProps: string[],
+        projectUpdateProp: string
     ) => boolean;
 
     projectExists: (
@@ -98,7 +99,11 @@ export const updateProject = ((
         projectUpdateProp: string
     ): Promise<any> => {
         const requestProperties = Object.keys(projectRequestDetails);
-        hasValidProperties(requestProperties, projectProperties);
+        hasValidProperties(
+            requestProperties,
+            projectProperties,
+            projectUpdateProp
+        );
         const ownerDetail = (await user.findById(owner)) as UsersModelInterface;
         const ownerProject = (await exists(
             ownerDetail.id as ObjectId,
@@ -110,8 +115,8 @@ export const updateProject = ((
         return await updatedProject(
             projectRequestDetails[projectUpdateProp],
             projectId,
-            ownerDetail.id as ObjectId,
-            ownerProject
+            ownerProject,
+            ownerDetail.id as ObjectId
         );
     };
 })({
