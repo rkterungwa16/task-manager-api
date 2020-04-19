@@ -2,12 +2,8 @@ import { NextFunction, Response } from "express";
 import { ObjectId } from "mongodb";
 import { Document } from "mongoose";
 
-import {
-    viewOwnerProjects,
-    viewSingleOwnerProject
-} from "../../services";
-import { IRequest, UsersModelInterface  } from "../../types";
-
+import { viewOwnerProjects, viewSingleOwnerProject } from "../../services";
+import { IRequest, UsersModelInterface } from "../../types";
 
 export const viewOwnerProjectsControllerDefinition = (
     viewProjects: (owner: ObjectId) => Promise<Document[]>

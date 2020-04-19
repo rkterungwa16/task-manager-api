@@ -1,16 +1,15 @@
 import { NextFunction, Response } from "express";
 import { ObjectId } from "mongodb";
 
-import {
-    updateProject,
-} from "../../services";
+import { updateProject } from "../../services";
 import { IRequest, UsersModelInterface } from "../../types";
 
 export interface EditProjectArgsInterface {
     owner: ObjectId;
     projectId: ObjectId;
 }
-export interface AddCollaboratorsArgsInterface extends EditProjectArgsInterface {
+export interface AddCollaboratorsArgsInterface
+    extends EditProjectArgsInterface {
     collaboratorEmail: string;
 }
 export const addCollaboratorsController = async (
@@ -50,7 +49,7 @@ export const editDescriptionController = async (
     try {
         const { id } = req.currentUser as UsersModelInterface;
         const { projectId } = req.params;
-        const project = updateProject(
+        const project = await updateProject(
             req.body as any,
             projectId,
             id as ObjectId,
@@ -79,7 +78,7 @@ export const editTitleController = async (
     try {
         const { id } = req.currentUser as UsersModelInterface;
         const { projectId } = req.params;
-        const project = updateProject(
+        const project = await updateProject(
             req.body as any,
             projectId,
             id as ObjectId,

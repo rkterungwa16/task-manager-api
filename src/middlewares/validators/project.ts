@@ -3,7 +3,7 @@ import { validateString } from "./helpers";
 import { validate } from "./validator";
 
 const requiredProjectInputs = {
-    name: {
+    title: {
         type: "text",
         validateMethod: validateString
     }

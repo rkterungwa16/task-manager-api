@@ -22,7 +22,7 @@ export const projectDbUpdate = async (
             project,
             projectUpdateValues
         } = projectUpdateDetails;
-        return (await project
+        const updatedProject = (await project
             .findByIdAndUpdate(
                 projectId,
                 {
@@ -33,6 +33,7 @@ export const projectDbUpdate = async (
             .populate("owner", "-password -salt")
             .populate("collaborators", "-password -salt")
             .exec()) as ProjectsModelInterface;
+        return updatedProject;
     } catch (err) {
         throw error(500, "Could not update project", "Project");
     }
@@ -43,18 +44,22 @@ export const projectExists = async (
     projectId: string,
     project: Model<Document>
 ): Promise<ProjectsModelInterface> => {
-    const userProject = (await project
-        .findOne({
-            owner,
-            _id: projectId
-        })
-        .populate("owner", "-password -salt")
-        .populate("collaborators", "-password -salt")
-        .exec()) as ProjectsModelInterface;
-    if (!userProject) {
+    try {
+        const userProject = (await project
+            .findOne({
+                owner,
+                _id: projectId
+            })
+            .populate("owner", "-password -salt")
+            .populate("collaborators", "-password -salt")
+            .exec()) as ProjectsModelInterface;
+        if (!userProject) {
+            throw error(400, "Project does not exist", "Add user To Project");
+        }
+        return userProject.toObject();
+    } catch (err) {
         throw error(400, "Project does not exist", "Add user To Project");
     }
-    return userProject;
 };
 
 export const hasValidProjectProperties = (

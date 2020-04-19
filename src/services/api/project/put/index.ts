@@ -5,11 +5,7 @@ import { CustomError } from "../../..";
 import { projectProperties, Visibility } from "../../../../constants";
 import { Projects, Users } from "../../../../models";
 import { ProjectsModelInterface, UsersModelInterface } from "../../../../types";
-import {
-    addCollaborators,
-    editDescription,
-    editTitle
-} from "./actions";
+import { addCollaborators, editDescription, editTitle } from "./actions";
 import { hasValidProjectProperties, projectExists } from "./helpers";
 
 export interface UserAsCollaboratorParameterInterface {
@@ -111,26 +107,35 @@ export const updateProject = ((
         projectUpdateAction: string,
         projectUpdateProp: string
     ): Promise<any> => {
-        const requestProperties = Object.keys(projectRequestDetails);
-        hasValidProperties(
-            requestProperties,
-            projectProperties,
-            projectUpdateProp
-        );
-        const ownerDetail = (await user.findById(owner)) as UsersModelInterface;
-        const ownerProject = (await exists(
-            ownerDetail.id as ObjectId,
-            projectId,
-            project
-        )) as ProjectsModelInterface;
+        try {
+            const requestProperties = Object.keys(projectRequestDetails);
+            hasValidProperties(
+                requestProperties,
+                projectProperties,
+                projectUpdateProp
+            );
+            const ownerDetail = (await user.findById(
+                owner
+            )) as UsersModelInterface;
+            const ownerProject = (await exists(
+                ownerDetail.id as ObjectId,
+                projectId,
+                project
+            )) as ProjectsModelInterface;
 
-        const updatedProject = update[projectUpdateProp](projectUpdateAction);
-        return await updatedProject(
-            projectRequestDetails[projectUpdateProp],
-            projectId,
-            ownerProject,
-            ownerDetail.id as ObjectId
-        );
+            const updateProjectAction = update[projectUpdateProp](
+                projectUpdateAction
+            );
+            const updatedProject = await updateProjectAction(
+                projectRequestDetails[projectUpdateProp],
+                projectId,
+                ownerProject,
+                ownerDetail.id as ObjectId
+            );
+            return updatedProject;
+        } catch (err) {
+            throw err;
+        }
     };
 })({
     project: Projects,

@@ -1,0 +1,8 @@
+{
+    "watch": [
+        "src"
+    ],
+    "restartable": "rs",
+    "exec": "cross-env NODE_ENV=development ts-node src/",
+    "ext": "ts"
+}

@@ -1,10 +1,12 @@
 import { NextFunction, Response } from "express";
 import { Document } from "mongoose";
 
+import { createProject } from "../../services";
 import {
-    createProject,
-} from "../../services";
-import { IRequest, ProjectsModelInterface, UsersModelInterface } from "../../types";
+    IRequest,
+    ProjectsModelInterface,
+    UsersModelInterface
+} from "../../types";
 
 export const createProjectControllerDefinition = (
     createUserProject: (

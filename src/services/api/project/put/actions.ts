@@ -158,4 +158,3 @@ export const addCollaborators = async (
     sendCollaboratorsInviteEmails(ownerDetail, collaboratorEmails as string[]);
     return updatedProject;
 };
-
