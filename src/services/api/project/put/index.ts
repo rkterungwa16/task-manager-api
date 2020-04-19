@@ -6,6 +6,7 @@ import { projectProperties, Visibility } from "../../../../constants";
 import { Projects, Users } from "../../../../models";
 import { ProjectsModelInterface, UsersModelInterface } from "../../../../types";
 import { addCollaborators } from "./collaborators";
+import { editDescription } from "./description";
 import { hasValidProjectProperties, projectExists } from "./helpers";
 
 export interface UserAsCollaboratorParameterInterface {
@@ -40,7 +41,7 @@ interface UpdateInterface {
     [x: string]: (
         action: string
     ) => (
-        projectProp: any,
+        projectPropName: any,
         projectId: string,
         ownerProject: ProjectsModelInterface,
         owner?: ObjectId
@@ -48,7 +49,7 @@ interface UpdateInterface {
 }
 interface UpdateActionsInterface {
     [x: string]: (
-        collaboratorEmails: string[],
+        projectPropValue: any,
         projectId: string,
         ownerProject: ProjectsModelInterface,
         owner?: ObjectId
@@ -59,6 +60,12 @@ const update = {
     collaborator(action: string) {
         const actions = {
             addCollaborators
+        } as UpdateActionsInterface;
+        return actions[action];
+    },
+    description(action: string) {
+        const actions = {
+            editDescription
         } as UpdateActionsInterface;
         return actions[action];
     }
