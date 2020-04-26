@@ -95,3 +95,61 @@ export const editTitleController = async (
         next(err);
     }
 };
+
+export interface FavouriteArgsInterface extends EditProjectArgsInterface {
+    title: string;
+}
+export const setProjectAsFavouriteController = async (
+    req: IRequest,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { id } = req.currentUser as UsersModelInterface;
+        const { projectId } = req.params;
+        const project = await updateProject(
+            req.body as any,
+            projectId,
+            id as ObjectId,
+            "setFavourite",
+            "isFavourite"
+        );
+        return res.status(200).send({
+            message: "user successfully set project as a favourite",
+            data: {
+                project
+            }
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+export interface ArchiveProjectArgsInterface extends EditProjectArgsInterface {
+    title: string;
+}
+export const archiveProjectController = async (
+    req: IRequest,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { id } = req.currentUser as UsersModelInterface;
+        const { projectId } = req.params;
+        const project = await updateProject(
+            req.body as any,
+            projectId,
+            id as ObjectId,
+            "archiveProject",
+            "isArchived"
+        );
+        return res.status(200).send({
+            message: "project is successfully archived",
+            data: {
+                project
+            }
+        });
+    } catch (err) {
+        next(err);
+    }
+};

@@ -2,9 +2,11 @@ import express from "express";
 
 import {
     addCollaboratorsController,
+    archiveProjectController,
     createProjectController,
     editDescriptionController,
     editTitleController,
+    setProjectAsFavouriteController,
     viewOwnerProjectsController,
     viewSingleOwnerProjectController
 } from "../controller";
@@ -36,5 +38,13 @@ router
 router
     .route("/projects/:projectId/title")
     .put(authenticateMiddleware, editTitleController);
+
+router
+    .route("/projects/:projectId/favourite")
+    .put(authenticateMiddleware, setProjectAsFavouriteController);
+
+router
+    .route("/projects/:projectId/archive")
+    .put(authenticateMiddleware, archiveProjectController);
 
 export default router;

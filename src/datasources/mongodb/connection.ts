@@ -13,7 +13,7 @@ const databaseConnectionStartup = createAppLogger(
     message: "Mongodb connection started"
 });
 
-export const connect = (): Connection => {
+export const connect = ((): Connection => {
     const env = process.env.NODE_ENV as string;
     mongoose.connect(databaseConfig[env].databaseUri, {
         useNewUrlParser: true,
@@ -26,4 +26,4 @@ export const connect = (): Connection => {
             message: "database successfully connected"
         });
     });
-};
+})();

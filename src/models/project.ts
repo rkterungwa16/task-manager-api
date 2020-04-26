@@ -34,15 +34,15 @@ class ProjectsSchema {
                     enum: ["PRIVATE", "PUBLIC"],
                     default: "PUBLIC"
                 },
-                deleted: {
+                isDeleted: {
                     type: Boolean,
                     default: false
                 },
-                archived: {
+                isArchived: {
                     type: Boolean,
                     default: false
                 },
-                favourite: {
+                isFavourite: {
                     type: Boolean,
                     default: false
                 }
@@ -54,7 +54,7 @@ class ProjectsSchema {
     }
 }
 
-export const Projects = mongooseConnection().model<ProjectsModelInterface>(
+export const Projects = mongooseConnection.model<ProjectsModelInterface>(
     "Projects",
     ProjectsSchema.schema
 );

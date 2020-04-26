@@ -4,13 +4,40 @@ export enum Visibility {
 }
 
 export const projectProperties = [
-    "title",
-    "description",
-    "owner",
-    "tasks",
-    "collaborators",
-    "visibility",
-    "deleted",
-    "archived",
-    "favourite"
+    {
+        label: "title",
+        type: "string"
+    },
+    {
+        label: "description",
+        type: "string"
+    },
+    {
+        label: "owner",
+        type: "string"
+    },
+    {
+        label: "tasks",
+        type: "array-string"
+    },
+    {
+        label: "collaborators",
+        type: "array-string"
+    },
+    {
+        label: "visibility",
+        type: "public|private"
+    },
+    {
+        label: "isDeleted",
+        type: "boolean"
+    },
+    {
+        label: "isArchived",
+        type: "boolean"
+    },
+    {
+        label: "isFavourite",
+        type: "boolean"
+    }
 ];

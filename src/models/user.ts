@@ -37,7 +37,7 @@ class UsersSchema {
     }
 }
 
-export const Users = mongooseConnection().model<UsersModelInterface>(
+export const Users = mongooseConnection.model<UsersModelInterface>(
     "Users",
     UsersSchema.schema
 );

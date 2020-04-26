@@ -63,13 +63,18 @@ export const projectExists = async (
 };
 
 export const hasValidProjectProperties = (
-    projectReqProps: string[],
-    projectProps: string[],
+    projectRequestDetails: {[x: string]: string},
+    projectProps: Array<{ [x: string]: string }>,
     projectUpdateProp: string
 ): boolean => {
     // check if request properties are amongst valid project project property
-    for (const prop of projectReqProps) {
-        if (!projectProps.includes(prop)) {
+    // make sure prop types are valid
+    const projectReqProps = Object.keys(projectRequestDetails);
+    for (const requestedProp of projectReqProps) {
+        const hasExpectedProp = projectProps.find((expectedProp) => {
+            return expectedProp.label === requestedProp;
+        })
+        if (!hasExpectedProp) {
             throw error(422, "Use valid project properties", "Project Update");
         }
     }

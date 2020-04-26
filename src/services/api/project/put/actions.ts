@@ -48,6 +48,67 @@ export const editTitle = async (
     return updatedProject;
 };
 
+export const setFavourite = async (
+    isFavourite: boolean,
+    projectId: string,
+    ownerProject: ProjectsModelInterface
+): Promise<any> => {
+    let updatedProject;
+    ownerProject = {
+        ...ownerProject,
+        isFavourite
+    } as ProjectsModelInterface;
+
+    updatedProject = await projectDbUpdate({
+        project: Projects,
+        projectId,
+        projectUpdateValues: ownerProject
+    });
+    return updatedProject;
+};
+
+export const archiveProject = async (
+    isArchived: boolean,
+    projectId: string,
+    ownerProject: ProjectsModelInterface
+): Promise<any> => {
+    let updatedProject;
+    ownerProject = {
+        ...ownerProject,
+        isArchived
+    } as ProjectsModelInterface;
+
+    updatedProject = await projectDbUpdate({
+        project: Projects,
+        projectId,
+        projectUpdateValues: ownerProject
+    });
+    return updatedProject;
+};
+
+export const deleteProject = async (
+    isDeleted: boolean,
+    projectId: string,
+    ownerProject: ProjectsModelInterface
+): Promise<any> => {
+    const { isDeleted: deleted } = ownerProject;
+    if (deleted) {
+        throw error(422, "Project already deleted", "Project delete");
+    }
+    let updatedProject;
+    ownerProject = {
+        ...ownerProject,
+        isDeleted
+    } as ProjectsModelInterface;
+
+    updatedProject = await projectDbUpdate({
+        project: Projects,
+        projectId,
+        projectUpdateValues: ownerProject
+    });
+    return updatedProject;
+};
+
 export const addCollaborators = async (
     collaboratorEmails: string[],
     projectId: string,

@@ -7,6 +7,9 @@ export interface ProjectsModelInterface extends Document {
     color?: string;
     owner: ObjectId;
     tasks?: ObjectId[];
+    isFavourite?: boolean;
+    isArchived?: boolean;
+    isDeleted?: boolean;
     collaborators?: ObjectId[];
     createdAt?: string;
     updatedAt?: string;

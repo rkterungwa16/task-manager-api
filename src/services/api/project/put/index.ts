@@ -5,7 +5,7 @@ import { CustomError } from "../../..";
 import { projectProperties, Visibility } from "../../../../constants";
 import { Projects, Users } from "../../../../models";
 import { ProjectsModelInterface, UsersModelInterface } from "../../../../types";
-import { addCollaborators, editDescription, editTitle } from "./actions";
+import * as projectActions from "./actions";
 import { hasValidProjectProperties, projectExists } from "./helpers";
 
 export interface UserAsCollaboratorParameterInterface {
@@ -30,9 +30,9 @@ export interface UpdateRequestObject {
     tasks?: string;
     collaborators?: string[];
     visibility?: Visibility;
-    deleted?: boolean;
-    archived?: boolean;
-    favourite?: boolean;
+    isDeleted?: boolean;
+    isArchived?: boolean;
+    isFavourite?: boolean;
     [x: string]: any;
 }
 
@@ -56,9 +56,11 @@ interface UpdateActionsInterface {
 }
 
 const actions = {
-    addCollaborators,
-    editDescription,
-    editTitle
+    addCollaborators: projectActions.addCollaborators,
+    editDescription: projectActions.editDescription,
+    editTitle: projectActions.editTitle,
+    setFavourite: projectActions.setFavourite,
+    archiveProject: projectActions.archiveProject
 } as UpdateActionsInterface;
 
 const update = {
@@ -70,8 +72,13 @@ const update = {
     },
     title(action: string) {
         return actions[action];
+    },
+    favourite(action: string) {
+        return actions[action];
+    },
+    archive(action: string) {
+        return actions[action];
     }
-    // favourites: "",
     // tasks: "",
 } as UpdateInterface;
 
@@ -79,8 +86,8 @@ export interface UpdateProjectUtilsInterface {
     project: Model<Document>;
     user: Model<Document>;
     hasValidProperties: (
-        projectReqProps: string[],
-        projectProps: string[],
+        projectReqProps: {[x: string]: string},
+        projectProps: Array<{[x: string]: string}>,
         projectUpdateProp: string
     ) => boolean;
 
@@ -110,7 +117,7 @@ export const updateProject = ((
         try {
             const requestProperties = Object.keys(projectRequestDetails);
             hasValidProperties(
-                requestProperties,
+                projectRequestDetails,
                 projectProperties,
                 projectUpdateProp
             );
