@@ -1,4 +1,4 @@
-import { Users } from "../src/models";
+import { Users } from "../../src/models";
 import user from "./fixtures/user.json";
 
 export const reset = () => {

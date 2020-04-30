@@ -115,7 +115,6 @@ export const updateProject = ((
         projectUpdateProp: string
     ): Promise<any> => {
         try {
-            const requestProperties = Object.keys(projectRequestDetails);
             hasValidProperties(
                 projectRequestDetails,
                 projectProperties,

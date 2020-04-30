@@ -12,22 +12,20 @@ export const signJwt = async (
     tokenDetails: any,
     expiryDuration: string | number
 ): Promise<string> => {
-    const token = await sign(tokenDetails, jwtSecret as string, {
-        expiresIn: expiryDuration
-    });
-    return token;
+    try {
+        return await sign(tokenDetails, jwtSecret as string, {
+            expiresIn: expiryDuration
+        });
+    } catch (err) {
+        throw error(400, err.message, err.name);
+    }
 };
 
-export const verifyJwtDefinition = (
-    jwtError: (statusCode: number, message: string, name: string) => CustomError
-) => {
-    return async (token: string): Promise<UsersModelInterface> => {
-        try {
-            return (await verify(token, jwtSecret)) as UsersModelInterface;
-        } catch (err) {
-            throw jwtError(400, "Invalid token", "Jwt");
-        }
-    };
+export const verifyJwt = async (token: string): Promise<UsersModelInterface> => {
+    try {
+        return (await verify(token, jwtSecret)) as UsersModelInterface;
+    } catch (err) {
+        throw error(400, err.message, err.name);
+    }
 };
 
-export const verifyJwt = verifyJwtDefinition(error);

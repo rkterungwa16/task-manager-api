@@ -18,8 +18,9 @@ describe("JWT Service: ", function () {
 
     describe("Verify token", function () {
         it("should verify a valid token", async function () {
-            const token = await signJwt({ id: "1" }, "24");
-            expect(typeof await verifyJwt(token)).to.equal("object");
+            const token = await signJwt({ id: "1" }, "1h");
+            const verifiedToken = await verifyJwt(token);
+            expect(typeof verifiedToken).to.equal("object");
         });
 
         it("should throw an error for an invalid token", function () {

@@ -6,9 +6,11 @@ chai.use(chaiAsPromised);
 import {
     authenticateUser,
     createUser,
-    findUserByEmail
-} from "../../src/services";
-import { UsersModelInterface } from "../../src/types";
+    userDoesNotExist,
+    userExist,
+} from "../../../src/services";
+
+import { UsersModelInterface } from "../../../src/types";
 import { populate, reset } from "../db";
 
 describe("User Service: ", function () {
@@ -18,15 +20,18 @@ describe("User Service: ", function () {
     afterEach(async function () {
         await reset();
     });
-    describe("Find User By Email", function () {
-        it("should return a registered user", async function () {
-            const registeredUser = await findUserByEmail("kombol@kombol.com") as UsersModelInterface;
-            expect(registeredUser.name).to.equal("terungwa kombol");
+    describe("Prevent Duplicate User Registration", function () {
+        it("should return true for user not yet resgistered", async function () {
+
+            const exists = await userDoesNotExist("komb@kombol.com");
+            expect(exists).to.equal(true);
         });
 
-        it("should return false for a user not registered", async function () {
-            const registeredUser = await findUserByEmail("terungwa@kombol.com");
-            expect(registeredUser).to.equal(false);
+        it("should throw error for user already registered", async function () {
+            function alreadyRegistered() {
+                throw userDoesNotExist("kombol@kombol.com");
+            };
+            expect(alreadyRegistered).to.throw();
         });
     });
 
