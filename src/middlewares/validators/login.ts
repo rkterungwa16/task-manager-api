@@ -13,4 +13,4 @@ const requiredLoginInputs = {
     }
 };
 
-export const validateLoginInputs = validate(error, requiredLoginInputs);
+export const validateLoginInputs = validate(requiredLoginInputs);

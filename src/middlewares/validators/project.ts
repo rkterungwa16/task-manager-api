@@ -9,4 +9,4 @@ const requiredProjectInputs = {
     }
 };
 
-export const validateProjectInputs = validate(error, requiredProjectInputs);
+export const validateProjectInputs = validate(requiredProjectInputs);

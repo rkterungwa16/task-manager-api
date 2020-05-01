@@ -1,9 +1,7 @@
 import { Document, Model } from "mongoose";
 
 import { error } from "../../..";
-import {
-    UsersModelInterface
-} from "../../../../types";
+import { UsersModelInterface } from "../../../../types";
 import { comparePassword } from "../../../password";
 
 export const userWithEmailShouldExist = (
@@ -12,11 +10,7 @@ export const userWithEmailShouldExist = (
     return async (email: string) => {
         const hasUser = await user.findOne({ email });
         if (!hasUser) {
-            throw error(
-                400,
-                "User Does not Exist",
-                "User Authentication"
-            );
+            throw error(400, "User Does not Exist", "User Authentication");
         }
         return hasUser as UsersModelInterface;
     };
@@ -28,11 +22,7 @@ export const userWithEmailShouldNotExist = (
     return async (email: string) => {
         const hasUser = await user.findOne({ email });
         if (hasUser) {
-            throw error(
-                400,
-                "User Already Exists",
-                "User Registration"
-            );
+            throw error(400, "User Already Exists", "User Registration");
         }
         return true;
     };
@@ -53,14 +43,10 @@ export const matchPasswordDefinition = (
             userPassword as string
         );
         if (!passwordMatched) {
-            throw error(
-                400,
-                "wrong password",
-                "User Authentication"
-            );
+            throw error(400, "wrong password", "User Authentication");
         }
         return true;
-    }
-}
+    };
+};
 
 export const matchPassword = matchPasswordDefinition(comparePassword);

@@ -10,20 +10,32 @@ import {
 import { hashPassword, saltPassword } from "../../../password";
 
 import { signJwt } from "../../../jwt";
-import { comparePassword } from "../../../password";
 
-import { matchPassword, userWithEmailShouldExist, userWithEmailShouldNotExist } from "./helpers";
-import { AuthenticationParameterInterface, CreateUserParameterInterface } from "./interfaces";
+import {
+    matchPassword,
+    userWithEmailShouldExist,
+    userWithEmailShouldNotExist
+} from "./helpers";
+import {
+    AuthenticationParameterInterface,
+    CreateUserParameterInterface
+} from "./interfaces";
 
 // Write a story of what is happening here. Use story as inspiration for naming functions.
 export const createUserDefinition = (
     createUserArgs: CreateUserParameterInterface
-): ((credentials: CreatedUserCredentialInterface) => Promise<Document | undefined>) => {
+): ((
+    credentials: CreatedUserCredentialInterface
+) => Promise<Document | undefined>) => {
     return async (credentials: CreatedUserCredentialInterface) => {
         try {
-            await createUserArgs.userDoesNotExist(
-                credentials.email as string
-            );
+            // Make sure the user is not yet registered
+            // If user exists throw an error
+            // If User does not exist throw an error
+            await createUserArgs.userDoesNotExist(credentials.email as string);
+
+            // Create salt for users password
+            // Hash users password with the salt
             const salt = await createUserArgs.saltPassword();
             const hashedPassword = await createUserArgs.hashPassword(
                 credentials.password as string,
@@ -45,7 +57,6 @@ export const userDoesNotExist = userWithEmailShouldNotExist(Users);
 
 export const createUser = createUserDefinition({
     user: Users,
-    createUserError: error,
     userDoesNotExist,
     hashPassword,
     saltPassword
@@ -58,13 +69,12 @@ export const authenticateUserDefinition = (
         try {
             const {
                 existingUser,
-                authenticateUserError,
                 matchPassword: passwordIsMatched,
                 signToken
             } = authenticationArgs;
-            const user = await existingUser(
+            const user = (await existingUser(
                 credentials.email
-            ) as UsersModelInterface;
+            )) as UsersModelInterface;
 
             await passwordIsMatched(
                 credentials.password,
@@ -88,6 +98,5 @@ export const authenticateUserDefinition = (
 export const authenticateUser = authenticateUserDefinition({
     matchPassword,
     signToken: signJwt,
-    authenticateUserError: error,
     existingUser: userExist
 });

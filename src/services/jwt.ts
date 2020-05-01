@@ -21,11 +21,12 @@ export const signJwt = async (
     }
 };
 
-export const verifyJwt = async (token: string): Promise<UsersModelInterface> => {
+export const verifyJwt = async (
+    token: string
+): Promise<UsersModelInterface> => {
     try {
         return (await verify(token, jwtSecret)) as UsersModelInterface;
     } catch (err) {
         throw error(400, err.message, err.name);
     }
 };
-

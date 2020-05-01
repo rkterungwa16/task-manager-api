@@ -27,7 +27,7 @@ export const registerControllerDefinition = (
                 email: req.body.email as string,
                 name: req.body.name as string
             } as CreatedUserCredentialInterface;
-            const createdUser = await registerUser(userInfo) as Document;
+            const createdUser = (await registerUser(userInfo)) as Document;
             const createdUserModified = createdUser.toObject();
             delete createdUserModified.password;
             delete createdUserModified.salt;

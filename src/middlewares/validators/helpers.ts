@@ -1,34 +1,16 @@
 import validator from "validator";
-import { CustomError, error } from "../../services";
+import { error } from "../../services";
 
-export const validateEmail = (
-    email: string,
-    emailValidationError: (
-        statusCode: number,
-        message: string,
-        name: string
-    ) => CustomError
-): boolean => {
+export const validateEmail = (email: string): boolean => {
     if (!validator.isEmail(email)) {
-        throw emailValidationError(
-            400,
-            "User has an invalid email",
-            "Input Validation Error"
-        );
+        throw error(400, "User has an invalid email", "Input Validation Error");
     }
     return true;
 };
 
-export const validatePassword = (
-    password: string,
-    passwordValidationError: (
-        statusCode: number,
-        message: string,
-        name: string
-    ) => CustomError
-): boolean => {
+export const validatePassword = (password: string): boolean => {
     if (password.length < 6) {
-        throw passwordValidationError(
+        throw error(
             400,
             "Password length must be greater than or equal to 6",
             "Input Validation Error"
@@ -37,20 +19,9 @@ export const validatePassword = (
     return true;
 };
 
-export const validateString = (
-    prop: string,
-    stringValidationError: (
-        statusCode: number,
-        message: string,
-        name: string
-    ) => CustomError
-): boolean => {
+export const validateString = (prop: any): boolean => {
     if (!validator.isAscii(prop)) {
-        throw stringValidationError(
-            400,
-            "Value must be a string",
-            "Input Validation Error"
-        );
+        throw error(400, "Value must be a string", "Input Validation Error");
     }
     return true;
 };

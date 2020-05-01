@@ -22,10 +22,10 @@ export interface EditUserParameterInterface {
         message: string,
         name: string
     ) => CustomError;
-    modifyProjectFavorite: (
-        projects: ObjectId[],
-        project: ObjectId
-    ) => ObjectId[];
+    // modifyProjectFavorite: (
+    //     projects: ObjectId[],
+    //     project: ObjectId
+    // ) => ObjectId[];
     hashPassword: (password: string, salt: string) => Promise<string>;
     saltPassword: () => Promise<string>;
 }
@@ -59,19 +59,20 @@ export const editUserDefinition = (
                 ...(credentials.collaborationInviteStatus && {
                     collaborationInviteStatus:
                         credentials.collaborationInviteStatus
-                }),
-                ...(credentials.favoriteProject && {
-                    favoriteProjects: modifyFavorites(
-                        userDetails.favoriteProjects as ObjectId[],
-                        credentials.favoriteProject
-                    )
                 })
+                // ...(credentials.favoriteProject && {
+                //     favoriteProjects: modifyFavorites(
+                //         userDetails.favoriteProjects as ObjectId[],
+                //         credentials.favoriteProject
+                //     )
+                // })
             };
 
-            let user = (await editUserArgs.user
-                .findByIdAndUpdate(userId, { ...updateDetails }, { new: true })
-                .populate("favoriteProjects", "-password -salt")
-                .exec()) as UsersModelInterface;
+            let user = (await editUserArgs.user.findByIdAndUpdate(
+                userId,
+                { ...updateDetails },
+                { new: true }
+            )) as UsersModelInterface;
             user = user.toObject();
             delete user.password;
             delete user.salt;
@@ -86,21 +87,20 @@ export const editUserDefinition = (
     };
 };
 
-export const modifyFavorites = (
-    projects: ObjectId[],
-    project: ObjectId
-): ObjectId[] => {
-    const isFavorite = projects.includes(project);
-    if (isFavorite) {
-        return projects.filter(id => id !== project);
-    }
-    return [...projects, project];
-};
+// export const modifyFavorites = (
+//     projects: ObjectId[],
+//     project: ObjectId
+// ): ObjectId[] => {
+//     const isFavorite = projects.includes(project);
+//     if (isFavorite) {
+//         return projects.filter(id => id !== project);
+//     }
+//     return [...projects, project];
+// };
 
 export const editUser = editUserDefinition({
     user: Users,
     editUserError: error,
-    modifyProjectFavorite: modifyFavorites,
     hashPassword,
     saltPassword
 });

@@ -86,8 +86,8 @@ export interface UpdateProjectUtilsInterface {
     project: Model<Document>;
     user: Model<Document>;
     hasValidProperties: (
-        projectReqProps: {[x: string]: string},
-        projectProps: Array<{[x: string]: string}>,
+        projectReqProps: { [x: string]: string },
+        projectProps: Array<{ [x: string]: string }>,
         projectUpdateProp: string
     ) => boolean;
 
