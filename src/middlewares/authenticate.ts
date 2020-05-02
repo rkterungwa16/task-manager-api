@@ -1,5 +1,5 @@
 import { NextFunction, Response } from "express";
-import { CustomError, error, verifyJwt } from "../services";
+import { error, verifyJwt } from "../services";
 import { IRequest, UsersModelInterface } from "../types";
 
 export const authenticateMiddlewareDefinition = (
@@ -11,18 +11,24 @@ export const authenticateMiddlewareDefinition = (
         next: NextFunction
     ): Promise<void> => {
         try {
-            let token = req.query.access_token || req.headers.authorization;
-            if (!token) {
+            if (!req.headers.authorization) {
                 throw error(
-                    400,
-                    "No access token Found",
+                    401,
+                    "No Authorization properties",
+                    "Authentication"
+                );
+            }
+            let token = req.headers.authorization;
+            if (!token.startsWith("Bearer ")) {
+                throw error(
+                    401,
+                    "Token string not valid",
                     "Authentication"
                 );
             }
 
-            if (token.startsWith("Bearer ")) {
-                token = token.slice(7, token.length);
-            }
+            token = token.slice(7, token.length);
+
             // TODO: should throw error for expired token
             const user = await verifyToken(token);
             req.currentUser = user;

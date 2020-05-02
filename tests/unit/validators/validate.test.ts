@@ -1,7 +1,7 @@
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
-import { NextFunction, Request, Response } from "express";
-import { spy, stub } from "sinon";
+import { Request, Response } from "express";
+import { spy } from "sinon";
 const { expect } = chai;
 import {
     validateLoginInputs,
@@ -9,7 +9,7 @@ import {
  } from "../../../src/middlewares";
 chai.use(chaiAsPromised);
 
-describe.only("Request Input Validation Middleware: ", function () {
+describe("Request Input Validation Middleware: ", function () {
     describe("Login Input Validation", function() {
         it("should throw error when there is no login details", async function () {
             const req = {
