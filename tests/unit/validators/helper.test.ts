@@ -9,7 +9,7 @@ import {
    validateString
 } from "../../../src/middlewares/validators/helpers";
 
-describe.only("Validator helpers: ", function () {
+describe("Validator helpers: ", function () {
     describe("User Email", function() {
         it("should validate user email", async function () {
             const isValid = validateEmail("kombol@kombol.com")

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { CustomError, error } from "../../services";
+import { error } from "../../services";
 
 export interface RequiredPropertiesInterface {
     [x: string]: {

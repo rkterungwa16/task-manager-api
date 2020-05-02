@@ -2,7 +2,7 @@ import { error } from "../../services";
 import { validateEmail, validatePassword } from "./helpers";
 import { validate } from "./validator";
 
-const requiredLoginInputs = {
+export const requiredLoginInputs = {
     password: {
         type: "password",
         validateMethod: validatePassword

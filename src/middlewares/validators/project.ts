@@ -2,7 +2,7 @@ import { error } from "../../services";
 import { validateString } from "./helpers";
 import { validate } from "./validator";
 
-const requiredProjectInputs = {
+export const requiredProjectInputs = {
     title: {
         type: "text",
         validateMethod: validateString
