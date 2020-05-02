@@ -13,7 +13,7 @@ import { IRequest } from "../../src/types";
 chai.use(chaiAsPromised);
 
 
-describe.only("Authentication Middleware: ", function () {
+describe("Authentication Middleware: ", function () {
     it("should throw error when no authorization is provided", async function () {
         // let token = req.query.access_token || req.headers.authorization;
         const req = {} as IRequest;
