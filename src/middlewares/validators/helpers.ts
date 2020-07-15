@@ -20,8 +20,8 @@ export const validatePassword = (password: string): boolean => {
 };
 
 export const validateString = (prop: any): boolean => {
-    if (!validator.isAlphanumeric(prop)) {
-        throw error(400, "Value must be a string", "Input Validation Error");
+    if (typeof prop !== 'string') {
+        throw error(400, `${prop} must be a string`, "Input Validation Error");
     }
     return true;
 };
