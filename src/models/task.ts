@@ -29,6 +29,9 @@ class TasksSchema {
                 },
                 dueDate: {
                     type: Date
+                },
+                label: {
+                    type: [String]
                 }
             },
             {

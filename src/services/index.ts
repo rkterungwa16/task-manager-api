@@ -5,3 +5,4 @@ export * from "./jwt";
 export * from "./api/project";
 export * from "./email";
 export * from "./api";
+export * from "./api/task";
