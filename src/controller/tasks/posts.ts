@@ -10,9 +10,7 @@ import {
 } from "../../types";
 
 export const createTaskControllerDefinition = (
-    createUserTask: (
-        credentials: TasksModelInterface
-    ) => Promise<Document>
+    createUserTask: (credentials: TasksModelInterface) => Promise<Document>
 ) => {
     return async (req: IRequest, res: Response, next: NextFunction) => {
         try {
@@ -23,7 +21,7 @@ export const createTaskControllerDefinition = (
                 content,
                 projectId: new ObjectID(projectId),
                 userId: id
-            } as TasksModelInterface
+            } as TasksModelInterface;
 
             const task = await createUserTask(taskDetail);
 
@@ -39,6 +37,4 @@ export const createTaskControllerDefinition = (
     };
 };
 
-export const createTaskController = createTaskControllerDefinition(
-    createTask
-);
+export const createTaskController = createTaskControllerDefinition(createTask);

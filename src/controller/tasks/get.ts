@@ -1,0 +1,29 @@
+import { NextFunction, Response } from "express";
+import { ObjectId } from "mongodb";
+import { Document } from "mongoose";
+
+import { viewProjectTasks } from "../../services";
+import { IRequest } from "../../types";
+
+export const viewProjectTasksControllerDefinition = (
+    viewProjectTasks: (projectId: string) => Promise<Document[]>
+) => {
+    return async (req: IRequest, res: Response, next: NextFunction) => {
+        try {
+            const { projectId } = req.params as { projectId: string };
+            const tasks = await viewProjectTasks(projectId);
+            return res.status(200).send({
+                message: "project tasks successfully fetched",
+                data: {
+                    tasks
+                }
+            });
+        } catch (err) {
+            next(err);
+        }
+    };
+};
+
+export const viewProjectTasksController = viewProjectTasksControllerDefinition(
+    viewProjectTasks
+);

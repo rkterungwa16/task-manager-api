@@ -20,11 +20,7 @@ export const authenticateMiddlewareDefinition = (
             }
             let token = req.headers.authorization;
             if (!token.startsWith("Bearer ")) {
-                throw error(
-                    401,
-                    "Token string not valid",
-                    "Authentication"
-                );
+                throw error(401, "Token string not valid", "Authentication");
             }
 
             token = token.slice(7, token.length);

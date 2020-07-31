@@ -20,7 +20,7 @@ export const validatePassword = (password: string): boolean => {
 };
 
 export const validateString = (prop: any): boolean => {
-    if (typeof prop !== 'string') {
+    if (typeof prop !== "string") {
         throw error(400, `${prop} must be a string`, "Input Validation Error");
     }
     return true;
