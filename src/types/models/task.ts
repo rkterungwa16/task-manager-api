@@ -11,7 +11,7 @@ export interface TasksModelInterface extends Document {
     content?: string;
     priority?: Priority;
     userId?: ObjectID;
-    projectId?: ObjectId;
+    project?: ObjectId;
     label?: string[];
     dueDate?: string;
     createdAt?: string;

@@ -5,11 +5,11 @@ import { Tasks } from "../../../models";
 
 export const viewProjectTasksDefinition = (
     tasks: Model<Document>
-): ((projectId: string) => Promise<Document[]>) => {
-    return async projectId => {
+): ((project: string) => Promise<Document[]>) => {
+    return async project => {
         return (await tasks
             .find({
-                projectId
+                project
             })
             .populate("project")
             .exec()) as Document[];
@@ -17,3 +17,19 @@ export const viewProjectTasksDefinition = (
 };
 
 export const viewProjectTasks = viewProjectTasksDefinition(Tasks);
+
+export const viewTodaysTasksDefinition = (
+    tasks: Model<Document>
+): ((userId: ObjectId) => Promise<Document[]>) => {
+    return async userId => {
+        return (await tasks
+            .find({
+                dueDate: new Date(),
+                userId
+            })
+            .populate("project")
+            .exec()) as Document[];
+    };
+};
+
+export const viewTodaysTasks = viewTodaysTasksDefinition(Tasks);

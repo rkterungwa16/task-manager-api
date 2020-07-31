@@ -19,7 +19,7 @@ export const createTaskControllerDefinition = (
             const { id } = req.currentUser as UsersModelInterface;
             const taskDetail = {
                 content,
-                projectId: new ObjectID(projectId),
+                project: new ObjectID(projectId),
                 userId: id
             } as TasksModelInterface;
 

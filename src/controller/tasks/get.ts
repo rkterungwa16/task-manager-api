@@ -2,7 +2,7 @@ import { NextFunction, Response } from "express";
 import { ObjectId } from "mongodb";
 import { Document } from "mongoose";
 
-import { viewProjectTasks } from "../../services";
+import { viewProjectTasks, viewTodaysTasks } from "../../services";
 import { IRequest } from "../../types";
 
 export const viewProjectTasksControllerDefinition = (
@@ -26,4 +26,27 @@ export const viewProjectTasksControllerDefinition = (
 
 export const viewProjectTasksController = viewProjectTasksControllerDefinition(
     viewProjectTasks
+);
+
+export const viewTodaysTasksControllerDefinition = (
+    viewTodaysTasks: (userId: ObjectId) => Promise<Document[]>
+) => {
+    return async (req: IRequest, res: Response, next: NextFunction) => {
+        try {
+            const { id } = req.currentUser as { id: ObjectId };
+            const tasks = await viewTodaysTasks(id);
+            return res.status(200).send({
+                message: "tasks due today successfull fetched",
+                data: {
+                    tasks
+                }
+            });
+        } catch (err) {
+            next(err);
+        }
+    };
+};
+
+export const viewTodaysTasksController = viewTodaysTasksControllerDefinition(
+    viewTodaysTasks
 );

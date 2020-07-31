@@ -23,7 +23,7 @@ class TasksSchema {
                     type: ObjectID,
                     ref: "Users"
                 },
-                projectId: {
+                project: {
                     type: ObjectId,
                     ref: "Projects"
                 },

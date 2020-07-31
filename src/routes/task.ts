@@ -2,11 +2,16 @@ import express from "express";
 
 import {
     createTaskController,
-    viewProjectTasksController
+    viewProjectTasksController,
+    viewTodaysTasksController
 } from "../controller";
 import { authenticateMiddleware } from "../middlewares";
 
 const router = express.Router();
+
+router
+    .route("/tasks/today")
+    .get(authenticateMiddleware, viewTodaysTasksController);
 
 router
     .route("/tasks/:projectId")
