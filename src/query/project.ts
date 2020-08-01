@@ -24,6 +24,14 @@ export const listOfUserAsOwnerAndColloaboratorProjects = (id: ObjectId) => {
         },
         {
             $lookup: {
+                from: 'tasks',
+                localField: '_id',
+                foreignField: 'project',
+                as: 'tasks'
+            }
+        },
+        {
+            $lookup: {
                 from: "users",
                 localField: "owner",
                 foreignField: "_id",
