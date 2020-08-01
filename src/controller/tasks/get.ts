@@ -2,7 +2,11 @@ import { NextFunction, Response } from "express";
 import { ObjectId } from "mongodb";
 import { Document } from "mongoose";
 
-import { viewProjectTasks, viewTodaysTasks } from "../../services";
+import {
+    viewProjectTasks,
+    viewTodaysTasks,
+    viewUsersOverDueTasks
+} from "../../services";
 import { IRequest } from "../../types";
 
 export const viewProjectTasksControllerDefinition = (
@@ -49,4 +53,27 @@ export const viewTodaysTasksControllerDefinition = (
 
 export const viewTodaysTasksController = viewTodaysTasksControllerDefinition(
     viewTodaysTasks
+);
+
+export const viewUsersOverDueTasksControllerDefinition = (
+    viewUsersOverDueTasks: (userId: ObjectId) => Promise<Document[]>
+) => {
+    return async (req: IRequest, res: Response, next: NextFunction) => {
+        try {
+            const { id } = req.currentUser as { id: ObjectId };
+            const tasks = await viewUsersOverDueTasks(id);
+            return res.status(200).send({
+                message: "tasks over due successfully fetched",
+                data: {
+                    tasks
+                }
+            });
+        } catch (err) {
+            next(err);
+        }
+    };
+};
+
+export const viewUsersOverDueTasksController = viewUsersOverDueTasksControllerDefinition(
+    viewUsersOverDueTasks
 );

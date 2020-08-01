@@ -33,3 +33,21 @@ export const viewTodaysTasksDefinition = (
 };
 
 export const viewTodaysTasks = viewTodaysTasksDefinition(Tasks);
+
+export const viewUsersOverDueTasksDefinition = (
+    tasks: Model<Document>
+): ((userId: ObjectId) => Promise<Document[]>) => {
+    return async userId => {
+        return (await tasks
+            .find({
+                dueDate: {
+                    $lt: new Date()
+                },
+                userId
+            })
+            .populate("project")
+            .exec()) as Document[];
+    };
+};
+
+export const viewUsersOverDueTasks = viewUsersOverDueTasksDefinition(Tasks);
