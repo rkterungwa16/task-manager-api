@@ -1,7 +1,7 @@
 import { NextFunction, Response } from "express";
 import { ObjectId } from "mongodb";
 
-import { updateProject } from "../../services";
+import { updateProject, apiResponse } from "../../services";
 import { IRequest, UsersModelInterface } from "../../types";
 
 export interface EditProjectArgsInterface {
@@ -27,11 +27,13 @@ export const addCollaboratorsController = async (
             "addCollaborators",
             "collaborators"
         );
-        return res.status(200).send({
+        return apiResponse({
             message: "user successfully added to project as collaborator",
             data: {
                 project
-            }
+            },
+            response: res,
+            statusCode: 200
         });
     } catch (err) {
         next(err);
@@ -56,11 +58,13 @@ export const editDescriptionController = async (
             "editDescription",
             "description"
         );
-        return res.status(200).send({
+        return apiResponse({
             message: "user successfully edited project description",
             data: {
                 project
-            }
+            },
+            statusCode: 200,
+            response: res
         });
     } catch (err) {
         next(err);
@@ -85,11 +89,13 @@ export const editTitleController = async (
             "editTitle",
             "title"
         );
-        return res.status(200).send({
+        return apiResponse({
             message: "user successfully edited project title",
             data: {
                 project
-            }
+            },
+            response: res,
+            statusCode: 200
         });
     } catch (err) {
         next(err);
@@ -114,11 +120,13 @@ export const setProjectAsFavouriteController = async (
             "setFavourite",
             "isFavourite"
         );
-        return res.status(200).send({
+        return apiResponse({
             message: "user successfully set project as a favourite",
             data: {
                 project
-            }
+            },
+            statusCode: 200,
+            response: res
         });
     } catch (err) {
         next(err);
@@ -143,11 +151,13 @@ export const archiveProjectController = async (
             "archiveProject",
             "isArchived"
         );
-        return res.status(200).send({
+        return apiResponse({
             message: "project is successfully archived",
             data: {
                 project
-            }
+            },
+            statusCode: 200,
+            response: res
         });
     } catch (err) {
         next(err);

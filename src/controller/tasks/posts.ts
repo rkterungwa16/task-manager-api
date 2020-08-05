@@ -2,7 +2,7 @@ import { NextFunction, Response } from "express";
 import { Document } from "mongoose";
 import { ObjectID } from "mongodb";
 
-import { createTask } from "../../services";
+import { createTask, apiResponse } from "../../services";
 import {
     IRequest,
     UsersModelInterface,
@@ -25,11 +25,13 @@ export const createTaskControllerDefinition = (
 
             const task = await createUserTask(taskDetail);
 
-            return res.status(201).send({
+            return apiResponse({
                 message: "task successfully created",
                 data: {
                     task
-                }
+                },
+                statusCode: 200,
+                response: res
             });
         } catch (err) {
             next(err);

@@ -2,7 +2,11 @@ import { NextFunction, Response } from "express";
 import { ObjectId } from "mongodb";
 import { Document } from "mongoose";
 
-import { viewOwnerProjects, viewSingleOwnerProject } from "../../services";
+import {
+    viewOwnerProjects,
+    viewSingleOwnerProject,
+    apiResponse
+} from "../../services";
 import { IRequest, UsersModelInterface } from "../../types";
 
 export const viewOwnerProjectsControllerDefinition = (
@@ -12,11 +16,13 @@ export const viewOwnerProjectsControllerDefinition = (
         try {
             const { id } = req.currentUser as UsersModelInterface;
             const projects = await viewProjects(id as ObjectId);
-            return res.status(200).send({
+            return apiResponse({
                 message: "projects successfully fetched",
                 data: {
                     projects
-                }
+                },
+                response: res,
+                statusCode: 200
             });
         } catch (err) {
             next(err);
@@ -36,11 +42,13 @@ export const viewSingleOwnerProjectControllerDefinition = (
             const { id } = req.currentUser as UsersModelInterface;
             const { projectId } = req.params;
             const project = await viewProject(id as ObjectId, projectId);
-            return res.status(200).send({
+            return apiResponse({
                 message: "project successfully fetched",
                 data: {
                     project
-                }
+                },
+                statusCode: 200,
+                response: res
             });
         } catch (err) {
             next(err);

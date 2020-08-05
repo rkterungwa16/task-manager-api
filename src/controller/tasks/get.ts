@@ -5,7 +5,8 @@ import { Document } from "mongoose";
 import {
     viewProjectTasks,
     viewTodaysTasks,
-    viewUsersOverDueTasks
+    viewUsersOverDueTasks,
+    apiResponse
 } from "../../services";
 import { IRequest } from "../../types";
 
@@ -16,11 +17,13 @@ export const viewProjectTasksControllerDefinition = (
         try {
             const { projectId } = req.params as { projectId: string };
             const tasks = await viewProjectTasks(projectId);
-            return res.status(200).send({
+            return apiResponse({
                 message: "project tasks successfully fetched",
                 data: {
                     tasks
-                }
+                },
+                statusCode: 200,
+                response: res
             });
         } catch (err) {
             next(err);
@@ -39,11 +42,13 @@ export const viewTodaysTasksControllerDefinition = (
         try {
             const { id } = req.currentUser as { id: ObjectId };
             const tasks = await viewTodaysTasks(id);
-            return res.status(200).send({
+            return apiResponse({
                 message: "tasks due today successfull fetched",
                 data: {
                     tasks
-                }
+                },
+                response: res,
+                statusCode: 200
             });
         } catch (err) {
             next(err);
@@ -62,11 +67,13 @@ export const viewUsersOverDueTasksControllerDefinition = (
         try {
             const { id } = req.currentUser as { id: ObjectId };
             const tasks = await viewUsersOverDueTasks(id);
-            return res.status(200).send({
+            return apiResponse({
                 message: "tasks over due successfully fetched",
                 data: {
                     tasks
-                }
+                },
+                response: res,
+                statusCode: 200
             });
         } catch (err) {
             next(err);

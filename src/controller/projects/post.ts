@@ -1,7 +1,7 @@
 import { NextFunction, Response } from "express";
 import { Document } from "mongoose";
 
-import { createProject } from "../../services";
+import { createProject, apiResponse } from "../../services";
 import {
     IRequest,
     ProjectsModelInterface,
@@ -23,11 +23,13 @@ export const createProjectControllerDefinition = (
                 color,
                 owner: id
             } as ProjectsModelInterface);
-            return res.status(201).send({
+            return apiResponse({
                 message: "project successfully created",
                 data: {
                     project
-                }
+                },
+                response: res,
+                statusCode: 201
             });
         } catch (err) {
             next(err);

@@ -6,7 +6,8 @@ import {
     authenticateUser,
     createUser,
     editUser,
-    UserEditFieldsInterface
+    UserEditFieldsInterface,
+    apiResponse
 } from "../services";
 import { IRequest } from "../types";
 import {
@@ -31,9 +32,11 @@ export const registerControllerDefinition = (
             const createdUserModified = createdUser.toObject();
             delete createdUserModified.password;
             delete createdUserModified.salt;
-            return res.status(201).send({
+            return apiResponse({
                 message: "user successfully created",
-                data: createdUserModified
+                data: createdUserModified,
+                statusCode: 201,
+                response: res
             });
         } catch (err) {
             next(err);
@@ -51,11 +54,13 @@ export const loginControllerDefinition = (
     return async (req: IRequest, res: Response, next: NextFunction) => {
         try {
             const token = await loginUser(req.body);
-            return res.status(201).send({
+            return apiResponse({
                 message: "user successfully logged in",
                 data: {
                     token
-                }
+                },
+                statusCode: 201,
+                response: res
             });
         } catch (err) {
             next(err);
@@ -77,11 +82,13 @@ export const editUserControllerDefinition = (
                 ...req.body,
                 userId: id
             });
-            return res.status(200).send({
+            return apiResponse({
                 message: "user successfull edited",
                 data: {
                     user
-                }
+                },
+                statusCode: 200,
+                response: res
             });
         } catch (err) {
             next(err);
