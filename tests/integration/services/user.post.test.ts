@@ -11,7 +11,12 @@ import {
 } from "../../../src/services";
 
 import { UsersModelInterface } from "../../../src/types";
-import { populate, reset } from "../db";
+import { userCollection } from "../db";
+
+const {
+    populate,
+    reset
+} = userCollection;
 
 describe("User Service: ", function () {
     beforeEach(async function () {

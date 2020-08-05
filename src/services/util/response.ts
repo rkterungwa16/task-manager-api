@@ -8,8 +8,11 @@ export interface ApiResponseInterface {
 }
 export const apiResponse = (apiResponseData: ApiResponseInterface) => {
     const { message, data, statusCode, response } = apiResponseData;
-    return response.status(statusCode).send({
+    response.status(statusCode)
+    response.send({
+        code: statusCode,
         message,
         data
     });
+    return response;
 };
