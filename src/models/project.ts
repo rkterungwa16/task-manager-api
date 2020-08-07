@@ -34,6 +34,10 @@ class ProjectsSchema {
                     enum: ["PRIVATE", "PUBLIC"],
                     default: "PUBLIC"
                 },
+                color: {
+                    type: String,
+                    default: "#8d8d8d"
+                },
                 isDeleted: {
                     type: Boolean,
                     default: false

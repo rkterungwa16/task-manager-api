@@ -10,53 +10,28 @@ import {
 
 import { error } from "../../..";
 
-export const editDescription = async (
-    description: string,
+export const edit = async (
+    requestProps: {
+        description: string;
+        title: string;
+        isFavourite: boolean;
+        color: string;
+    },
     projectId: string,
     ownerProject: ProjectsModelInterface
 ): Promise<any> => {
+    // description title favourite
     let updatedProject;
     ownerProject = {
         ...ownerProject,
-        description
-    } as ProjectsModelInterface;
-
-    updatedProject = await projectDbUpdate({
-        project: Projects,
-        projectId,
-        projectUpdateValues: ownerProject
-    });
-    return updatedProject;
-};
-
-export const editTitle = async (
-    title: string,
-    projectId: string,
-    ownerProject: ProjectsModelInterface
-): Promise<any> => {
-    let updatedProject;
-    ownerProject = {
-        ...ownerProject,
-        title
-    } as ProjectsModelInterface;
-
-    updatedProject = await projectDbUpdate({
-        project: Projects,
-        projectId,
-        projectUpdateValues: ownerProject
-    });
-    return updatedProject;
-};
-
-export const setFavourite = async (
-    isFavourite: boolean,
-    projectId: string,
-    ownerProject: ProjectsModelInterface
-): Promise<any> => {
-    let updatedProject;
-    ownerProject = {
-        ...ownerProject,
-        isFavourite
+        ...(requestProps.description && {
+            description: requestProps.description
+        }),
+        ...(requestProps.title && { title: requestProps.title }),
+        ...(requestProps.isFavourite && {
+            isFavourite: requestProps.isFavourite
+        }),
+        ...(requestProps.color && { description: requestProps.color })
     } as ProjectsModelInterface;
 
     updatedProject = await projectDbUpdate({
@@ -68,14 +43,14 @@ export const setFavourite = async (
 };
 
 export const archiveProject = async (
-    isArchived: boolean,
+    requestProps: { isArchived: boolean },
     projectId: string,
     ownerProject: ProjectsModelInterface
 ): Promise<any> => {
     let updatedProject;
     ownerProject = {
         ...ownerProject,
-        isArchived
+        isArchived: requestProps.isArchived
     } as ProjectsModelInterface;
 
     updatedProject = await projectDbUpdate({
@@ -87,7 +62,7 @@ export const archiveProject = async (
 };
 
 export const deleteProject = async (
-    isDeleted: boolean,
+    requestProps: { isDeleted: boolean },
     projectId: string,
     ownerProject: ProjectsModelInterface
 ): Promise<any> => {
@@ -98,7 +73,7 @@ export const deleteProject = async (
     let updatedProject;
     ownerProject = {
         ...ownerProject,
-        isDeleted
+        isDeleted: requestProps.isDeleted
     } as ProjectsModelInterface;
 
     updatedProject = await projectDbUpdate({
@@ -110,7 +85,7 @@ export const deleteProject = async (
 };
 
 export const addCollaborators = async (
-    collaboratorEmails: string[],
+    requestProps: { collaboratorEmails: string[] },
     projectId: string,
     ownerProject: ProjectsModelInterface,
     owner: ObjectId
@@ -119,6 +94,7 @@ export const addCollaborators = async (
     // TODO: check number of collaborator emails should not exceed 5;
     // TODO: list out all actions to be performed by add collaborator method
     // TODO: list out all error scenarios and their corresponding actions
+    const { collaboratorEmails } = requestProps;
     const ownerDetail = (await Users.findById(owner)) as UsersModelInterface;
 
     if (collaboratorEmails.includes(ownerDetail.email as string)) {

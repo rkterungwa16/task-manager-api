@@ -37,9 +37,7 @@ export interface UpdateRequestObject {
 }
 
 interface UpdateInterface {
-    [x: string]: (
-        action: string
-    ) => (
+    [x: string]: () => (
         projectPropName: any,
         projectId: string,
         ownerProject: ProjectsModelInterface,
@@ -57,27 +55,19 @@ interface UpdateActionsInterface {
 
 const actions = {
     addCollaborators: projectActions.addCollaborators,
-    editDescription: projectActions.editDescription,
-    editTitle: projectActions.editTitle,
-    setFavourite: projectActions.setFavourite,
+    edit: projectActions.edit,
     archiveProject: projectActions.archiveProject
 } as UpdateActionsInterface;
 
 const update = {
-    collaborator(action: string) {
-        return actions[action];
+    addCollaborator() {
+        return actions.addCollaborator;
     },
-    description(action: string) {
-        return actions[action];
+    edit() {
+        return actions.edit;
     },
-    title(action: string) {
-        return actions[action];
-    },
-    favourite(action: string) {
-        return actions[action];
-    },
-    archive(action: string) {
-        return actions[action];
+    archiveProject() {
+        return actions.archiveProject;
     }
     // tasks: "",
 } as UpdateInterface;
@@ -88,7 +78,7 @@ export interface UpdateProjectUtilsInterface {
     hasValidProperties: (
         projectReqProps: { [x: string]: string },
         projectProps: Array<{ [x: string]: string }>,
-        projectUpdateProp: string
+        projectUpdateProp: string | string[]
     ) => boolean;
 
     projectExists: (
@@ -112,7 +102,7 @@ export const updateProject = ((
         projectId: string,
         owner: ObjectId,
         projectUpdateAction: string,
-        projectUpdateProp: string
+        projectUpdateProp: string | string[]
     ): Promise<any> => {
         try {
             hasValidProperties(
@@ -129,11 +119,9 @@ export const updateProject = ((
                 project
             )) as ProjectsModelInterface;
 
-            const updateProjectAction = update[projectUpdateProp](
-                projectUpdateAction
-            );
+            const updateProjectAction = update[projectUpdateAction]();
             const updatedProject = await updateProjectAction(
-                projectRequestDetails[projectUpdateProp],
+                projectRequestDetails,
                 projectId,
                 ownerProject,
                 ownerDetail.id as ObjectId

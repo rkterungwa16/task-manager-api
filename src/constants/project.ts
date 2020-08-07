@@ -13,6 +13,10 @@ export const projectProperties = [
         type: "string"
     },
     {
+        label: "color",
+        type: "string"
+    },
+    {
         label: "owner",
         type: "string"
     },

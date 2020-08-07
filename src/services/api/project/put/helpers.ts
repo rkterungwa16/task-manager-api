@@ -65,7 +65,7 @@ export const projectExists = async (
 export const hasValidProjectProperties = (
     projectRequestDetails: { [x: string]: string },
     projectProps: Array<{ [x: string]: string }>,
-    projectUpdateProp: string
+    projectUpdateProp: string | string[]
 ): boolean => {
     // check if request properties are amongst valid project project property
     // make sure prop types are valid
@@ -79,9 +79,28 @@ export const hasValidProjectProperties = (
         }
     }
 
-    // confirm if particular project property to be updated is in the request object.
-    if (!projectReqProps.includes(projectUpdateProp)) {
-        throw error(422, `${projectUpdateProp} is required`, "Project Update");
+    if (typeof projectUpdateProp === "string") {
+        // confirm if particular project property to be updated is in the request object.
+        if (!projectReqProps.includes(projectUpdateProp)) {
+            throw error(
+                422,
+                `${projectUpdateProp} is required`,
+                "Project Update"
+            );
+        }
+    }
+
+    if (Array.isArray(projectUpdateProp)) {
+        // make sure all the required properties to be updated are in the request object
+        // all request object properties must be contained in the project update properties.
+        const hasRequiredProps = projectReqProps.every(prop => {
+            if (projectUpdateProp.includes(prop)) return true;
+            return false;
+        });
+
+        if (!hasRequiredProps) {
+            throw error(422, "missing update properties", "Project Update");
+        }
     }
 
     return true;

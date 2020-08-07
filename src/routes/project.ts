@@ -4,9 +4,7 @@ import {
     addCollaboratorsController,
     archiveProjectController,
     createProjectController,
-    editDescriptionController,
-    editTitleController,
-    setProjectAsFavouriteController,
+    editController,
     viewOwnerProjectsController,
     viewSingleOwnerProjectController
 } from "../controller";
@@ -25,23 +23,12 @@ router
 
 router
     .route("/projects/:projectId")
-    .get(authenticateMiddleware, viewSingleOwnerProjectController);
+    .get(authenticateMiddleware, viewSingleOwnerProjectController)
+    .put(authenticateMiddleware, editController);
 
 router
     .route("/projects/:projectId/collaborators/add")
     .put(authenticateMiddleware, addCollaboratorsController);
-
-router
-    .route("/projects/:projectId/description")
-    .put(authenticateMiddleware, editDescriptionController);
-
-router
-    .route("/projects/:projectId/title")
-    .put(authenticateMiddleware, editTitleController);
-
-router
-    .route("/projects/:projectId/favourite")
-    .put(authenticateMiddleware, setProjectAsFavouriteController);
 
 router
     .route("/projects/:projectId/archive")

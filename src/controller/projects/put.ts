@@ -40,10 +40,13 @@ export const addCollaboratorsController = async (
     }
 };
 
-export interface EditDescriptionArgsInterface extends EditProjectArgsInterface {
+export interface EditArgsInterface extends EditProjectArgsInterface {
     description: string;
+    favourite: boolean;
+    title: string;
+    color: string;
 }
-export const editDescriptionController = async (
+export const editController = async (
     req: IRequest,
     res: Response,
     next: NextFunction
@@ -55,73 +58,11 @@ export const editDescriptionController = async (
             req.body as any,
             projectId,
             id as ObjectId,
-            "editDescription",
-            "description"
+            "edit",
+            ["description", "isFavourite", "color", "title"]
         );
         return apiResponse({
             message: "user successfully edited project description",
-            data: {
-                project
-            },
-            statusCode: 200,
-            response: res
-        });
-    } catch (err) {
-        next(err);
-    }
-};
-
-export interface EditTitleArgsInterface extends EditProjectArgsInterface {
-    title: string;
-}
-export const editTitleController = async (
-    req: IRequest,
-    res: Response,
-    next: NextFunction
-) => {
-    try {
-        const { id } = req.currentUser as UsersModelInterface;
-        const { projectId } = req.params;
-        const project = await updateProject(
-            req.body as any,
-            projectId,
-            id as ObjectId,
-            "editTitle",
-            "title"
-        );
-        return apiResponse({
-            message: "user successfully edited project title",
-            data: {
-                project
-            },
-            response: res,
-            statusCode: 200
-        });
-    } catch (err) {
-        next(err);
-    }
-};
-
-export interface FavouriteArgsInterface extends EditProjectArgsInterface {
-    title: string;
-}
-export const setProjectAsFavouriteController = async (
-    req: IRequest,
-    res: Response,
-    next: NextFunction
-) => {
-    try {
-        const { id } = req.currentUser as UsersModelInterface;
-        const { projectId } = req.params;
-        const project = await updateProject(
-            req.body as any,
-            projectId,
-            id as ObjectId,
-            "setFavourite",
-            "isFavourite"
-        );
-        return apiResponse({
-            message: "user successfully set project as a favourite",
             data: {
                 project
             },
