@@ -9,7 +9,7 @@ import {
 chai.use(chaiAsPromised);
 
 
-describe.only("Api Response: ", function () {
+describe("Api Response: ", function () {
     it("Should return object containing status code", function () {
         const res = {
             status (code: number){ return },
