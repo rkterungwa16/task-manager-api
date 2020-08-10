@@ -38,6 +38,34 @@ export const colors = [
     {
         code: "#F78DA7",
         name: "Persian Pink"
+    },
+    {
+        code: "#AF38EB",
+        name: "Violet"
+    },
+    {
+        code: "#CCAC93",
+        name: "Taupe"
+    },
+    {
+        code: "#E05194",
+        name: "Magenta"
+    },
+    {
+        code: "#EB96EB",
+        name: "Lavender"
+    },
+    {
+        code: "#FF8d85",
+        name: "Salmon"
+    },
+    {
+        code: "#884DFF",
+        name: "Grape"
+    },
+    {
+        code: "#AFB83B",
+        name: "Olive Green"
     }
 ];
 
