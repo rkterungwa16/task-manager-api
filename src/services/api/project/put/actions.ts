@@ -31,7 +31,7 @@ export const edit = async (
         ...(requestProps.isFavourite && {
             isFavourite: requestProps.isFavourite
         }),
-        ...(requestProps.color && { description: requestProps.color })
+        ...(requestProps.color && { color: requestProps.color })
     } as ProjectsModelInterface;
 
     updatedProject = await projectDbUpdate({
