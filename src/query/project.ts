@@ -66,3 +66,41 @@ export const listOfUserAsOwnerAndColloaboratorProjects = (id: ObjectId) => {
         }
     ];
 };
+
+export const singleProjectWithTasks = (projectId: string) => {
+    return [
+        {
+            $match: {
+                _id: new ObjectId(projectId)
+            }
+        },
+        {
+            $lookup: {
+                from: "tasks",
+                localField: "_id",
+                foreignField: "project",
+                as: "tasks"
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "owner",
+                foreignField: "_id",
+                as: "owner"
+            }
+        },
+        {
+            $unwind: {
+                path: "$owner",
+                preserveNullAndEmptyArrays: false
+            }
+        },
+        {
+            $project: {
+                "owner.password": 0,
+                "owner.salt": 0
+            }
+        }
+    ];
+};
