@@ -45,7 +45,10 @@ export const viewTodaysTasksControllerDefinition = (
             return apiResponse({
                 message: "tasks due today successfull fetched",
                 data: {
-                    tasks
+                    project: {
+                        tasks,
+                        title: "today"
+                    }
                 },
                 response: res,
                 statusCode: 200
@@ -71,7 +74,10 @@ export const viewUsersOverDueTasksControllerDefinition = (
             return apiResponse({
                 message: "tasks over due successfully fetched",
                 data: {
-                    tasks
+                    project: {
+                        tasks,
+                        title: "overdue"
+                    }
                 },
                 response: res,
                 statusCode: 200
