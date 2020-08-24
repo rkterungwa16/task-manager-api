@@ -10,7 +10,7 @@ class TasksSchema {
     static get schema() {
         return new Schema(
             {
-                content: {
+                description: {
                     type: String,
                     required: true
                 },

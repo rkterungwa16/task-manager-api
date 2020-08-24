@@ -8,7 +8,7 @@ enum Priority {
     highest = 4
 }
 export interface TasksModelInterface extends Document {
-    content?: string;
+    description?: string;
     priority?: Priority;
     userId?: ObjectID;
     project?: ObjectId;
