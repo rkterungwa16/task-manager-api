@@ -14,11 +14,11 @@ export const createTaskControllerDefinition = (
 ) => {
     return async (req: IRequest, res: Response, next: NextFunction) => {
         try {
-            const { content } = req.body;
+            const { description } = req.body;
             const { projectId } = req.params;
             const { id } = req.currentUser as UsersModelInterface;
             const taskDetail = {
-                content,
+                description,
                 project: new ObjectID(projectId),
                 userId: id
             } as TasksModelInterface;
