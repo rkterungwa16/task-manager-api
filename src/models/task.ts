@@ -32,6 +32,10 @@ class TasksSchema {
                 },
                 label: {
                     type: [String]
+                },
+                completed: {
+                    type: Boolean,
+                    default: false
                 }
             },
             {

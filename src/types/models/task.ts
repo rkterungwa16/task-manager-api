@@ -13,6 +13,7 @@ export interface TasksModelInterface extends Document {
     userId?: ObjectID;
     project?: ObjectId;
     label?: string[];
+    completed?: boolean;
     dueDate?: string;
     createdAt?: string;
     updatedAt?: string;
