@@ -2,10 +2,10 @@ import { ObjectId, ObjectID } from "mongodb";
 import { Document } from "mongoose";
 
 enum Priority {
-    low = 1,
-    medium = 2,
-    high = 3,
-    highest = 4
+    low = 4,
+    medium = 3,
+    high = 2,
+    highest = 1
 }
 export interface TasksModelInterface extends Document {
     description?: string;
