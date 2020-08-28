@@ -4,7 +4,8 @@ import {
     createTaskController,
     viewProjectTasksController,
     viewTodaysTasksController,
-    viewUsersOverDueTasksController
+    viewUsersOverDueTasksController,
+    editTaskController
 } from "../controller";
 import { authenticateMiddleware } from "../middlewares";
 
@@ -26,6 +27,6 @@ router
 router
     .route("/task/:taskId/project/:projectId")
     .get(authenticateMiddleware)
-    .put(authenticateMiddleware);
+    .put(authenticateMiddleware, editTaskController);
 
 export default router;
