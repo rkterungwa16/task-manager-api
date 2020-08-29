@@ -37,7 +37,7 @@ export const editTaskControllerDefinition = (
             const task = await editUserTask(taskDetail, taskId);
 
             return apiResponse({
-                message: "task successfully created",
+                message: "task successfully edited",
                 data: {
                     task
                 },
