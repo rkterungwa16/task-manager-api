@@ -32,19 +32,24 @@ export const editUserDefinition = (
         try {
             const salt = await editUserArgs.saltPassword();
             const { userId } = credentials;
-            if (credentials.confirmEmail !== credentials.email) {
-                editUserArgs.editUserError(
-                    400,
-                    "Email must match",
-                    "User Edit"
-                );
+            if (credentials.password || credentials.confirmPassword) {
+                if (credentials.confirmEmail !== credentials.email) {
+                    editUserArgs.editUserError(
+                        400,
+                        "Email must match",
+                        "User Edit"
+                    );
+                }
             }
-            if (credentials.confirmPassword !== credentials.password) {
-                editUserArgs.editUserError(
-                    400,
-                    "Password must match",
-                    "User Edit"
-                );
+
+            if (credentials.email || credentials.confirmEmail) {
+                if (credentials.confirmPassword !== credentials.password) {
+                    editUserArgs.editUserError(
+                        400,
+                        "Password must match",
+                        "User Edit"
+                    );
+                }
             }
             const updateDetails = {
                 ...(credentials.name && { name: credentials.name }),

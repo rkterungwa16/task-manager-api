@@ -1,4 +1,5 @@
 import chai from "chai";
+import { ObjectID } from "mongodb";
 import chaiAsPromised from "chai-as-promised";
 const { expect } = chai;
 chai.use(chaiAsPromised);
@@ -7,7 +8,7 @@ import {
     authenticateUser,
     createUser,
     confirmUserDoesNotExist,
-    confirmUserExist
+    editUser
 } from "../../../src/services";
 
 import { UsersModelInterface } from "../../../src/types";
@@ -18,7 +19,7 @@ const {
     reset
 } = userCollection;
 
-describe("User Service: ", function () {
+describe.only("User Service: ", function () {
     beforeEach(async function () {
         await populate();
     });
@@ -92,6 +93,23 @@ describe("User Service: ", function () {
                 });
             };
             expect(authenticatedUser).to.throw();
+        });
+    });
+
+    describe("User Service: Edit user info", function () {
+        it("should successfully change a users email and password", async function () {
+            const editedUser = await editUser({
+                name: "john",
+                email: "john@doe.com",
+                confirmEmail: "john@doe.com",
+                password: "1111111",
+                confirmPassword: "1111111",
+                userId: new ObjectID("5f0f5bb7786b1c0e246357a4")
+            }) as UsersModelInterface;
+
+            console.log("edited user", editedUser);
+            expect(editedUser.email).to.equal("john@doe.com");
+            expect(editedUser.name).to.equal("john");
         });
     });
 });
