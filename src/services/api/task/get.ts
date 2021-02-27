@@ -3,7 +3,7 @@ import { Document, Model } from "mongoose";
 
 import { Tasks } from "../../../models";
 
-export const viewProjectTasksDefinition = (
+export const fetchProjectTasksDefinition = (
     tasks: Model<Document>
 ): ((project: string) => Promise<Document[]>) => {
     return async project => {
@@ -16,9 +16,9 @@ export const viewProjectTasksDefinition = (
     };
 };
 
-export const viewProjectTasks = viewProjectTasksDefinition(Tasks);
+export const fetchProjectTasks = fetchProjectTasksDefinition(Tasks);
 
-export const viewTodaysTasksDefinition = (
+export const fetchTodaysTasksDefinition = (
     tasks: Model<Document>
 ): ((userId: ObjectId) => Promise<Document[]>) => {
     return async userId => {
@@ -32,9 +32,9 @@ export const viewTodaysTasksDefinition = (
     };
 };
 
-export const viewTodaysTasks = viewTodaysTasksDefinition(Tasks);
+export const fetchTodaysTasks = fetchTodaysTasksDefinition(Tasks);
 
-export const viewUsersOverDueTasksDefinition = (
+export const fetchUsersOverDueTasksDefinition = (
     tasks: Model<Document>
 ): ((userId: ObjectId) => Promise<Document[]>) => {
     return async userId => {
@@ -50,4 +50,4 @@ export const viewUsersOverDueTasksDefinition = (
     };
 };
 
-export const viewUsersOverDueTasks = viewUsersOverDueTasksDefinition(Tasks);
+export const fetchUsersOverDueTasks = fetchUsersOverDueTasksDefinition(Tasks);

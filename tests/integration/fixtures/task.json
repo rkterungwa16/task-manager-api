@@ -1,0 +1,12 @@
+{
+    "_id": "5f0ff4d628e549394cd1d86b",
+    "priority": 1,
+    "label": [
+        ""
+    ],
+    "dueDate": "2020-08-29T09:41:22.071Z",
+    "description": "Fundamentals of promises",
+    "project": "5f0f5c11786b1c0e246357a5",
+    "userId": "5f0f5bb7786b1c0e246357a4",
+    "__v": 0
+}

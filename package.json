@@ -6,6 +6,7 @@
   "scripts": {
     "test": "cross-env NODE_ENV=test nyc --reporter=html --reporter=text mocha -r ts-node/register --recursive tests/**/*.test.ts --exit",
     "unit:test": "cross-env NODE_ENV=test nyc --reporter=html --reporter=text mocha -r ts-node/register tests/unit/**/*.test.ts --exit",
+    "integration:test": "cross-env NODE_ENV=test nyc --reporter=html --reporter=text mocha -r ts-node/register tests/integration/**/*.test.ts --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "start:dev": "nodemon",
     "start": "npm run build && cross-env NODE_ENV=production node dist/index.js",

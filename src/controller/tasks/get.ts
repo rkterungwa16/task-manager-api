@@ -3,9 +3,9 @@ import { ObjectId } from "mongodb";
 import { Document } from "mongoose";
 
 import {
-    viewProjectTasks,
-    viewTodaysTasks,
-    viewUsersOverDueTasks,
+    fetchProjectTasks,
+    fetchTodaysTasks,
+    fetchUsersOverDueTasks,
     apiResponse
 } from "../../services";
 import { IRequest } from "../../types";
@@ -32,7 +32,7 @@ export const viewProjectTasksControllerDefinition = (
 };
 
 export const viewProjectTasksController = viewProjectTasksControllerDefinition(
-    viewProjectTasks
+    fetchProjectTasks
 );
 
 export const viewTodaysTasksControllerDefinition = (
@@ -61,7 +61,7 @@ export const viewTodaysTasksControllerDefinition = (
 
 // TODO: Response should include title: today
 export const viewTodaysTasksController = viewTodaysTasksControllerDefinition(
-    viewTodaysTasks
+    fetchTodaysTasks
 );
 
 export const viewUsersOverDueTasksControllerDefinition = (
@@ -89,5 +89,5 @@ export const viewUsersOverDueTasksControllerDefinition = (
 };
 
 export const viewUsersOverDueTasksController = viewUsersOverDueTasksControllerDefinition(
-    viewUsersOverDueTasks
+    fetchUsersOverDueTasks
 );

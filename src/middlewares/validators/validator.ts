@@ -32,7 +32,6 @@ export const validate = (requiredProperties?: RequiredPropertiesInterface) => {
                 requiredProperties[prop].validateMethod(requestBody[prop]);
             }
         }
-
         next();
     };
 };

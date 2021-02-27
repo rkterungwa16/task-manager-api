@@ -10,7 +10,10 @@ import {
 } from "../../types";
 
 export const editTaskControllerDefinition = (
-    editUserTask: (credentials: TasksModelInterface, taskId: string) => Promise<Document>
+    editUserTask: (
+        credentials: TasksModelInterface,
+        taskId: string
+    ) => Promise<Document>
 ) => {
     return async (req: IRequest, res: Response, next: NextFunction) => {
         try {

@@ -4,7 +4,7 @@ import { error } from "../../..";
 import { UsersModelInterface } from "../../../../types";
 import { comparePassword } from "../../../password";
 
-export const userWithEmailShouldExist = (
+export const confirmUserWithEmailExists = (
     user: Model<Document>
 ): ((email: string) => Promise<UsersModelInterface>) => {
     return async (email: string) => {
@@ -16,7 +16,7 @@ export const userWithEmailShouldExist = (
     };
 };
 
-export const userWithEmailShouldNotExist = (
+export const comfirmUserWithEmailDoesNotExist = (
     user: Model<Document>
 ): ((email: string) => Promise<boolean>) => {
     return async (email: string) => {

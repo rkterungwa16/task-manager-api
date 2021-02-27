@@ -9,18 +9,19 @@ export interface EditTaskParameterInterface {
 
 export const editTaskDefinition = (
     createTasksArgs: EditTaskParameterInterface
-): ((credentials: TasksModelInterface, taskId: string) => Promise<Document>) => {
+): ((
+    credentials: TasksModelInterface,
+    taskId: string
+) => Promise<Document>) => {
     const { task } = createTasksArgs;
     return async (credentials: TasksModelInterface, taskId) => {
-        return (await task
-            .findByIdAndUpdate(
-                taskId,
-                {
-                    $set: credentials
-                },
-                { new: true }
-            )
-        ) as Document;
+        return (await task.findByIdAndUpdate(
+            taskId,
+            {
+                $set: credentials
+            },
+            { new: true }
+        )) as Document;
     };
 };
 

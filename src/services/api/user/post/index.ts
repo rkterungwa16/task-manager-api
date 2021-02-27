@@ -13,8 +13,8 @@ import { signJwt } from "../../../jwt";
 
 import {
     matchPassword,
-    userWithEmailShouldExist,
-    userWithEmailShouldNotExist
+    confirmUserWithEmailExists,
+    comfirmUserWithEmailDoesNotExist
 } from "./helpers";
 import {
     AuthenticationParameterInterface,
@@ -52,12 +52,12 @@ export const createUserDefinition = (
     };
 };
 
-export const userExist = userWithEmailShouldExist(Users);
-export const userDoesNotExist = userWithEmailShouldNotExist(Users);
+export const confirmUserExist = confirmUserWithEmailExists(Users);
+export const confirmUserDoesNotExist = comfirmUserWithEmailDoesNotExist(Users);
 
 export const createUser = createUserDefinition({
     user: Users,
-    userDoesNotExist,
+    userDoesNotExist: confirmUserDoesNotExist,
     hashPassword,
     saltPassword
 });
@@ -98,5 +98,5 @@ export const authenticateUserDefinition = (
 export const authenticateUser = authenticateUserDefinition({
     matchPassword,
     signToken: signJwt,
-    existingUser: userExist
+    existingUser: confirmUserExist
 });

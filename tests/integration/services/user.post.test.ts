@@ -6,8 +6,8 @@ chai.use(chaiAsPromised);
 import {
     authenticateUser,
     createUser,
-    userDoesNotExist,
-    userExist,
+    confirmUserDoesNotExist,
+    confirmUserExist
 } from "../../../src/services";
 
 import { UsersModelInterface } from "../../../src/types";
@@ -28,13 +28,13 @@ describe("User Service: ", function () {
     describe("Prevent Duplicate User Registration", function () {
         it("should return true for user not yet resgistered", async function () {
 
-            const exists = await userDoesNotExist("komb@kombol.com");
+            const exists = await confirmUserDoesNotExist("komb@kombol.com");
             expect(exists).to.equal(true);
         });
 
         it("should throw error for user already registered", async function () {
             function alreadyRegistered() {
-                throw userDoesNotExist("kombol@kombol.com");
+                throw confirmUserDoesNotExist("kombol@kombol.com");
             };
             expect(alreadyRegistered).to.throw();
         });
