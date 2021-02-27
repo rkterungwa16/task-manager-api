@@ -9,10 +9,9 @@ export interface UserEditFieldsInterface {
     userId: ObjectId;
     name?: string;
     email?: string;
+    confirmEmail?: string;
     password?: string;
-    collaborationInviteStatus?: "pending" | "declined" | "accepted";
-    resetPasswordToken?: string;
-    favoriteProject: ObjectId;
+    confirmPassword?: string;
 }
 
 export interface EditUserParameterInterface {
@@ -22,10 +21,6 @@ export interface EditUserParameterInterface {
         message: string,
         name: string
     ) => CustomError;
-    // modifyProjectFavorite: (
-    //     projects: ObjectId[],
-    //     project: ObjectId
-    // ) => ObjectId[];
     hashPassword: (password: string, salt: string) => Promise<string>;
     saltPassword: () => Promise<string>;
 }
@@ -37,10 +32,20 @@ export const editUserDefinition = (
         try {
             const salt = await editUserArgs.saltPassword();
             const { userId } = credentials;
-            const userDetails = (await editUserArgs.user.findById(
-                userId
-            )) as UsersModelInterface;
-            delete credentials.userId;
+            if (credentials.confirmEmail !== credentials.email) {
+                editUserArgs.editUserError(
+                    400,
+                    "Email must match",
+                    "User Edit"
+                );
+            }
+            if (credentials.confirmPassword !== credentials.password) {
+                editUserArgs.editUserError(
+                    400,
+                    "Password must match",
+                    "User Edit"
+                );
+            }
             const updateDetails = {
                 ...(credentials.name && { name: credentials.name }),
                 ...(credentials.email && { email: credentials.email }),
@@ -49,23 +54,7 @@ export const editUserDefinition = (
                         credentials.password,
                         salt
                     )
-                }),
-                ...(credentials.password && {
-                    salt
-                }),
-                ...(credentials.resetPasswordToken && {
-                    resetPasswordToken: credentials.resetPasswordToken
-                }),
-                ...(credentials.collaborationInviteStatus && {
-                    collaborationInviteStatus:
-                        credentials.collaborationInviteStatus
                 })
-                // ...(credentials.favoriteProject && {
-                //     favoriteProjects: modifyFavorites(
-                //         userDetails.favoriteProjects as ObjectId[],
-                //         credentials.favoriteProject
-                //     )
-                // })
             };
 
             let user = (await editUserArgs.user.findByIdAndUpdate(
@@ -78,25 +67,10 @@ export const editUserDefinition = (
             delete user.salt;
             return user;
         } catch (err) {
-            throw editUserArgs.editUserError(
-                400,
-                "User Edit was not successful",
-                "User Edit"
-            );
+            throw err;
         }
     };
 };
-
-// export const modifyFavorites = (
-//     projects: ObjectId[],
-//     project: ObjectId
-// ): ObjectId[] => {
-//     const isFavorite = projects.includes(project);
-//     if (isFavorite) {
-//         return projects.filter(id => id !== project);
-//     }
-//     return [...projects, project];
-// };
 
 export const editUser = editUserDefinition({
     user: Users,

@@ -16,7 +16,7 @@ import {
     UsersModelInterface
 } from "../types";
 
-export const registerControllerDefinition = (
+export const registerControllerFactory = (
     registerUser: (
         credentials: CreatedUserCredentialInterface
     ) => Promise<Document | undefined>
@@ -44,9 +44,9 @@ export const registerControllerDefinition = (
     };
 };
 
-export const registerController = registerControllerDefinition(createUser);
+export const registerController = registerControllerFactory(createUser);
 
-export const loginControllerDefinition = (
+export const loginControllerFactory = (
     loginUser: (
         credentials: AuthenticatedUserCredentialInterface
     ) => Promise<string>
@@ -68,9 +68,9 @@ export const loginControllerDefinition = (
     };
 };
 
-export const loginController = loginControllerDefinition(authenticateUser);
+export const loginController = loginControllerFactory(authenticateUser);
 
-export const editUserControllerDefinition = (
+export const editUserControllerFactory = (
     userEditor: (
         editUserControllerArgs: UserEditFieldsInterface
     ) => Promise<Document>
@@ -96,4 +96,4 @@ export const editUserControllerDefinition = (
     };
 };
 
-export const editUserController = editUserControllerDefinition(editUser);
+export const editUserController = editUserControllerFactory(editUser);

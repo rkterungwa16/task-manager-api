@@ -25,7 +25,7 @@ describe("User Service: ", function () {
     afterEach(async function () {
         await reset();
     });
-    describe("Prevent Duplicate User Registration", function () {
+    describe("User Service: Registration", function () {
         it("should return true for user not yet resgistered", async function () {
 
             const exists = await confirmUserDoesNotExist("komb@kombol.com");
@@ -38,9 +38,7 @@ describe("User Service: ", function () {
             };
             expect(alreadyRegistered).to.throw();
         });
-    });
 
-    describe("Register a new user", function () {
         it("should successfully create a new user", async function () {
             const registeredUser = await createUser({
                 email: "john@doe.com",
@@ -62,7 +60,7 @@ describe("User Service: ", function () {
         });
     });
 
-    describe("Authenticate a registered user", function () {
+    describe("User Service: Authentication", function () {
         it("should successfully authenticate a registered user", async function () {
             await createUser({
                 email: "john@doe.com",
