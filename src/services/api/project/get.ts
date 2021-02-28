@@ -7,7 +7,7 @@ import {
     singleProjectWithTasks
 } from "../../../query";
 
-export const viewOwnerProjectsDefinition = (
+export const fetchOwnerProjectsFactory = (
     projects: Model<Document>
 ): ((owner: string) => Promise<Document[]>) => {
     return async owner => {
@@ -17,9 +17,9 @@ export const viewOwnerProjectsDefinition = (
     };
 };
 
-export const viewOwnerProjects = viewOwnerProjectsDefinition(Projects);
+export const fetchOwnerProjects = fetchOwnerProjectsFactory(Projects);
 
-export const viewSingleOwnerProjectDefinition = (
+export const fetchOwnerProjectFactory = (
     projects: Model<Document>
 ): ((owner: string, projectId: string) => Promise<Document>) => {
     // TODO: return error message for non existent project
@@ -31,6 +31,4 @@ export const viewSingleOwnerProjectDefinition = (
     };
 };
 
-export const viewSingleOwnerProject = viewSingleOwnerProjectDefinition(
-    Projects
-);
+export const fetchOwnerProject = fetchOwnerProjectFactory(Projects);

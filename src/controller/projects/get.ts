@@ -3,8 +3,8 @@ import { ObjectId } from "mongodb";
 import { Document } from "mongoose";
 
 import {
-    viewOwnerProjects as fetchOwnerProjects,
-    viewSingleOwnerProject as fetchOwnerProject,
+    fetchOwnerProjects,
+    fetchOwnerProject,
     apiResponse
 } from "../../services";
 import { IRequest, UsersModelInterface } from "../../types";
