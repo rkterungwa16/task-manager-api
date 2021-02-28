@@ -19,7 +19,7 @@ const {
     reset
 } = userCollection;
 
-describe.only("User Service: ", function () {
+describe("User Service: ", function () {
     beforeEach(async function () {
         await populate();
     });

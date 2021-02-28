@@ -22,7 +22,7 @@ export const createProjectControllerDefinition = (
                 description,
                 color,
                 owner: id
-            } as ProjectsModelInterface);
+            } as any);
             return apiResponse({
                 message: "project successfully created",
                 data: {

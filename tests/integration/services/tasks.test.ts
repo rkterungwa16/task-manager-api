@@ -1,6 +1,5 @@
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
-import { ObjectID } from "mongodb";
 const { expect } = chai;
 chai.use(chaiAsPromised);
 
@@ -33,12 +32,12 @@ describe("Task Service: ", function () {
         });
 
         it("should fetch a users task for today", async function () {
-            const todaysTasks = await fetchTodaysTasks(new ObjectID("5f0f5bb7786b1c0e246357a4")) as TasksModelInterface[];
+            const todaysTasks = await fetchTodaysTasks("5f0f5bb7786b1c0e246357a4") as TasksModelInterface[];
             expect(todaysTasks.length).to.equal(0);
         });
 
         it("should fetch a users tasks that are overdue", async function () {
-            const overDueTasks = await fetchUsersOverDueTasks(new ObjectID("5f0f5bb7786b1c0e246357a4")) as TasksModelInterface[];
+            const overDueTasks = await fetchUsersOverDueTasks("5f0f5bb7786b1c0e246357a4") as TasksModelInterface[];
             expect(overDueTasks.length).to.equal(1);
             expect(overDueTasks[0].priority).to.equal(1);
         });

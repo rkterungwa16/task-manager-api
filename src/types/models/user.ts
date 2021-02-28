@@ -2,7 +2,7 @@ import { ObjectId } from "mongodb";
 import { Document } from "mongoose";
 
 export interface UsersModelInterface extends Document {
-    id?: ObjectId;
+    id: string;
     name?: string;
     email?: string;
     salt?: string;

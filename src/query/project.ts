@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-export const listOfUserAsOwnerAndColloaboratorProjects = (id: ObjectId) => {
+export const listOfUserAsOwnerAndColloaboratorProjects = (id: string) => {
     return [
         {
             $match: {

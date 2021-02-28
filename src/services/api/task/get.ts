@@ -20,7 +20,7 @@ export const fetchProjectTasks = fetchProjectTasksDefinition(Tasks);
 
 export const fetchTodaysTasksDefinition = (
     tasks: Model<Document>
-): ((userId: ObjectId) => Promise<Document[]>) => {
+): ((userId: string) => Promise<Document[]>) => {
     return async userId => {
         return (await tasks
             .find({
@@ -36,7 +36,7 @@ export const fetchTodaysTasks = fetchTodaysTasksDefinition(Tasks);
 
 export const fetchUsersOverDueTasksDefinition = (
     tasks: Model<Document>
-): ((userId: ObjectId) => Promise<Document[]>) => {
+): ((userId: string) => Promise<Document[]>) => {
     return async userId => {
         return (await tasks
             .find({

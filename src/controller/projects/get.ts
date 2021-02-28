@@ -10,12 +10,12 @@ import {
 import { IRequest, UsersModelInterface } from "../../types";
 
 export const viewOwnerProjectsControllerDefinition = (
-    viewProjects: (owner: ObjectId) => Promise<Document[]>
+    viewProjects: (owner: string) => Promise<Document[]>
 ) => {
     return async (req: IRequest, res: Response, next: NextFunction) => {
         try {
             const { id } = req.currentUser as UsersModelInterface;
-            const projects = await viewProjects(id as ObjectId);
+            const projects = await viewProjects(id);
             return apiResponse({
                 message: "projects successfully fetched",
                 data: {
@@ -35,13 +35,13 @@ export const viewOwnerProjectsController = viewOwnerProjectsControllerDefinition
 );
 
 export const viewSingleOwnerProjectControllerDefinition = (
-    viewProject: (owner: ObjectId, projectId: string) => Promise<Document>
+    viewProject: (owner: string, projectId: string) => Promise<Document>
 ) => {
     return async (req: IRequest, res: Response, next: NextFunction) => {
         try {
             const { id } = req.currentUser as UsersModelInterface;
             const { projectId } = req.params;
-            const project = await viewProject(id as ObjectId, projectId);
+            const project = await viewProject(id, projectId);
             return apiResponse({
                 message: "project successfully fetched",
                 data: {

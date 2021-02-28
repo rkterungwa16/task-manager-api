@@ -1,10 +1,10 @@
 import express from "express";
 
 import {
-    addCollaboratorsController,
-    archiveProjectController,
+    // addCollaboratorsController,
+    // archiveProjectController,
     createProjectController,
-    editController,
+    editProjectController,
     viewOwnerProjectsController,
     viewSingleOwnerProjectController
 } from "../controller";
@@ -24,14 +24,14 @@ router
 router
     .route("/projects/:projectId")
     .get(authenticateMiddleware, viewSingleOwnerProjectController)
-    .put(authenticateMiddleware, editController);
+    .put(authenticateMiddleware, editProjectController);
 
-router
-    .route("/projects/:projectId/collaborators/add")
-    .put(authenticateMiddleware, addCollaboratorsController);
+// router
+//     .route("/projects/:projectId/collaborators/add")
+//     .put(authenticateMiddleware, addCollaboratorsController);
 
-router
-    .route("/projects/:projectId/archive")
-    .put(authenticateMiddleware, archiveProjectController);
+// router
+//     .route("/projects/:projectId/archive")
+//     .put(authenticateMiddleware, archiveProjectController);
 
 export default router;

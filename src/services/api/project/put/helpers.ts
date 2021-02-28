@@ -7,9 +7,23 @@ import { ProjectsModelInterface, UsersModelInterface } from "../../../../types";
 import { error, signJwt } from "../../..";
 import { sendMail } from "../../../email";
 
+export interface ProjectRequestInterface {
+    title: string;
+    description?: string;
+    color?: string;
+    owner: ObjectId;
+    tasks?: ObjectId[];
+    isFavourite?: boolean;
+    isArchived?: boolean;
+    isDeleted?: boolean;
+    collaborators?: ObjectId[];
+    createdAt?: string;
+    updatedAt?: string;
+}
 export interface ProjectDbUpdateInterface {
     projectId: string;
-    projectUpdateValues: ProjectsModelInterface;
+    ownerId: string;
+    projectUpdateValues: ProjectRequestInterface;
     project: Model<Document>;
 }
 
@@ -18,21 +32,25 @@ export const projectDbUpdate = async (
 ): Promise<ProjectsModelInterface> => {
     try {
         const {
+            ownerId,
             projectId,
             project,
             projectUpdateValues
         } = projectUpdateDetails;
+
         const updatedProject = (await project
-            .findByIdAndUpdate(
-                projectId,
+            .findOneAndUpdate(
                 {
-                    $set: projectUpdateValues
+                    _id: projectId,
+                    owner: ownerId
                 },
+                { $set: projectUpdateValues },
                 { new: true }
             )
             .populate("owner", "-password -salt")
             .populate("collaborators", "-password -salt")
             .exec()) as ProjectsModelInterface;
+
         return updatedProject;
     } catch (err) {
         throw error(500, "Could not update project", "Project");
@@ -187,7 +205,7 @@ export const createNonExistingUsers = async (
                 collaborationInviteStatus: string;
             }>;
 
-            return await user.create(nonRegisteredCollaborators);
+            return (await user.create(nonRegisteredCollaborators)) as any;
         }
 
         if (!registeredCollaborators.length) {
@@ -201,7 +219,7 @@ export const createNonExistingUsers = async (
                 collaborationInviteStatus: string;
             }>;
 
-            return await user.create(nonRegisteredCollaborators);
+            return (await user.create(nonRegisteredCollaborators)) as any;
         }
 
         return false;

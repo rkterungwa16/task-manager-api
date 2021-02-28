@@ -36,11 +36,11 @@ export const viewProjectTasksController = viewProjectTasksControllerDefinition(
 );
 
 export const viewTodaysTasksControllerDefinition = (
-    viewTodaysTasks: (userId: ObjectId) => Promise<Document[]>
+    viewTodaysTasks: (userId: string) => Promise<Document[]>
 ) => {
     return async (req: IRequest, res: Response, next: NextFunction) => {
         try {
-            const { id } = req.currentUser as { id: ObjectId };
+            const { id } = req.currentUser as { id: string };
             const tasks = await viewTodaysTasks(id);
             return apiResponse({
                 message: "tasks due today successfull fetched",
@@ -65,11 +65,11 @@ export const viewTodaysTasksController = viewTodaysTasksControllerDefinition(
 );
 
 export const viewUsersOverDueTasksControllerDefinition = (
-    viewUsersOverDueTasks: (userId: ObjectId) => Promise<Document[]>
+    viewUsersOverDueTasks: (userId: string) => Promise<Document[]>
 ) => {
     return async (req: IRequest, res: Response, next: NextFunction) => {
         try {
-            const { id } = req.currentUser as { id: ObjectId };
+            const { id } = req.currentUser as { id: string };
             const tasks = await viewUsersOverDueTasks(id);
             return apiResponse({
                 message: "tasks over due successfully fetched",

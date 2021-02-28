@@ -33,7 +33,7 @@ export const editTaskControllerDefinition = (
                 ...(priority && { priority }),
                 ...(completed && { completed }),
                 ...(dueDate && { dueDate }),
-                project: new ObjectID(projectId),
+                project: projectId,
                 userId: id
             } as TasksModelInterface;
 

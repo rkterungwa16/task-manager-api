@@ -9,7 +9,7 @@ import {
 
 export const viewOwnerProjectsDefinition = (
     projects: Model<Document>
-): ((owner: ObjectId) => Promise<Document[]>) => {
+): ((owner: string) => Promise<Document[]>) => {
     return async owner => {
         return await projects.aggregate(
             listOfUserAsOwnerAndColloaboratorProjects(owner)
@@ -21,7 +21,7 @@ export const viewOwnerProjects = viewOwnerProjectsDefinition(Projects);
 
 export const viewSingleOwnerProjectDefinition = (
     projects: Model<Document>
-): ((owner: ObjectId, projectId: string) => Promise<Document>) => {
+): ((owner: string, projectId: string) => Promise<Document>) => {
     // TODO: return error message for non existent project
     return async (owner, projectId) => {
         const aggregatedProject = await projects.aggregate(

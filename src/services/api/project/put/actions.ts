@@ -10,38 +10,6 @@ import {
 
 import { error } from "../../..";
 
-export const edit = async (
-    requestProps: {
-        description: string;
-        title: string;
-        isFavourite: boolean;
-        color: string;
-    },
-    projectId: string,
-    ownerProject: ProjectsModelInterface
-): Promise<any> => {
-    // description title favourite
-    let updatedProject;
-    ownerProject = {
-        ...ownerProject,
-        ...(requestProps.description && {
-            description: requestProps.description
-        }),
-        ...(requestProps.title && { title: requestProps.title }),
-        ...(requestProps.isFavourite && {
-            isFavourite: requestProps.isFavourite
-        }),
-        ...(requestProps.color && { color: requestProps.color })
-    } as ProjectsModelInterface;
-
-    updatedProject = await projectDbUpdate({
-        project: Projects,
-        projectId,
-        projectUpdateValues: ownerProject
-    });
-    return updatedProject;
-};
-
 export const archiveProject = async (
     requestProps: { isArchived: boolean },
     projectId: string,
@@ -53,12 +21,12 @@ export const archiveProject = async (
         isArchived: requestProps.isArchived
     } as ProjectsModelInterface;
 
-    updatedProject = await projectDbUpdate({
-        project: Projects,
-        projectId,
-        projectUpdateValues: ownerProject
-    });
-    return updatedProject;
+    // updatedProject = await projectDbUpdate({
+    //     project: Projects,
+    //     projectId,
+    //     projectUpdateValues: ownerProject
+    // });
+    return;
 };
 
 export const deleteProject = async (
@@ -76,12 +44,12 @@ export const deleteProject = async (
         isDeleted: requestProps.isDeleted
     } as ProjectsModelInterface;
 
-    updatedProject = await projectDbUpdate({
-        project: Projects,
-        projectId,
-        projectUpdateValues: ownerProject
-    });
-    return updatedProject;
+    // updatedProject = await projectDbUpdate({
+    //     project: Projects,
+    //     projectId,
+    //     projectUpdateValues: ownerProject
+    // });
+    return;
 };
 
 export const addCollaborators = async (
@@ -109,7 +77,7 @@ export const addCollaborators = async (
         collaborator => {
             return collaborator.id;
         }
-    ) as ObjectId[];
+    ) as any[];
 
     let newlyCreatedUsers;
 
@@ -139,7 +107,7 @@ export const addCollaborators = async (
         );
         const newlyCreatedUsersIds = newlyCreatedUsers.map(user => {
             return user.id;
-        }) as ObjectId[];
+        }) as any[];
         let collaboratorsIds = registeredCollaboratorsIds.concat(
             newlyCreatedUsersIds
         );
@@ -187,11 +155,11 @@ export const addCollaborators = async (
         } as ProjectsModelInterface;
     }
 
-    updatedProject = await projectDbUpdate({
-        project: Projects,
-        projectId,
-        projectUpdateValues: ownerProject
-    });
+    // updatedProject = await projectDbUpdate({
+    //     project: Projects,
+    //     projectId,
+    //     projectUpdateValues: ownerProject
+    // });
     sendCollaboratorsInviteEmails(ownerDetail, collaboratorEmails as string[]);
-    return updatedProject;
+    return;
 };

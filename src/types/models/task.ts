@@ -10,8 +10,8 @@ enum Priority {
 export interface TasksModelInterface extends Document {
     description?: string;
     priority?: Priority;
-    userId?: ObjectID;
-    project?: ObjectId;
+    userId?: string;
+    project?: string;
     label?: string[];
     completed?: boolean;
     dueDate?: string;
