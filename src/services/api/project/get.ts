@@ -25,7 +25,7 @@ export const fetchOwnerProjectFactory = (
     // TODO: return error message for non existent project
     return async (owner, projectId) => {
         const aggregatedProject = await projects.aggregate(
-            singleProjectWithTasks(projectId)
+            singleProjectWithTasks(projectId, owner)
         );
         return aggregatedProject[0];
     };

@@ -14,7 +14,7 @@ import {
 import { TasksModelInterface } from "../../../src/types";
 import { taskCollection, projectCollection } from "../db";
 
-describe.only("Task Service: ", function () {
+describe("Task Service: ", function () {
     beforeEach(async function () {
         await taskCollection.populate();
         await projectCollection.populate();
