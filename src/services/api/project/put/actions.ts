@@ -113,7 +113,7 @@ export const addCollaborators = async (
         );
         // check if any user is already a collaborator. if true throw error
         const hasExistingCollaborators = confirmExistingCollaborators(
-            ownerProject.collaborators as ObjectId[],
+            ownerProject.collaborators as string[],
             collaboratorsIds
         );
         if (hasExistingCollaborators) {
@@ -124,7 +124,7 @@ export const addCollaborators = async (
             );
         }
         collaboratorsIds = [
-            ...(ownerProject.collaborators as ObjectId[]),
+            ...(ownerProject.collaborators as string[]),
             ...collaboratorsIds
         ];
         ownerProject = {
@@ -146,7 +146,7 @@ export const addCollaborators = async (
 
     if (!newlyCreatedUsers) {
         registeredCollaboratorsIds = [
-            ...(ownerProject.collaborators as ObjectId[]),
+            ...(ownerProject.collaborators as string[]),
             ...registeredCollaboratorsIds
         ];
         ownerProject = {

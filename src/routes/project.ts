@@ -5,8 +5,8 @@ import {
     // archiveProjectController,
     createProjectController,
     editProjectController,
-    viewOwnerProjectsController,
-    viewSingleOwnerProjectController
+    fetchOwnerProjectsController,
+    fetchOwnerProjectController
 } from "../controller";
 import { authenticateMiddleware, validateProjectInputs } from "../middlewares";
 
@@ -14,7 +14,7 @@ const router = express.Router();
 
 router
     .route("/projects")
-    .get(authenticateMiddleware, viewOwnerProjectsController)
+    .get(authenticateMiddleware, fetchOwnerProjectsController)
     .post(
         authenticateMiddleware,
         validateProjectInputs,
@@ -23,7 +23,7 @@ router
 
 router
     .route("/projects/:projectId")
-    .get(authenticateMiddleware, viewSingleOwnerProjectController)
+    .get(authenticateMiddleware, fetchOwnerProjectController)
     .put(authenticateMiddleware, editProjectController);
 
 // router

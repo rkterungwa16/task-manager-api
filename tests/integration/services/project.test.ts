@@ -4,7 +4,8 @@ const { expect } = chai;
 chai.use(chaiAsPromised);
 
 import {
-    editProject
+    editProject,
+    createProject
 } from "../../../src/services";
 
 import { ProjectsModelInterface } from "../../../src/types";
@@ -40,4 +41,18 @@ describe.only("Project Service: ", function () {
             expect(project.isFavourite).to.equal(false);
         });
     });
+
+    describe("Create Project", function () {
+        it("should be able to create a project", async function () {
+            const project = await createProject({
+                title: "test project",
+                description: "Useful for test",
+                isFavourite: false,
+                owner: "5f0f5bb7786b1c0e246357a4"
+            }) as ProjectsModelInterface;
+
+            expect(project.description).to.equal("Useful for test");
+            expect(project.title).to.equal("test project");
+        });
+    })
 });

@@ -1,19 +1,19 @@
 import { Document, Model } from "mongoose";
 
 import { Projects } from "../../../models";
-import { ProjectsModelInterface } from "../../../types";
+import { ProjectsModelInterface, ProjectCredentials } from "../../../types";
 
 export interface CreateProjectParameterInterface {
     project: Model<Document>;
 }
 
-export const createProjectDefinition = (
+export const createProjectFactory = (
     createProjectsArgs: CreateProjectParameterInterface
-): ((credentials: ProjectsModelInterface) => Promise<Document>) => {
+): ((credentials: ProjectCredentials) => Promise<Document>) => {
     const { project } = createProjectsArgs;
-    return async (credentials: ProjectsModelInterface) => {
+    return async (credentials: ProjectCredentials) => {
         return await project.create(credentials);
     };
 };
 
-export const createProject = createProjectDefinition({ project: Projects });
+export const createProject = createProjectFactory({ project: Projects });

@@ -18,3 +18,15 @@ export interface TasksModelInterface extends Document {
     createdAt?: string;
     updatedAt?: string;
 }
+
+export interface TasksCredentials {
+    description?: string;
+    priority?: Priority;
+    userId?: string;
+    project?: string;
+    label?: string[];
+    completed?: boolean;
+    dueDate?: string;
+    createdAt?: string;
+    updatedAt?: string;
+}

@@ -8,7 +8,7 @@ import {
     UsersModelInterface
 } from "../../types";
 
-export const createProjectControllerDefinition = (
+export const createProjectControllerFactory = (
     createUserProject: (
         credentials: ProjectsModelInterface
     ) => Promise<Document>
@@ -37,6 +37,6 @@ export const createProjectControllerDefinition = (
     };
 };
 
-export const createProjectController = createProjectControllerDefinition(
+export const createProjectController = createProjectControllerFactory(
     createProject
 );

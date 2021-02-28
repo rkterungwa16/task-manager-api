@@ -3,19 +3,19 @@ import { ObjectId } from "mongodb";
 import { Document } from "mongoose";
 
 import {
-    viewOwnerProjects,
-    viewSingleOwnerProject,
+    viewOwnerProjects as fetchOwnerProjects,
+    viewSingleOwnerProject as fetchOwnerProject,
     apiResponse
 } from "../../services";
 import { IRequest, UsersModelInterface } from "../../types";
 
-export const viewOwnerProjectsControllerDefinition = (
-    viewProjects: (owner: string) => Promise<Document[]>
+export const fetchOwnerProjectsControllerFactory = (
+    fetchProjects: (owner: string) => Promise<Document[]>
 ) => {
     return async (req: IRequest, res: Response, next: NextFunction) => {
         try {
             const { id } = req.currentUser as UsersModelInterface;
-            const projects = await viewProjects(id);
+            const projects = await fetchProjects(id);
             return apiResponse({
                 message: "projects successfully fetched",
                 data: {
@@ -30,18 +30,18 @@ export const viewOwnerProjectsControllerDefinition = (
     };
 };
 
-export const viewOwnerProjectsController = viewOwnerProjectsControllerDefinition(
-    viewOwnerProjects
+export const fetchOwnerProjectsController = fetchOwnerProjectsControllerFactory(
+    fetchOwnerProjects
 );
 
-export const viewSingleOwnerProjectControllerDefinition = (
-    viewProject: (owner: string, projectId: string) => Promise<Document>
+export const fetchOwnerProjectControllerFactory = (
+    fetchProject: (owner: string, projectId: string) => Promise<Document>
 ) => {
     return async (req: IRequest, res: Response, next: NextFunction) => {
         try {
             const { id } = req.currentUser as UsersModelInterface;
             const { projectId } = req.params;
-            const project = await viewProject(id, projectId);
+            const project = await fetchProject(id, projectId);
             return apiResponse({
                 message: "project successfully fetched",
                 data: {
@@ -56,6 +56,6 @@ export const viewSingleOwnerProjectControllerDefinition = (
     };
 };
 
-export const viewSingleOwnerProjectController = viewSingleOwnerProjectControllerDefinition(
-    viewSingleOwnerProject
+export const fetchOwnerProjectController = fetchOwnerProjectControllerFactory(
+    fetchOwnerProject
 );
