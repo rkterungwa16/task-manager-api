@@ -1,20 +1,17 @@
 import { Document, Model } from "mongoose";
 
 import { Tasks } from "../../../models";
-import { TasksModelInterface } from "../../../types";
+import { TasksCredentials } from "../../../types";
 
 export interface EditTaskParameterInterface {
     task: Model<Document>;
 }
 
-export const editTaskDefinition = (
+export const editTaskFactory = (
     createTasksArgs: EditTaskParameterInterface
-): ((
-    credentials: TasksModelInterface,
-    taskId: string
-) => Promise<Document>) => {
+): ((credentials: TasksCredentials, taskId: string) => Promise<Document>) => {
     const { task } = createTasksArgs;
-    return async (credentials: TasksModelInterface, taskId) => {
+    return async (credentials: TasksCredentials, taskId) => {
         return (await task.findByIdAndUpdate(
             taskId,
             {
@@ -25,4 +22,4 @@ export const editTaskDefinition = (
     };
 };
 
-export const editTask = editTaskDefinition({ task: Tasks });
+export const editTask = editTaskFactory({ task: Tasks });

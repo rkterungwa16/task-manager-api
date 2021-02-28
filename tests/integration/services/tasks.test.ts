@@ -14,7 +14,7 @@ import {
 import { TasksModelInterface } from "../../../src/types";
 import { taskCollection, projectCollection } from "../db";
 
-describe("Task Service: ", function () {
+describe.only("Task Service: ", function () {
     beforeEach(async function () {
         await taskCollection.populate();
         await projectCollection.populate();
@@ -42,4 +42,16 @@ describe("Task Service: ", function () {
             expect(overDueTasks[0].priority).to.equal(1);
         });
     });
+
+    describe("Create Task", function () {
+        it("should be able to create a project task", async function () {
+            const project = await createTask({
+                description: "Useful task for test",
+                project: "5f0f5c11786b1c0e246357a5",
+                userId: "5f0f5bb7786b1c0e246357a4"
+            }) as TasksModelInterface;
+
+            expect(project.description).to.equal("Useful task for test");
+        });
+    })
 });

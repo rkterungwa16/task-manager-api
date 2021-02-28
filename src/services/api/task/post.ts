@@ -1,7 +1,7 @@
 import { Document, Model } from "mongoose";
 
 import { Tasks } from "../../../models";
-import { TasksModelInterface } from "../../../types";
+import { TasksModelInterface, TasksCredentials } from "../../../types";
 
 export interface CreateTaskParameterInterface {
     task: Model<Document>;
@@ -9,9 +9,9 @@ export interface CreateTaskParameterInterface {
 
 export const createTaskDefinition = (
     createTasksArgs: CreateTaskParameterInterface
-): ((credentials: TasksModelInterface) => Promise<Document>) => {
+): ((credentials: TasksCredentials) => Promise<Document>) => {
     const { task } = createTasksArgs;
-    return async (credentials: TasksModelInterface) => {
+    return async (credentials: TasksCredentials) => {
         return await task.create(credentials);
     };
 };
