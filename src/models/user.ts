@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { connect } from "../datasources";
 import { UsersModelInterface } from "../types";
 
@@ -22,9 +23,12 @@ class UsersSchema {
                 password: {
                     type: String
                 },
-                collaborationInviteStatus: {
-                    type: String,
-                    enum: ["pending", "declined", "accepted"]
+                isActivated: {
+                    type: Boolean
+                },
+                collaborationInvites: {
+                    type: [ObjectId],
+                    ref: "CollaboratorInvites"
                 },
                 resetPasswordToken: {
                     type: String

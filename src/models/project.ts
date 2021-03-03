@@ -1,4 +1,4 @@
-import { ObjectId, ObjectID } from "mongodb";
+import { ObjectId } from "mongodb";
 import { connect } from "../datasources";
 import { ProjectsModelInterface } from "../types";
 
@@ -18,7 +18,7 @@ class ProjectsSchema {
                     type: String
                 },
                 owner: {
-                    type: ObjectID,
+                    type: ObjectId,
                     ref: "Users"
                 },
                 tasks: {

@@ -2,28 +2,18 @@ import { ObjectId } from "mongodb";
 import { Document, Model } from "mongoose";
 
 import { baseUrl } from "../../../../constants";
-import { ProjectsModelInterface, UsersModelInterface } from "../../../../types";
+import {
+    ProjectsModelInterface,
+    UsersModelInterface,
+    ProjectCredentials
+} from "../../../../types";
 
 import { error, signJwt } from "../../..";
 import { sendMail } from "../../../email";
-
-export interface ProjectRequestInterface {
-    title: string;
-    description?: string;
-    color?: string;
-    owner: ObjectId;
-    tasks?: ObjectId[];
-    isFavourite?: boolean;
-    isArchived?: boolean;
-    isDeleted?: boolean;
-    collaborators?: ObjectId[];
-    createdAt?: string;
-    updatedAt?: string;
-}
 export interface ProjectDbUpdateInterface {
     projectId: string;
     ownerId: string;
-    projectUpdateValues: ProjectRequestInterface;
+    projectUpdateValues: ProjectCredentials;
     project: Model<Document>;
 }
 
@@ -173,66 +163,101 @@ export const sendCollaboratorsInviteEmails = async (
     return true;
 };
 
-export const createNonExistingUsers = async (
-    collaboratorsEmails: string[],
-    user: Model<Document>,
-    registeredCollaborators: UsersModelInterface[] = []
-): Promise<boolean | UsersModelInterface[]> => {
-    try {
-        let nonRegisteredCollaborators;
-        if (registeredCollaborators.length) {
-            nonRegisteredCollaborators = collaboratorsEmails.filter(
-                collaborator => {
-                    const collaboratorIsRegistered = registeredCollaborators.find(
-                        userCollaborator => {
-                            const email = userCollaborator.email as string;
-                            return email === collaborator;
-                        }
-                    );
-                    return !collaboratorIsRegistered;
-                }
-            ) as any[];
-
-            nonRegisteredCollaborators = nonRegisteredCollaborators.map(
-                email => {
-                    return {
-                        email,
-                        collaborationInviteStatus: "pending"
-                    };
-                }
-            ) as Array<{
-                email: string;
-                collaborationInviteStatus: string;
-            }>;
-
-            return (await user.create(nonRegisteredCollaborators)) as any;
-        }
-
-        if (!registeredCollaborators.length) {
-            nonRegisteredCollaborators = collaboratorsEmails.map(email => {
+export const collaboratorsHaveRegisteredUsers = {
+    /**
+     * Create users that don't already exist on the platform but have an invite.
+     * This method handles the scenario where some members are registered while others are not
+     * filter out collaborators that are not yet registered and create them with collaborator invite as pending
+     * @param collaboratorsEmails list of emails to be added as collaborators
+     * @param user user database model
+     * @param registeredCollaborators list of collaborators that are already registered
+     */
+    true: async (args: {
+        collaboratorsEmails: string[];
+        registeredCollaborators: UsersModelInterface[];
+        user: Model<Document>;
+    }): Promise<UsersModelInterface[]> => {
+        const nonRegisteredCollaborators = args.collaboratorsEmails
+            .filter(collaborator => {
+                const registeredCollaborator = args.registeredCollaborators.find(
+                    userCollaborator => {
+                        const email = userCollaborator.email as string;
+                        return email === collaborator;
+                    }
+                );
+                return !registeredCollaborator;
+            })
+            .map(email => {
                 return {
                     email,
                     collaborationInviteStatus: "pending"
                 };
             }) as Array<{
-                email: string;
-                collaborationInviteStatus: string;
-            }>;
+            email: string;
+            collaborationInviteStatus: string;
+        }>;
 
-            return (await user.create(nonRegisteredCollaborators)) as any;
-        }
+        return (await args.user.create(nonRegisteredCollaborators)) as any;
+    },
+    /**
+     * Create users that don't already exist on the platform but have an invite.
+     * This method handles the scenario where all of the invited collaborators are not registered members
+     * @param collaboratorsEmails list of emails to be added as collaborators
+     * @param user user database model
+     * @param registeredCollaborators list of collaborators that are already registered
+     */
+    false: async (args: {
+        collaboratorsEmails: string[];
+        user: Model<Document>;
+    }): Promise<UsersModelInterface[]> => {
+        const nonRegisteredCollaborators = args.collaboratorsEmails.map(
+            email => {
+                return {
+                    email,
+                    collaborationInviteStatus: "pending"
+                };
+            }
+        ) as Array<{
+            email: string;
+            collaborationInviteStatus: string;
+        }>;
 
-        return false;
+        return (await args.user.create(nonRegisteredCollaborators)) as any;
+    }
+} as {
+    [x: string]: any;
+};
+
+/**
+ * Create users that don't already exist on the platform but have an invite.
+ * @param collaboratorsEmails list of emails to be added as collaborators
+ * @param user user database model
+ * @param registeredCollaborators list of collaborators that are already registered
+ */
+export const createNonRegisteredCollaborators = async (
+    collaboratorsEmails: string[],
+    user: Model<Document>,
+    registeredCollaborators: UsersModelInterface[] = []
+): Promise<UsersModelInterface[]> => {
+    try {
+        return await collaboratorsHaveRegisteredUsers[
+            `${Boolean(registeredCollaborators.length)}`
+        ]({
+            collaboratorsEmails,
+            user,
+            registeredCollaborators
+        });
     } catch (err) {
         throw error(500, "Could not create users", "Project");
     }
 };
 
-export const confirmExistingCollaborators = (
-    projectCollaboratorIds: string[],
-    invitedCollaboratorIds: string[]
-): boolean => {
-    return invitedCollaboratorIds.every(invitedCollaborator => {
-        return projectCollaboratorIds.includes(invitedCollaborator);
-    });
+export const checkUserIsAlreadyCollaborator = (
+    projectCollaborators: UsersModelInterface[],
+    invitedCollaborators: UsersModelInterface[]
+): UsersModelInterface => {
+    // for each invited collaborator, if they already exists in the project collaborator return their details
+    return invitedCollaborators.find(invitedCollaborator => {
+        if (projectCollaborators.includes(invitedCollaborator)) return;
+    }) as UsersModelInterface;
 };

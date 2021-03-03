@@ -1,10 +1,11 @@
 import { ObjectId } from "mongodb";
 import { Document, Model } from "mongoose";
+import { ProjectCredentials } from "types";
 
 import { CustomError } from "../../..";
 import { Visibility } from "../../../../constants";
 import { Projects } from "../../../../models";
-import { projectDbUpdate, ProjectRequestInterface } from "./helpers";
+import { projectDbUpdate } from "./helpers";
 
 export interface UserAsCollaboratorParameterInterface {
     owner: string | ObjectId;
@@ -55,7 +56,7 @@ export const editProject = async (
             isFavourite: requestProps.isFavourite
         }),
         ...(requestProps.color && { color: requestProps.color })
-    } as ProjectRequestInterface;
+    } as ProjectCredentials;
 
     updatedProject = await projectDbUpdate({
         project: Projects,

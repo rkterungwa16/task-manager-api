@@ -9,9 +9,10 @@ export interface UsersModelInterface extends Document {
     password?: string;
     createdAt?: string;
     updatedAt?: string;
-    collaborationInviteStatus?: "pending" | "declined" | "accepted";
+    collaborationInvites?: ObjectId[];
     resetPasswordToken?: string;
     favoriteProjects?: ObjectId[];
+    isActivated?: boolean;
 }
 export interface CreatedUserCredentialInterface {
     name: string;
