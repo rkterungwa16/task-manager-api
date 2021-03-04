@@ -44,7 +44,8 @@ export const createUserDefinition = (
             return await createUserArgs.user.create({
                 ...credentials,
                 salt,
-                password: hashedPassword
+                password: hashedPassword,
+                isActivated: true
             });
         } catch (error) {
             throw error;

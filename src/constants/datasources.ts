@@ -1,5 +1,3 @@
-import * as dotenv from "dotenv";
-dotenv.config();
 export interface DatabaseConfigInterface {
     [x: string]: {
         databaseUri: string;

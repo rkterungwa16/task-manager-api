@@ -1,4 +1,4 @@
-import { ObjectId, ObjectID } from "mongodb";
+import { ObjectId } from "mongodb";
 import { connect } from "../datasources";
 import { ProjectsModelInterface } from "../types";
 
@@ -18,17 +18,14 @@ class ProjectsSchema {
                     type: String
                 },
                 owner: {
-                    type: ObjectID,
+                    type: ObjectId,
                     ref: "Users"
                 },
-                tasks: {
-                    type: [ObjectId],
-                    ref: "Tasks"
-                },
-                collaborators: {
-                    type: [ObjectId],
+                tasks: [{ type: ObjectId, ref: 'Tasks' }],
+                collaborators: [{
+                    type: ObjectId,
                     ref: "Users"
-                },
+                }],
                 visibility: {
                     type: String,
                     enum: ["PRIVATE", "PUBLIC"],

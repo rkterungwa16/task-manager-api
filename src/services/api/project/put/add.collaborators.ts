@@ -1,5 +1,4 @@
-import { ObjectId } from "mongodb";
-import { Projects, Users } from "../../../../models";
+import { Projects, Users, CollaboratorInvites } from "../../../../models";
 import {
     ProjectsModelInterface,
     UsersModelInterface,
@@ -7,61 +6,16 @@ import {
 } from "../../../../types";
 import {
     checkUserIsAlreadyCollaborator,
-    createNonRegisteredCollaborators,
     projectDbUpdate,
     sendCollaboratorsInviteEmails,
     collaboratorsHaveRegisteredUsers
 } from "./helpers";
 
 import { error } from "../../..";
-import { registerController } from "controller";
-
-export const archiveProject = async (
-    requestProps: { isArchived: boolean },
-    projectId: string,
-    ownerProject: ProjectsModelInterface
-): Promise<any> => {
-    let updatedProject;
-    ownerProject = {
-        ...ownerProject,
-        isArchived: requestProps.isArchived
-    } as ProjectsModelInterface;
-
-    // updatedProject = await projectDbUpdate({
-    //     project: Projects,
-    //     projectId,
-    //     projectUpdateValues: ownerProject
-    // });
-    return;
-};
-
-export const deleteProject = async (
-    requestProps: { isDeleted: boolean },
-    projectId: string,
-    ownerProject: ProjectsModelInterface
-): Promise<any> => {
-    const { isDeleted: deleted } = ownerProject;
-    if (deleted) {
-        throw error(422, "Project already deleted", "Project delete");
-    }
-    let updatedProject;
-    ownerProject = {
-        ...ownerProject,
-        isDeleted: requestProps.isDeleted
-    } as ProjectsModelInterface;
-
-    // updatedProject = await projectDbUpdate({
-    //     project: Projects,
-    //     projectId,
-    //     projectUpdateValues: ownerProject
-    // });
-    return;
-};
 
 export const addCollaborators = async (
     requestProps: { collaboratorsEmails: string[] },
     projectId: string,
-    ownerProject: ProjectCredentials,
     owner: string
 ): Promise<any> => {
     let updatedProject;
@@ -69,9 +23,20 @@ export const addCollaborators = async (
     // TODO: list out all actions to be performed by add collaborator method
     // TODO: list out all error scenarios and their corresponding actions
     const { collaboratorsEmails } = requestProps;
-    const ownerDetail = (await Users.findById(owner)) as UsersModelInterface;
-
+    const project = (await Projects
+        .findOne({
+            _id: projectId,
+            owner
+        })
+        .populate("collaborators", "-password -salt")
+        .exec()
+    ) as ProjectsModelInterface;
+    let ownerProject = project.toObject() as ProjectCredentials;
     // Collaborator emails should not contain owners of the project.
+    if (!ownerProject) {
+        throw error(400, "Project does not exist", "Project update");
+    }
+    const ownerDetail = project.owner as any;
     if (collaboratorsEmails.includes(ownerDetail.email as string)) {
         throw error(422, "Owner cannot be a collaborator", "Project update");
     }
@@ -82,15 +47,7 @@ export const addCollaborators = async (
         email: { $in: collaboratorsEmails }
     })) as UsersModelInterface[];
 
-    let registeredCollaboratorsIds = registeredCollaborators.map(
-        collaborator => {
-            return collaborator.id;
-        }
-    ) as any[];
-
     let newlyCreatedUsersByInvite = [] as any[];
-
-    const rC = collaboratorsHaveRegisteredUsers;
 
     // if non of the collaborators are already registered/activated
     // create all of them as users
@@ -100,6 +57,10 @@ export const addCollaborators = async (
             users: Users
         }) as UsersModelInterface[];
     }
+
+    // NOTE: collaboratorsEmails contains both created and non created users
+    // Separate created and non created users
+    // collaborators = RegisteredCollaborators + NonRegisteredCollaborators
 
     // if some of the collaborators are already registered
     // separate users already created from user not created
@@ -127,12 +88,11 @@ export const addCollaborators = async (
         newlyCreatedUsersByInvite = registeredCollaborators;
     }
 
-    const newlyCreatedUsersIds = newlyCreatedUsersByInvite.map(user => {
+    let newlyCreatedUsersIds = newlyCreatedUsersByInvite.map(user => {
         return user.id;
     }) as any[];
-    let collaboratorsIds = registeredCollaboratorsIds.concat(
-        newlyCreatedUsersIds
-    );
+
+
     // check if any user is already a collaborator. if true throw error
     const isAlreadyACollaborator = checkUserIsAlreadyCollaborator(
         ownerProject.collaborators as any[],
@@ -142,29 +102,28 @@ export const addCollaborators = async (
     if (isAlreadyACollaborator) {
         throw error(
             422,
-            `${isAlreadyACollaborator.name} already collaborators`,
+            `${isAlreadyACollaborator.name} already a collaborator`,
             "Project update"
         );
     }
-    collaboratorsIds = [
+
+    newlyCreatedUsersIds = [
         ...(ownerProject.collaborators as string[]),
-        ...collaboratorsIds
+        ...newlyCreatedUsersIds
     ];
+
+    const collaboratorInvitesDetails = newlyCreatedUsersIds.map((userId) => {
+        return {
+            collaborator: userId,
+            project: projectId,
+            status: "pending"
+        }
+    });
+
     ownerProject = {
         ...ownerProject,
-        collaborators: collaboratorsIds
+        collaborators: newlyCreatedUsersIds
     } as ProjectsModelInterface;
-
-    if (!newlyCreatedUsersByInvite) {
-        registeredCollaboratorsIds = [
-            ...(ownerProject.collaborators as string[]),
-            ...registeredCollaboratorsIds
-        ];
-        ownerProject = {
-            ...ownerProject,
-            collaborators: registeredCollaboratorsIds
-        } as ProjectCredentials;
-    }
 
     updatedProject = await projectDbUpdate({
         project: Projects,
@@ -173,6 +132,13 @@ export const addCollaborators = async (
         projectUpdateValues: ownerProject
     });
 
-    sendCollaboratorsInviteEmails(ownerDetail, collaboratorsEmails as string[]);
+    // TODO: Write method that implements the collaborator invites inserts
+    // TODO: Should be able to create notification to all the users that are registered/activated
+    // TODO: Implement a cron that checks users that are activated and have pending invites.
+    // NOTE: notification types "invites, task created, task edited"
+    // NOTE: make email part of the notification (email, inapp)
+    CollaboratorInvites.insertMany(collaboratorInvitesDetails);
+
+    // sendCollaboratorsInviteEmails(ownerDetail, collaboratorsEmails as string[]);
     return updatedProject;
 };
