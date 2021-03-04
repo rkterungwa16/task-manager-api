@@ -8,5 +8,4 @@ export interface CollaboratorInvitesModelInterface extends Document {
     status?: "pending" | "declined" | "accepted";
     collaborator?: ObjectId;
     project?: ObjectId;
-    isActivated?: boolean;
 }

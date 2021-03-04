@@ -21,14 +21,11 @@ class ProjectsSchema {
                     type: ObjectId,
                     ref: "Users"
                 },
-                tasks: {
-                    type: [ObjectId],
-                    ref: "Tasks"
-                },
-                collaborators: {
-                    type: [ObjectId],
+                tasks: [{ type: ObjectId, ref: 'Tasks' }],
+                collaborators: [{
+                    type: ObjectId,
                     ref: "Users"
-                },
+                }],
                 visibility: {
                     type: String,
                     enum: ["PRIVATE", "PUBLIC"],

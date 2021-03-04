@@ -1,7 +1,6 @@
 import { NextFunction, Response } from "express";
-import { ObjectId } from "mongodb";
 
-import { editProject, apiResponse } from "../../services";
+import { editProject, apiResponse, addCollaborators } from "../../services";
 import { IRequest, UsersModelInterface } from "../../types";
 
 // export interface EditProjectArgsInterface {
@@ -12,33 +11,32 @@ import { IRequest, UsersModelInterface } from "../../types";
 //     extends EditProjectArgsInterface {
 //     collaboratorEmail: string;
 // }
-// export const addCollaboratorsController = async (
-//     req: IRequest,
-//     res: Response,
-//     next: NextFunction
-// ) => {
-//     try {
-//         const { id } = req.currentUser as UsersModelInterface;
-//         const { projectId } = req.params;
-//         const project = updateProject(
-//             req.body as any,
-//             projectId,
-//             id,
-//             "addCollaborators",
-//             "collaborators"
-//         );
-//         return apiResponse({
-//             message: "user successfully added to project as collaborator",
-//             data: {
-//                 project
-//             },
-//             response: res,
-//             statusCode: 200
-//         });
-//     } catch (err) {
-//         next(err);
-//     }
-// };
+export const addCollaboratorsController = async (
+    req: IRequest,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { id } = req.currentUser as UsersModelInterface;
+        const { projectId } = req.params;
+        const { collaboratorsEmails } = req.body;
+        const project = await addCollaborators({
+            collaboratorsEmails
+        }, projectId, id)
+
+        return apiResponse({
+            message: "user successfully added to project as collaborator",
+            data: {
+                project
+            },
+            response: res,
+            statusCode: 200
+        });
+    } catch (err) {
+        console.log("error -->>", err);
+        next(err);
+    }
+};
 
 // export interface EditArgsInterface extends EditProjectArgsInterface {
 //     description: string;

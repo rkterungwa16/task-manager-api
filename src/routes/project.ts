@@ -1,7 +1,7 @@
 import express from "express";
 
 import {
-    // addCollaboratorsController,
+    addCollaboratorsController,
     // archiveProjectController,
     createProjectController,
     editProjectController,
@@ -26,9 +26,9 @@ router
     .get(authenticateMiddleware, fetchOwnerProjectController)
     .put(authenticateMiddleware, editProjectController);
 
-// router
-//     .route("/projects/:projectId/collaborators/add")
-//     .put(authenticateMiddleware, addCollaboratorsController);
+router
+    .route("/projects/:projectId/add/collaborators")
+    .put(authenticateMiddleware, addCollaboratorsController);
 
 // router
 //     .route("/projects/:projectId/archive")

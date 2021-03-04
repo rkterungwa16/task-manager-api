@@ -258,6 +258,9 @@ export const checkUserIsAlreadyCollaborator = (
 ): UsersModelInterface => {
     // for each invited collaborator, if they already exists in the project collaborator return their details
     return invitedCollaborators.find(invitedCollaborator => {
-        if (projectCollaborators.includes(invitedCollaborator)) return;
+        return projectCollaborators.some((projectCollaborator) => {
+            if (String(invitedCollaborator._id) === String(projectCollaborator._id)) return true;
+            return false;
+        });
     }) as UsersModelInterface;
 };
