@@ -26,10 +26,12 @@ class UsersSchema {
                 isActivated: {
                     type: Boolean
                 },
-                collaborationInvites: [{
-                    type: ObjectId,
-                    ref: "CollaboratorInvites"
-                }],
+                collaborationInvites: [
+                    {
+                        type: ObjectId,
+                        ref: "CollaboratorInvites"
+                    }
+                ],
                 resetPasswordToken: {
                     type: String
                 }

@@ -23,19 +23,18 @@ export const addCollaborators = async (
     // TODO: list out all actions to be performed by add collaborator method
     // TODO: list out all error scenarios and their corresponding actions
     const { collaboratorsEmails } = requestProps;
-    const project = (await Projects
-        .findOne({
-            _id: projectId,
-            owner
-        })
+    const project = (await Projects.findOne({
+        _id: projectId,
+        owner
+    })
         .populate("collaborators", "-password -salt")
-        .exec()
-    ) as ProjectsModelInterface;
-    let ownerProject = project.toObject() as ProjectCredentials;
+        .exec()) as ProjectsModelInterface;
+    let ownerProject;
     // Collaborator emails should not contain owners of the project.
-    if (!ownerProject) {
+    if (!project) {
         throw error(400, "Project does not exist", "Project update");
     }
+    ownerProject = project.toObject() as ProjectCredentials;
     const ownerDetail = project.owner as any;
     if (collaboratorsEmails.includes(ownerDetail.email as string)) {
         throw error(422, "Owner cannot be a collaborator", "Project update");
@@ -51,11 +50,13 @@ export const addCollaborators = async (
 
     // if non of the collaborators are already registered/activated
     // create all of them as users
-    if (!registeredCollaborators) {
-        newlyCreatedUsersByInvite = collaboratorsHaveRegisteredUsers.false({
-            collaboratorsEmails,
-            users: Users
-        }) as UsersModelInterface[];
+    if (!registeredCollaborators.length) {
+        newlyCreatedUsersByInvite = (await collaboratorsHaveRegisteredUsers.false(
+            {
+                collaboratorsEmails,
+                users: Users
+            }
+        )) as UsersModelInterface[];
     }
 
     // NOTE: collaboratorsEmails contains both created and non created users
@@ -66,14 +67,16 @@ export const addCollaborators = async (
     // separate users already created from user not created
     // create users for collaborators that are not yet registered
     if (
-        registeredCollaborators &&
+        registeredCollaborators.length &&
         registeredCollaborators.length < collaboratorsEmails.length
     ) {
-        newlyCreatedUsersByInvite = collaboratorsHaveRegisteredUsers.true({
-            collaboratorsEmails,
-            users: Users,
-            registeredCollaborators
-        }) as UsersModelInterface[];
+        newlyCreatedUsersByInvite = (await collaboratorsHaveRegisteredUsers.true(
+            {
+                collaboratorsEmails,
+                users: Users,
+                registeredCollaborators
+            }
+        )) as UsersModelInterface[];
 
         newlyCreatedUsersByInvite = newlyCreatedUsersByInvite.concat(
             registeredCollaborators
@@ -82,7 +85,7 @@ export const addCollaborators = async (
 
     // If all collaborator emails are registered members
     if (
-        registeredCollaborators &&
+        registeredCollaborators.length &&
         registeredCollaborators.length === collaboratorsEmails.length
     ) {
         newlyCreatedUsersByInvite = registeredCollaborators;
@@ -91,7 +94,6 @@ export const addCollaborators = async (
     let newlyCreatedUsersIds = newlyCreatedUsersByInvite.map(user => {
         return user.id;
     }) as any[];
-
 
     // check if any user is already a collaborator. if true throw error
     const isAlreadyACollaborator = checkUserIsAlreadyCollaborator(
@@ -112,14 +114,6 @@ export const addCollaborators = async (
         ...newlyCreatedUsersIds
     ];
 
-    const collaboratorInvitesDetails = newlyCreatedUsersIds.map((userId) => {
-        return {
-            collaborator: userId,
-            project: projectId,
-            status: "pending"
-        }
-    });
-
     ownerProject = {
         ...ownerProject,
         collaborators: newlyCreatedUsersIds
@@ -137,8 +131,15 @@ export const addCollaborators = async (
     // TODO: Implement a cron that checks users that are activated and have pending invites.
     // NOTE: notification types "invites, task created, task edited"
     // NOTE: make email part of the notification (email, inapp)
-    CollaboratorInvites.insertMany(collaboratorInvitesDetails);
+    // const invites = await CollaboratorInvites.insertMany(collaboratorInvitesDetails);
 
+    // const collaboratorInvitesDetails = newlyCreatedUsersIds.map((userId) => {
+    //     return {
+    //         collaborator: userId,
+    //         project: projectId,
+    //         status: "pending"
+    //     }
+    // });
     // sendCollaboratorsInviteEmails(ownerDetail, collaboratorsEmails as string[]);
     return updatedProject;
 };

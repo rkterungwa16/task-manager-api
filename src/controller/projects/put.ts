@@ -20,9 +20,13 @@ export const addCollaboratorsController = async (
         const { id } = req.currentUser as UsersModelInterface;
         const { projectId } = req.params;
         const { collaboratorsEmails } = req.body;
-        const project = await addCollaborators({
-            collaboratorsEmails
-        }, projectId, id)
+        const project = await addCollaborators(
+            {
+                collaboratorsEmails
+            },
+            projectId,
+            id
+        );
 
         return apiResponse({
             message: "user successfully added to project as collaborator",
@@ -33,7 +37,6 @@ export const addCollaboratorsController = async (
             statusCode: 200
         });
     } catch (err) {
-        console.log("error -->>", err);
         next(err);
     }
 };

@@ -68,8 +68,6 @@ export const listOfUserAsOwnerAndColloaboratorProjects = (id: string) => {
 };
 
 export const singleProjectWithTasks = (projectId: string, ownerId: string) => {
-    console.log("owner id", ownerId);
-    console.log("project id", projectId);
     return [
         {
             $match: {

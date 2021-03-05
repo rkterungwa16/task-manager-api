@@ -175,7 +175,7 @@ export const collaboratorsHaveRegisteredUsers = {
     true: async (args: {
         collaboratorsEmails: string[];
         registeredCollaborators: UsersModelInterface[];
-        user: Model<Document>;
+        users: Model<Document>;
     }): Promise<UsersModelInterface[]> => {
         const nonRegisteredCollaborators = args.collaboratorsEmails
             .filter(collaborator => {
@@ -197,7 +197,7 @@ export const collaboratorsHaveRegisteredUsers = {
             collaborationInviteStatus: string;
         }>;
 
-        return (await args.user.create(nonRegisteredCollaborators)) as any;
+        return (await args.users.create(nonRegisteredCollaborators)) as any;
     },
     /**
      * Create users that don't already exist on the platform but have an invite.
@@ -208,7 +208,7 @@ export const collaboratorsHaveRegisteredUsers = {
      */
     false: async (args: {
         collaboratorsEmails: string[];
-        user: Model<Document>;
+        users: Model<Document>;
     }): Promise<UsersModelInterface[]> => {
         const nonRegisteredCollaborators = args.collaboratorsEmails.map(
             email => {
@@ -222,7 +222,7 @@ export const collaboratorsHaveRegisteredUsers = {
             collaborationInviteStatus: string;
         }>;
 
-        return (await args.user.create(nonRegisteredCollaborators)) as any;
+        return (await args.users.create(nonRegisteredCollaborators)) as any;
     }
 } as {
     [x: string]: any;
@@ -258,8 +258,12 @@ export const checkUserIsAlreadyCollaborator = (
 ): UsersModelInterface => {
     // for each invited collaborator, if they already exists in the project collaborator return their details
     return invitedCollaborators.find(invitedCollaborator => {
-        return projectCollaborators.some((projectCollaborator) => {
-            if (String(invitedCollaborator._id) === String(projectCollaborator._id)) return true;
+        return projectCollaborators.some(projectCollaborator => {
+            if (
+                String(invitedCollaborator._id) ===
+                String(projectCollaborator._id)
+            )
+                return true;
             return false;
         });
     }) as UsersModelInterface;
