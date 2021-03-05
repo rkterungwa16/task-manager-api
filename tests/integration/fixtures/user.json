@@ -1,6 +1,14 @@
-{
-    "_id": "5f0f5bb7786b1c0e246357a4",
-    "name": "terungwa kombol",
-    "email": "kombol@kombol.com",
-    "password": "12345"
-}
+[
+    {
+        "_id": "5f0f5bb7786b1c0e246357a4",
+        "name": "terungwa kombol",
+        "email": "kombol@kombol.com",
+        "password": "12345"
+    },
+    {
+        "_id": "6040041c6b8aa13554083c68",
+        "name": "terungwa kombol",
+        "email": "rkterungwa@gmail.com",
+        "password": "1234567"
+    }
+]

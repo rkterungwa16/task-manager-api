@@ -107,7 +107,6 @@ describe("User Service: ", function () {
                 userId: new ObjectID("5f0f5bb7786b1c0e246357a4")
             }) as UsersModelInterface;
 
-            console.log("edited user", editedUser);
             expect(editedUser.email).to.equal("john@doe.com");
             expect(editedUser.name).to.equal("john");
         });

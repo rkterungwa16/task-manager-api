@@ -7,13 +7,14 @@ import {
     editProject,
     createProject,
     fetchOwnerProject,
-    fetchOwnerProjects
+    fetchOwnerProjects,
+    addCollaborators
 } from "../../../src/services";
 
 import { ProjectsModelInterface } from "../../../src/types";
 import { projectCollection, taskCollection, userCollection } from "../db";
 
-describe.only("Project Service: ", function () {
+describe("Project Service: ", function () {
     beforeEach(async function () {
         await userCollection.populate();
         await projectCollection.populate();
@@ -75,4 +76,65 @@ describe.only("Project Service: ", function () {
             expect(project[0].title).to.equal("JavaScript Lessons: Learn about promises");
         });
     });
+    describe("Add collabortors", function () {
+        it("should throw an error if a project does not exist", async function () {
+            try {
+                await addCollaborators({
+                    collaboratorsEmails: ["kombol@gmail.com"],
+                }, "5f0f5bb7786b1c0e246357a4", "5f0f5bb7786b1c0e246357a4");
+            } catch (e) {
+                expect(e.message).to.equal("Project does not exist");
+            }
+        })
+
+        it("should throw an error if a collaborator is an owner", async function () {
+            try {
+                await addCollaborators({
+                    collaboratorsEmails: ["kombol@kombol.com"],
+                }, "5f0f5c11786b1c0e246357a5", "5f0f5bb7786b1c0e246357a4");
+            } catch (e) {
+                expect(e.message).to.equal("Owner cannot be a collaborator");
+            }
+        });
+
+        it("should add all collaborators to database even if they don't exist already", async function () {
+            const projectCollaborators = await addCollaborators({
+                collaboratorsEmails: ["terungwakombol@gmail.com"],
+            }, "5f0f5c11786b1c0e246357a5", "5f0f5bb7786b1c0e246357a4");
+            expect(projectCollaborators.collaborators instanceof Array).to.equal(true);
+            expect(projectCollaborators.collaborators[0].email).to.equal("terungwakombol@gmail.com");
+        })
+
+        it("should add all collaborators even if some are already registered", async function () {
+            const projectCollaborators = await addCollaborators({
+                collaboratorsEmails: ["terungwakombol@gmail.com", "rkterungwa@gmail.com"],
+            }, "5f0f5c11786b1c0e246357a5", "5f0f5bb7786b1c0e246357a4");
+            expect(projectCollaborators.collaborators instanceof Array).to.equal(true);
+            expect(projectCollaborators.collaborators[0].email).to.equal("terungwakombol@gmail.com");
+            expect(projectCollaborators.collaborators[1].email).to.equal("rkterungwa@gmail.com");
+        })
+
+        it("should add all collaborators even if all of them are already registered", async function () {
+            const projectCollaborators = await addCollaborators({
+                collaboratorsEmails: ["rkterungwa@gmail.com"],
+            }, "5f0f5c11786b1c0e246357a5", "5f0f5bb7786b1c0e246357a4");
+            expect(projectCollaborators.collaborators instanceof Array).to.equal(true);
+            expect(projectCollaborators.collaborators[0].email).to.equal("rkterungwa@gmail.com");
+        })
+
+        it("should throw an error if user is already a collaborator on the project", async function () {
+            try {
+                await addCollaborators({
+                    collaboratorsEmails: ["rkterungwa@gmail.com"],
+                }, "5f0f5c11786b1c0e246357a5", "5f0f5bb7786b1c0e246357a4");
+
+                await addCollaborators({
+                    collaboratorsEmails: ["rkterungwa@gmail.com"],
+                }, "5f0f5c11786b1c0e246357a5", "5f0f5bb7786b1c0e246357a4");
+
+            } catch(e) {
+                expect(e.message).to.equal("terungwa kombol already a collaborator");
+            }
+        })
+    })
 });
