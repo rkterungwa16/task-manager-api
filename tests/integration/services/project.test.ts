@@ -135,7 +135,7 @@ describe("Project Service: ", function () {
                 }, "5f0f5c11786b1c0e246357a5", "5f0f5bb7786b1c0e246357a4");
 
             } catch(e) {
-                expect(e.message).to.equal("terungwa kombol already a collaborator");
+                expect(e.message).to.equal("rkterungwa@gmail.com already a collaborator");
             }
         })
     })

@@ -125,7 +125,7 @@ export const addCollaborators = async (
     if (isAlreadyACollaborator) {
         throw error(
             422,
-            `${isAlreadyACollaborator.name} already a collaborator`,
+            `${isAlreadyACollaborator.email} already a collaborator`,
             "Project update"
         );
     }
@@ -137,7 +137,7 @@ export const addCollaborators = async (
         return invite._id;
     }) as string[];
 
-    sendCollaboratorsInviteEmails(ownerDetail, collaboratorsEmails as string[]);
+    // sendCollaboratorsInviteEmails(ownerDetail, collaboratorsEmails as string[]);
 
     ownerProject = {
         ...ownerProject,
