@@ -10,6 +10,10 @@ class CollaboratorInvitesSchema {
     static get schema() {
         return new Schema(
             {
+                owner: {
+                    type: ObjectID,
+                    ref: "Users"
+                },
                 collaborator: {
                     type: ObjectID,
                     ref: "Users"
@@ -18,7 +22,7 @@ class CollaboratorInvitesSchema {
                     type: String,
                     enum: ["pending", "declined", "accepted"]
                 },
-                projects: {
+                project: {
                     type: ObjectID,
                     ref: "Projects"
                 }

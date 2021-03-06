@@ -5,7 +5,8 @@ import { baseUrl } from "../../../../constants";
 import {
     ProjectsModelInterface,
     UsersModelInterface,
-    ProjectCredentials
+    ProjectCredentials,
+    CollaboratorInvitesModelInterface
 } from "../../../../types";
 
 import { error, signJwt } from "../../..";
@@ -38,7 +39,25 @@ export const projectDbUpdate = async (
                 { new: true }
             )
             .populate("owner", "-password -salt")
-            .populate("collaborators", "-password -salt")
+            .populate({
+                path: "invites",
+                populate: [
+                    {
+                        path: "owner",
+                        model: "Users",
+                        select: "-password -salt"
+                    },
+                    {
+                        path: "collaborator",
+                        model: "Users",
+                        select: "-password -salt"
+                    },
+                    {
+                        path: "project",
+                        model: "Projects"
+                    }
+                ]
+            })
             .exec()) as ProjectsModelInterface;
 
         return updatedProject;
@@ -189,12 +208,10 @@ export const collaboratorsHaveRegisteredUsers = {
             })
             .map(email => {
                 return {
-                    email,
-                    collaborationInviteStatus: "pending"
+                    email
                 };
             }) as Array<{
             email: string;
-            collaborationInviteStatus: string;
         }>;
 
         return (await args.users.create(nonRegisteredCollaborators)) as any;
@@ -213,13 +230,11 @@ export const collaboratorsHaveRegisteredUsers = {
         const nonRegisteredCollaborators = args.collaboratorsEmails.map(
             email => {
                 return {
-                    email,
-                    collaborationInviteStatus: "pending"
+                    email
                 };
             }
         ) as Array<{
             email: string;
-            collaborationInviteStatus: string;
         }>;
 
         return (await args.users.create(nonRegisteredCollaborators)) as any;
@@ -252,16 +267,22 @@ export const createNonRegisteredCollaborators = async (
     }
 };
 
+/**
+ * Scan through the current invites in the project
+ * Make sure a user is already not on the invite (user should not be invited twice)
+ * @param currentProjectInvites
+ * @param invitedCollaborators
+ */
 export const checkUserIsAlreadyCollaborator = (
-    projectCollaborators: UsersModelInterface[],
+    currentProjectInvites: any[],
     invitedCollaborators: UsersModelInterface[]
 ): UsersModelInterface => {
     // for each invited collaborator, if they already exists in the project collaborator return their details
     return invitedCollaborators.find(invitedCollaborator => {
-        return projectCollaborators.some(projectCollaborator => {
+        return currentProjectInvites.some(invite => {
             if (
                 String(invitedCollaborator._id) ===
-                String(projectCollaborator._id)
+                String(invite.collaborator._id)
             )
                 return true;
             return false;

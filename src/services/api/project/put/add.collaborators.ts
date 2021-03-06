@@ -27,9 +27,29 @@ export const addCollaborators = async (
         _id: projectId,
         owner
     })
-        .populate("collaborators", "-password -salt")
+        .populate("owner", "-password -salt")
+        .populate({
+            path: "invites",
+            populate: [
+                {
+                    path: "owner",
+                    model: "Users",
+                    select: "-password -salt"
+                },
+                {
+                    path: "collaborator",
+                    model: "Users",
+                    select: "-password -salt"
+                },
+                {
+                    path: "project",
+                    model: "Projects"
+                }
+            ]
+        })
         .exec()) as ProjectsModelInterface;
     let ownerProject;
+
     // Collaborator emails should not contain owners of the project.
     if (!project) {
         throw error(400, "Project does not exist", "Project update");
@@ -46,17 +66,14 @@ export const addCollaborators = async (
         email: { $in: collaboratorsEmails }
     })) as UsersModelInterface[];
 
-    let newlyCreatedUsersByInvite = [] as any[];
-
+    let newlyCreatedUsersById = [] as any[];
     // if non of the collaborators are already registered/activated
     // create all of them as users
     if (!registeredCollaborators.length) {
-        newlyCreatedUsersByInvite = (await collaboratorsHaveRegisteredUsers.false(
-            {
-                collaboratorsEmails,
-                users: Users
-            }
-        )) as UsersModelInterface[];
+        newlyCreatedUsersById = (await collaboratorsHaveRegisteredUsers.false({
+            collaboratorsEmails,
+            users: Users
+        })) as UsersModelInterface[];
     }
 
     // NOTE: collaboratorsEmails contains both created and non created users
@@ -70,15 +87,13 @@ export const addCollaborators = async (
         registeredCollaborators.length &&
         registeredCollaborators.length < collaboratorsEmails.length
     ) {
-        newlyCreatedUsersByInvite = (await collaboratorsHaveRegisteredUsers.true(
-            {
-                collaboratorsEmails,
-                users: Users,
-                registeredCollaborators
-            }
-        )) as UsersModelInterface[];
+        newlyCreatedUsersById = (await collaboratorsHaveRegisteredUsers.true({
+            collaboratorsEmails,
+            users: Users,
+            registeredCollaborators
+        })) as UsersModelInterface[];
 
-        newlyCreatedUsersByInvite = newlyCreatedUsersByInvite.concat(
+        newlyCreatedUsersById = newlyCreatedUsersById.concat(
             registeredCollaborators
         );
     }
@@ -88,17 +103,23 @@ export const addCollaborators = async (
         registeredCollaborators.length &&
         registeredCollaborators.length === collaboratorsEmails.length
     ) {
-        newlyCreatedUsersByInvite = registeredCollaborators;
+        newlyCreatedUsersById = registeredCollaborators;
     }
 
-    let newlyCreatedUsersIds = newlyCreatedUsersByInvite.map(user => {
-        return user.id;
+    let usersInvites = newlyCreatedUsersById.map(user => {
+        return {
+            collaborator: user.id,
+            owner,
+            project: projectId,
+            status: "pending"
+        };
     }) as any[];
 
-    // check if any user is already a collaborator. if true throw error
+    // check if any user is already a collaborator and has an invite. if true throw error
+
     const isAlreadyACollaborator = checkUserIsAlreadyCollaborator(
-        ownerProject.collaborators as any[],
-        newlyCreatedUsersByInvite
+        ownerProject.invites as any[],
+        newlyCreatedUsersById
     );
     // In a list of collaborators, if any one is already a collaborator throw an error.
     if (isAlreadyACollaborator) {
@@ -109,14 +130,18 @@ export const addCollaborators = async (
         );
     }
 
-    newlyCreatedUsersIds = [
-        ...(ownerProject.collaborators as string[]),
-        ...newlyCreatedUsersIds
-    ];
+    usersInvites = [...(ownerProject.invites as string[]), ...usersInvites];
+
+    const invites = await CollaboratorInvites.insertMany(usersInvites);
+    const invitesIds = invites.map(invite => {
+        return invite._id;
+    }) as string[];
+
+    sendCollaboratorsInviteEmails(ownerDetail, collaboratorsEmails as string[]);
 
     ownerProject = {
         ...ownerProject,
-        collaborators: newlyCreatedUsersIds
+        invites: invitesIds
     } as ProjectsModelInterface;
 
     updatedProject = await projectDbUpdate({
@@ -131,15 +156,6 @@ export const addCollaborators = async (
     // TODO: Implement a cron that checks users that are activated and have pending invites.
     // NOTE: notification types "invites, task created, task edited"
     // NOTE: make email part of the notification (email, inapp)
-    // const invites = await CollaboratorInvites.insertMany(collaboratorInvitesDetails);
 
-    // const collaboratorInvitesDetails = newlyCreatedUsersIds.map((userId) => {
-    //     return {
-    //         collaborator: userId,
-    //         project: projectId,
-    //         status: "pending"
-    //     }
-    // });
-    // sendCollaboratorsInviteEmails(ownerDetail, collaboratorsEmails as string[]);
     return updatedProject;
 };
