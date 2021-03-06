@@ -11,6 +11,7 @@ export interface ProjectsModelInterface extends Document {
     isArchived?: boolean;
     isDeleted?: boolean;
     collaborators?: string[];
+    invites?: string[];
     createdAt?: string;
     updatedAt?: string;
 }
@@ -25,6 +26,7 @@ export interface ProjectCredentials {
     isArchived?: boolean;
     isDeleted?: boolean;
     collaborators?: string[];
+    invites?: string[];
     createdAt?: string;
     updatedAt?: string;
 }

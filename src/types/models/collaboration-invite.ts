@@ -6,6 +6,7 @@ export interface CollaboratorInvitesModelInterface extends Document {
     createdAt?: string;
     updatedAt?: string;
     status?: "pending" | "declined" | "accepted";
-    collaborator?: ObjectId;
-    project?: ObjectId;
+    collaborator?: string;
+    owner?: string;
+    project?: string;
 }

@@ -101,25 +101,27 @@ describe("Project Service: ", function () {
             const projectCollaborators = await addCollaborators({
                 collaboratorsEmails: ["terungwakombol@gmail.com"],
             }, "5f0f5c11786b1c0e246357a5", "5f0f5bb7786b1c0e246357a4");
-            expect(projectCollaborators.collaborators instanceof Array).to.equal(true);
-            expect(projectCollaborators.collaborators[0].email).to.equal("terungwakombol@gmail.com");
+            expect(projectCollaborators.invites instanceof Array).to.equal(true);
+            expect(projectCollaborators.invites[0].owner.email).to.equal("kombol@kombol.com");
+            expect(projectCollaborators.invites[0].collaborator.email).to.equal("terungwakombol@gmail.com");
         })
 
         it("should add all collaborators even if some are already registered", async function () {
             const projectCollaborators = await addCollaborators({
                 collaboratorsEmails: ["terungwakombol@gmail.com", "rkterungwa@gmail.com"],
             }, "5f0f5c11786b1c0e246357a5", "5f0f5bb7786b1c0e246357a4");
-            expect(projectCollaborators.collaborators instanceof Array).to.equal(true);
-            expect(projectCollaborators.collaborators[0].email).to.equal("terungwakombol@gmail.com");
-            expect(projectCollaborators.collaborators[1].email).to.equal("rkterungwa@gmail.com");
+
+            expect(projectCollaborators.invites instanceof Array).to.equal(true);
+            expect(projectCollaborators.invites[0].collaborator.email).to.equal("terungwakombol@gmail.com");
+            expect(projectCollaborators.invites[1].collaborator.email).to.equal("rkterungwa@gmail.com");
         })
 
         it("should add all collaborators even if all of them are already registered", async function () {
             const projectCollaborators = await addCollaborators({
                 collaboratorsEmails: ["rkterungwa@gmail.com"],
             }, "5f0f5c11786b1c0e246357a5", "5f0f5bb7786b1c0e246357a4");
-            expect(projectCollaborators.collaborators instanceof Array).to.equal(true);
-            expect(projectCollaborators.collaborators[0].email).to.equal("rkterungwa@gmail.com");
+            expect(projectCollaborators.invites instanceof Array).to.equal(true);
+            expect(projectCollaborators.invites[0].collaborator.email).to.equal("rkterungwa@gmail.com");
         })
 
         it("should throw an error if user is already a collaborator on the project", async function () {

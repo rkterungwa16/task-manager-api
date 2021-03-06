@@ -28,6 +28,12 @@ class ProjectsSchema {
                         ref: "Users"
                     }
                 ],
+                invites: [
+                    {
+                        type: ObjectId,
+                        ref: "CollaborationInvites"
+                    }
+                ],
                 visibility: {
                     type: String,
                     enum: ["PRIVATE", "PUBLIC"],
