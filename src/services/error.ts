@@ -10,7 +10,7 @@ export class CustomError extends Error {
     }
 }
 
-export const errorDefinition = (Error: CustomError) => {
+export const errorFactory = (Error: CustomError) => {
     return (statusCode: number, message: string, name: string): CustomError => {
         Error.message = message;
         Error.statusCode = statusCode;
@@ -19,4 +19,4 @@ export const errorDefinition = (Error: CustomError) => {
     };
 };
 
-export const error = errorDefinition(new CustomError());
+export const error = errorFactory(new CustomError());
