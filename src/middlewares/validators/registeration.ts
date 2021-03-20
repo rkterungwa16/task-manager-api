@@ -1,18 +1,16 @@
-import { validateEmail, validatePassword, validateString } from "./helpers";
+import { isEmail, isAlphanumeric, hasMinLength } from "./helpers";
 import { validate } from "./validator";
 
 export const requiredRegistrationInputs = {
     password: {
-        type: "password",
-        validateMethod: validatePassword
+        isAlphanumeric,
+        hasMinLength
     },
     email: {
-        type: "email",
-        validateMethod: validateEmail
+        isEmail
     },
     name: {
-        type: "text",
-        validateMethod: validateString
+        isAlphanumeric
     }
 };
 

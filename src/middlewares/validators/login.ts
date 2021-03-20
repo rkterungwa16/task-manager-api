@@ -1,14 +1,13 @@
-import { validateEmail, validatePassword } from "./helpers";
+import { isEmail, isAlphanumeric, hasMinLength } from "./helpers";
 import { validate } from "./validator";
 
 export const requiredLoginInputs = {
     password: {
-        type: "password",
-        validateMethod: validatePassword
+        isAlphanumeric,
+        hasMinLength
     },
     email: {
-        type: "email",
-        validateMethod: validateEmail
+        isEmail
     }
 };
 

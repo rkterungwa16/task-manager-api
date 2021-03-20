@@ -1,10 +1,9 @@
-import { validateString } from "./helpers";
+import { isAlphanumeric } from "./helpers";
 import { validate } from "./validator";
 
 export const requiredProjectInputs = {
     title: {
-        type: "text",
-        validateMethod: validateString
+        isAlphanumeric
     }
 };
 

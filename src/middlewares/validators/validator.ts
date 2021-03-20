@@ -3,24 +3,26 @@ import { error } from "../../services";
 
 export interface RequiredPropertiesInterface {
     [x: string]: {
-        type: string;
-        validateMethod: (prop: any) => boolean;
+        [x: string]: (prop: any) => boolean;
     };
 }
 
-export const validate = (requiredProperties?: RequiredPropertiesInterface) => {
+/**
+ *
+ * @param requiredProperties describes the properties to be validated
+ * these properties must exist in the request body.
+ * @returns
+ */
+export const validate = (requiredProperties: RequiredPropertiesInterface) => {
     return (req: Request, res: Response, next: NextFunction) => {
+        // 1. make sure all required properties exist on the request body
+        //   - if any one does not exist throw an error
+        // 2. when all required properties are confirmed validate with the required method.
+        //    - A property can have more than one validation methods
+        //    - password validation: check if password is alphanumeric, check if length is greater than 6
         const requestBody = req.body as { [x: string]: any };
-        if (!Object.entries(requestBody).length) {
-            throw error(
-                400,
-                "inputs must not be empty",
-                "Input Validation Error"
-            );
-        }
         // flexible fields. If it contains email or password validate properly
-        if (requiredProperties) {
-            const listOfRequiredProperties = Object.keys(requiredProperties);
+        const listOfRequiredProperties = Object.keys(requiredProperties);
             for (const prop of listOfRequiredProperties) {
                 if (!requestBody[prop]) {
                     throw error(
@@ -29,9 +31,13 @@ export const validate = (requiredProperties?: RequiredPropertiesInterface) => {
                         "Input Validation Error"
                     );
                 }
-                requiredProperties[prop].validateMethod(requestBody[prop]);
+                Object.keys(requiredProperties[prop]).forEach((validationMethod) => {
+                    requiredProperties[prop][validationMethod]({
+                        prop: requestBody[prop],
+                        minLength: 6
+                    });
+                });
             }
-        }
         next();
     };
 };
