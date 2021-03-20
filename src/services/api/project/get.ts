@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import { Document, Model } from "mongoose";
 
 import { Projects } from "../../../models";

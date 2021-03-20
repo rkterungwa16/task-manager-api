@@ -1,4 +1,3 @@
-import { error } from "../../services";
 import { validateEmail, validatePassword } from "./helpers";
 import { validate } from "./validator";
 
