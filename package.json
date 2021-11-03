@@ -42,7 +42,7 @@
     "node-mailjet": "^3.3.1",
     "typescript": "^3.7.4",
     "uuid": "^3.3.3",
-    "validator": "^12.1.0",
+    "validator": "^13.7.0",
     "websocket": "^1.0.31",
     "winston": "^3.2.1"
   },
