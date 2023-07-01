@@ -3,90 +3,90 @@ import { Document, Model } from "mongoose";
 
 import { baseUrl } from "../../../../constants";
 import {
-    ProjectsModelInterface,
-    UsersModelInterface,
-    ProjectCredentials,
-    CollaboratorInvitesModelInterface
+  ProjectsModelInterface,
+  UsersModelInterface,
+  ProjectCredentials,
+  CollaboratorInvitesModelInterface
 } from "../../../../types";
 
 import { error, signJwt } from "../../..";
 import { sendMail } from "../../../email";
 export interface ProjectDbUpdateInterface {
-    projectId: string;
-    ownerId: string;
-    projectUpdateValues: ProjectCredentials;
-    project: Model<Document>;
+  projectId: string;
+  ownerId: string;
+  projectUpdateValues: ProjectCredentials;
+  project: Model<Document>;
 }
 
 export const projectDbUpdate = async (
-    projectUpdateDetails: ProjectDbUpdateInterface
+  projectUpdateDetails: ProjectDbUpdateInterface
 ): Promise<ProjectsModelInterface> => {
-    try {
-        const {
-            ownerId,
-            projectId,
-            project,
-            projectUpdateValues
-        } = projectUpdateDetails;
+  try {
+    const {
+      ownerId,
+      projectId,
+      project,
+      projectUpdateValues
+    } = projectUpdateDetails;
 
-        const updatedProject = (await project
-            .findOneAndUpdate(
-                {
-                    _id: projectId,
-                    owner: ownerId
-                },
-                { $set: projectUpdateValues },
-                { new: true }
-            )
-            .populate("owner", "-password -salt")
-            .populate({
-                path: "invites",
-                populate: [
-                    {
-                        path: "owner",
-                        model: "Users",
-                        select: "-password -salt"
-                    },
-                    {
-                        path: "collaborator",
-                        model: "Users",
-                        select: "-password -salt"
-                    },
-                    {
-                        path: "project",
-                        model: "Projects"
-                    }
-                ]
-            })
-            .exec()) as ProjectsModelInterface;
+    const updatedProject = (await project
+      .findOneAndUpdate(
+        {
+          _id: projectId,
+          owner: ownerId
+        },
+        { $set: projectUpdateValues },
+        { new: true }
+      )
+      .populate("owner", "-password -salt")
+      .populate({
+        path: "invites",
+        populate: [
+          {
+            path: "owner",
+            model: "Users",
+            select: "-password -salt"
+          },
+          {
+            path: "collaborator",
+            model: "Users",
+            select: "-password -salt"
+          },
+          {
+            path: "project",
+            model: "Projects"
+          }
+        ]
+      })
+      .exec()) as ProjectsModelInterface;
 
-        return updatedProject;
-    } catch (err) {
-        throw error(500, "Could not update project", "Project");
-    }
+    return updatedProject;
+  } catch (err) {
+    throw error(500, "Could not update project", "Project");
+  }
 };
 
 export const projectExists = async (
-    owner: ObjectId,
-    projectId: string,
-    project: Model<Document>
+  owner: ObjectId,
+  projectId: string,
+  project: Model<Document>
 ): Promise<ProjectsModelInterface> => {
-    try {
-        const userProject = (await project
-            .findOne({
-                owner,
-                _id: projectId
-            })
-            .populate("owner", "-password -salt")
-            .populate("collaborators", "-password -salt")
-            .exec()) as ProjectsModelInterface;
-        if (!userProject) {
-            throw error(400, "Project does not exist", "Add user To Project");
-        }
-        return userProject.toObject();
-    } catch (err) {
-        throw error(400, "Project does not exist", "Add user To Project");
+  try {
+    const userProject = (await project
+      .findOne({
+        owner,
+        _id: projectId
+      })
+      .populate("owner", "-password -salt")
+      .populate("collaborators", "-password -salt")
+      .exec()) as ProjectsModelInterface;
+    if (!userProject) {
+      throw error(400, "Project does not exist", "Add user To Project");
     }
+    return userProject.toObject();
+  } catch (err) {
+    throw error(400, "Project does not exist", "Add user To Project");
+  }
 };
 
 // export const hasValidProjectProperties = (
@@ -137,16 +137,16 @@ export const projectExists = async (
 // COLLABORATOR HELPERS
 // ==================================================================================
 export interface MessageHtmlContentParameterInterface {
-    name: string;
-    linkBaseUrl: string;
-    token: string;
+  name: string;
+  linkBaseUrl: string;
+  token: string;
 }
 
 const emailMessageHtmlContent = (
-    htmlDetails: MessageHtmlContentParameterInterface
+  htmlDetails: MessageHtmlContentParameterInterface
 ): string => {
-    const { name, linkBaseUrl, token } = htmlDetails;
-    return `
+  const { name, linkBaseUrl, token } = htmlDetails;
+  return `
     <h3>${name} just added you to ${name} project in Task Manager</h3>
     Click on this link to login with your password and continue.
     <a href='${linkBaseUrl}collaborator-invite/${token}'>Login</a>
@@ -154,93 +154,91 @@ const emailMessageHtmlContent = (
 };
 
 export const sendCollaboratorsInviteEmails = async (
-    ownerDetails: UsersModelInterface,
-    collaboratorsEmail: string[]
+  ownerDetails: UsersModelInterface,
+  collaboratorsEmail: string[]
 ): Promise<boolean> => {
-    let emailSent = [] as Array<Promise<any>>;
+  let emailSent = [] as Array<Promise<any>>;
 
-    for (const email of collaboratorsEmail) {
-        const token = await signJwt({ email }, "1h");
-        const messageHtmlContent = emailMessageHtmlContent({
-            name: ownerDetails.name as string,
-            linkBaseUrl: baseUrl,
-            token
-        });
-        const messageSubject = "Task Manager Project Collaboration invite";
+  for (const email of collaboratorsEmail) {
+    const token = await signJwt({ email }, "1h");
+    const messageHtmlContent = emailMessageHtmlContent({
+      name: ownerDetails.name as string,
+      linkBaseUrl: baseUrl,
+      token
+    });
+    const messageSubject = "Task Manager Project Collaboration invite";
 
-        emailSent = emailSent.concat([
-            sendMail({
-                senderEmail: ownerDetails.email as string,
-                recieverEmail: email,
-                recieverName: "",
-                messageHtmlContent,
-                messageSubject
-            })
-        ]);
-    }
-    await Promise.all(emailSent);
-    return true;
+    emailSent = emailSent.concat([
+      sendMail({
+        senderEmail: ownerDetails.email as string,
+        recieverEmail: email,
+        recieverName: "",
+        messageHtmlContent,
+        messageSubject
+      })
+    ]);
+  }
+  await Promise.all(emailSent);
+  return true;
 };
 
 export const collaboratorsHaveRegisteredUsers = {
-    /**
-     * Create users that don't already exist on the platform but have an invite.
-     * This method handles the scenario where some members are registered while others are not
-     * filter out collaborators that are not yet registered and create them with collaborator invite as pending
-     * @param collaboratorsEmails list of emails to be added as collaborators
-     * @param user user database model
-     * @param registeredCollaborators list of collaborators that are already registered
-     */
-    true: async (args: {
-        collaboratorsEmails: string[];
-        registeredCollaborators: UsersModelInterface[];
-        users: Model<Document>;
-    }): Promise<UsersModelInterface[]> => {
-        const nonRegisteredCollaborators = args.collaboratorsEmails
-            .filter(collaborator => {
-                const registeredCollaborator = args.registeredCollaborators.find(
-                    userCollaborator => {
-                        const email = userCollaborator.email as string;
-                        return email === collaborator;
-                    }
-                );
-                return !registeredCollaborator;
-            })
-            .map(email => {
-                return {
-                    email
-                };
-            }) as Array<{
-            email: string;
-        }>;
+  /**
+   * Create users that don't already exist on the platform but have an invite.
+   * This method handles the scenario where some members are registered while others are not
+   * filter out collaborators that are not yet registered and create them with collaborator invite as pending
+   * @param collaboratorsEmails list of emails to be added as collaborators
+   * @param user user database model
+   * @param registeredCollaborators list of collaborators that are already registered
+   */
+  true: async (args: {
+    collaboratorsEmails: string[];
+    registeredCollaborators: UsersModelInterface[];
+    users: Model<Document>;
+  }): Promise<UsersModelInterface[]> => {
+    const nonRegisteredCollaborators = args.collaboratorsEmails
+      .filter(collaborator => {
+        const registeredCollaborator = args.registeredCollaborators.find(
+          userCollaborator => {
+            const email = userCollaborator.email as string;
+            return email === collaborator;
+          }
+        );
+        return !registeredCollaborator;
+      })
+      .map(email => {
+        return {
+          email
+        };
+      }) as Array<{
+      email: string;
+    }>;
 
-        return (await args.users.create(nonRegisteredCollaborators)) as any;
-    },
-    /**
-     * Create users that don't already exist on the platform but have an invite.
-     * This method handles the scenario where all of the invited collaborators are not registered members
-     * @param collaboratorsEmails list of emails to be added as collaborators
-     * @param user user database model
-     * @param registeredCollaborators list of collaborators that are already registered
-     */
-    false: async (args: {
-        collaboratorsEmails: string[];
-        users: Model<Document>;
-    }): Promise<UsersModelInterface[]> => {
-        const nonRegisteredCollaborators = args.collaboratorsEmails.map(
-            email => {
-                return {
-                    email
-                };
-            }
-        ) as Array<{
-            email: string;
-        }>;
+    return (await args.users.create(nonRegisteredCollaborators)) as any;
+  },
+  /**
+   * Create users that don't already exist on the platform but have an invite.
+   * This method handles the scenario where all of the invited collaborators are not registered members
+   * @param collaboratorsEmails list of emails to be added as collaborators
+   * @param user user database model
+   * @param registeredCollaborators list of collaborators that are already registered
+   */
+  false: async (args: {
+    collaboratorsEmails: string[];
+    users: Model<Document>;
+  }): Promise<UsersModelInterface[]> => {
+    const nonRegisteredCollaborators = args.collaboratorsEmails.map(email => {
+      return {
+        email
+      };
+    }) as Array<{
+      email: string;
+    }>;
 
-        return (await args.users.create(nonRegisteredCollaborators)) as any;
-    }
+    return (await args.users.create(nonRegisteredCollaborators)) as any;
+  }
 } as {
-    [x: string]: any;
+  [x: string]: any;
 };
 
 /**
@@ -250,21 +248,21 @@ export const collaboratorsHaveRegisteredUsers = {
  * @param registeredCollaborators list of collaborators that are already registered
  */
 export const createNonRegisteredCollaborators = async (
-    collaboratorsEmails: string[],
-    user: Model<Document>,
-    registeredCollaborators: UsersModelInterface[] = []
+  collaboratorsEmails: string[],
+  user: Model<Document>,
+  registeredCollaborators: UsersModelInterface[] = []
 ): Promise<UsersModelInterface[]> => {
-    try {
-        return await collaboratorsHaveRegisteredUsers[
-            `${Boolean(registeredCollaborators.length)}`
-        ]({
-            collaboratorsEmails,
-            user,
-            registeredCollaborators
-        });
-    } catch (err) {
-        throw error(500, "Could not create users", "Project");
-    }
+  try {
+    return await collaboratorsHaveRegisteredUsers[
+      `${Boolean(registeredCollaborators.length)}`
+    ]({
+      collaboratorsEmails,
+      user,
+      registeredCollaborators
+    });
+  } catch (err) {
+    throw error(500, "Could not create users", "Project");
+  }
 };
 
 /**
@@ -274,18 +272,15 @@ export const createNonRegisteredCollaborators = async (
  * @param invitedCollaborators
  */
 export const checkUserIsAlreadyCollaborator = (
-    currentProjectInvites: any[],
-    invitedCollaborators: UsersModelInterface[]
+  currentProjectInvites: any[],
+  invitedCollaborators: UsersModelInterface[]
 ): UsersModelInterface => {
-    // for each invited collaborator, if they already exists in the project collaborator return their details
-    return invitedCollaborators.find(invitedCollaborator => {
-        return currentProjectInvites.some(invite => {
-            if (
-                String(invitedCollaborator._id) ===
-                String(invite.collaborator._id)
-            )
-                return true;
-            return false;
-        });
-    }) as UsersModelInterface;
+  // for each invited collaborator, if they already exists in the project collaborator return their details
+  return invitedCollaborators.find(invitedCollaborator => {
+    return currentProjectInvites.some(invite => {
+      if (String(invitedCollaborator._id) === String(invite.collaborator._id))
+        return true;
+      return false;
+    });
+  }) as UsersModelInterface;
 };

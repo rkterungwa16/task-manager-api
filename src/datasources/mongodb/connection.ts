@@ -7,23 +7,23 @@ import { createAppLogger } from "../../middlewares/logger";
 dotenv.config();
 
 const databaseConnectionStartup = createAppLogger(
-    "Database connection startup"
+  "Database connection startup"
 ).log({
-    level: "info",
-    message: "Mongodb connection started"
+  level: "info",
+  message: "Mongodb connection started"
 });
 
 export const connect = ((): Connection => {
-    const env = process.env.NODE_ENV as string;
-    mongoose.connect(databaseConfig[env].databaseUri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    });
+  const env = process.env.NODE_ENV as string;
+  mongoose.connect(databaseConfig[env].databaseUri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  });
 
-    return mongoose.connection.once("open", () => {
-        databaseConnectionStartup.log({
-            level: "info",
-            message: "database successfully connected"
-        });
+  return mongoose.connection.once("open", () => {
+    databaseConnectionStartup.log({
+      level: "info",
+      message: "database successfully connected"
     });
+  });
 })();

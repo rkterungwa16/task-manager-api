@@ -6,7 +6,7 @@ import { authenticateMiddleware } from "../middlewares";
 const router = express.Router();
 
 router
-    .route("/colors")
-    .get(authenticateMiddleware, viewProjectColorsController);
+  .route("/colors")
+  .get(authenticateMiddleware, viewProjectColorsController);
 
 export default router;

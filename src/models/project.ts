@@ -7,63 +7,63 @@ const mongooseConnection = connect;
 import { Schema } from "mongoose";
 
 class ProjectsSchema {
-    static get schema() {
-        return new Schema(
-            {
-                title: {
-                    type: String,
-                    required: true
-                },
-                description: {
-                    type: String
-                },
-                owner: {
-                    type: ObjectId,
-                    ref: "Users"
-                },
-                tasks: [{ type: ObjectId, ref: "Tasks" }],
-                collaborators: [
-                    {
-                        type: ObjectId,
-                        ref: "Users"
-                    }
-                ],
-                invites: [
-                    {
-                        type: ObjectId,
-                        ref: "CollaborationInvites"
-                    }
-                ],
-                visibility: {
-                    type: String,
-                    enum: ["PRIVATE", "PUBLIC"],
-                    default: "PUBLIC"
-                },
-                color: {
-                    type: String,
-                    default: "#8d8d8d"
-                },
-                isDeleted: {
-                    type: Boolean,
-                    default: false
-                },
-                isArchived: {
-                    type: Boolean,
-                    default: false
-                },
-                isFavourite: {
-                    type: Boolean,
-                    default: false
-                }
-            },
-            {
-                timestamps: true
-            }
-        );
-    }
+  static get schema() {
+    return new Schema(
+      {
+        title: {
+          type: String,
+          required: true
+        },
+        description: {
+          type: String
+        },
+        owner: {
+          type: ObjectId,
+          ref: "Users"
+        },
+        tasks: [{ type: ObjectId, ref: "Tasks" }],
+        collaborators: [
+          {
+            type: ObjectId,
+            ref: "Users"
+          }
+        ],
+        invites: [
+          {
+            type: ObjectId,
+            ref: "CollaborationInvites"
+          }
+        ],
+        visibility: {
+          type: String,
+          enum: ["PRIVATE", "PUBLIC"],
+          default: "PUBLIC"
+        },
+        color: {
+          type: String,
+          default: "#8d8d8d"
+        },
+        isDeleted: {
+          type: Boolean,
+          default: false
+        },
+        isArchived: {
+          type: Boolean,
+          default: false
+        },
+        isFavourite: {
+          type: Boolean,
+          default: false
+        }
+      },
+      {
+        timestamps: true
+      }
+    );
+  }
 }
 
 export const Projects = mongooseConnection.model<ProjectsModelInterface>(
-    "Projects",
-    ProjectsSchema.schema
+  "Projects",
+  ProjectsSchema.schema
 );

@@ -9,6 +9,6 @@ const webSocketServer = initSocketServer(init());
 socketSetup(webSocketServer);
 init().listen(3300);
 createAppLogger("Task Manager Start up").log({
-    level: "info",
-    message: `Application is starting at port 3300`
+  level: "info",
+  message: `Application is starting at port 3300`
 });

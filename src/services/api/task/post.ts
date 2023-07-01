@@ -4,16 +4,16 @@ import { Tasks } from "../../../models";
 import { TasksModelInterface, TasksCredentials } from "../../../types";
 
 export interface CreateTaskParameterInterface {
-    task: Model<Document>;
+  task: Model<Document>;
 }
 
 export const createTaskDefinition = (
-    createTasksArgs: CreateTaskParameterInterface
+  createTasksArgs: CreateTaskParameterInterface
 ): ((credentials: TasksCredentials) => Promise<Document>) => {
-    const { task } = createTasksArgs;
-    return async (credentials: TasksCredentials) => {
-        return await task.create(credentials);
-    };
+  const { task } = createTasksArgs;
+  return async (credentials: TasksCredentials) => {
+    return await task.create(credentials);
+  };
 };
 
 export const createTask = createTaskDefinition({ task: Tasks });

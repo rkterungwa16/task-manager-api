@@ -12,33 +12,33 @@ import { IRequest, UsersModelInterface } from "../../types";
 //     collaboratorEmail: string;
 // }
 export const addCollaboratorsController = async (
-    req: IRequest,
-    res: Response,
-    next: NextFunction
+  req: IRequest,
+  res: Response,
+  next: NextFunction
 ) => {
-    try {
-        const { id } = req.currentUser as UsersModelInterface;
-        const { projectId } = req.params;
-        const { collaboratorsEmails } = req.body;
-        const project = await addCollaborators(
-            {
-                collaboratorsEmails
-            },
-            projectId,
-            id
-        );
+  try {
+    const { id } = req.currentUser as UsersModelInterface;
+    const { projectId } = req.params;
+    const { collaboratorsEmails } = req.body;
+    const project = await addCollaborators(
+      {
+        collaboratorsEmails
+      },
+      projectId,
+      id
+    );
 
-        return apiResponse({
-            message: "user successfully added to project as collaborator",
-            data: {
-                project
-            },
-            response: res,
-            statusCode: 200
-        });
-    } catch (err) {
-        next(err);
-    }
+    return apiResponse({
+      message: "user successfully added to project as collaborator",
+      data: {
+        project
+      },
+      response: res,
+      statusCode: 200
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 // export interface EditArgsInterface extends EditProjectArgsInterface {
@@ -48,29 +48,26 @@ export const addCollaboratorsController = async (
 //     color: string;
 // }
 export const editProjectController = async (
-    req: IRequest,
-    res: Response,
-    next: NextFunction
+  req: IRequest,
+  res: Response,
+  next: NextFunction
 ) => {
-    try {
-        const { id: ownerId } = req.currentUser as UsersModelInterface;
-        const { projectId } = req.params;
-        const project = await editProject(
-            { ...req.body },
-            { projectId, ownerId }
-        );
+  try {
+    const { id: ownerId } = req.currentUser as UsersModelInterface;
+    const { projectId } = req.params;
+    const project = await editProject({ ...req.body }, { projectId, ownerId });
 
-        return apiResponse({
-            message: "user successfully edited project description",
-            data: {
-                project
-            },
-            statusCode: 200,
-            response: res
-        });
-    } catch (err) {
-        next(err);
-    }
+    return apiResponse({
+      message: "user successfully edited project description",
+      data: {
+        project
+      },
+      statusCode: 200,
+      response: res
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 // export interface ArchiveProjectArgsInterface extends EditProjectArgsInterface {

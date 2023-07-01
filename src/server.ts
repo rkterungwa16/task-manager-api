@@ -7,18 +7,18 @@ import { IRequest } from "./types";
 import { apiErrorHandler, appLogInfoMiddleware } from "./middlewares";
 
 export const init = () => {
-    const app = express();
+  const app = express();
 
-    app.use(cors());
-    app.use(express.json());
+  app.use(cors());
+  app.use(express.json());
 
-    app.use((req: IRequest, res: Response, next: NextFunction) => {
-        req.requestId = uuid();
-        next();
-    });
+  app.use((req: IRequest, res: Response, next: NextFunction) => {
+    req.requestId = uuid();
+    next();
+  });
 
-    app.use(appLogInfoMiddleware);
-    app.use("/", route);
-    app.use(apiErrorHandler);
-    return app;
+  app.use(appLogInfoMiddleware);
+  app.use("/", route);
+  app.use(apiErrorHandler);
+  return app;
 };
